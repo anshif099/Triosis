@@ -6,24 +6,42 @@ function Preloader() {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
-    // Block scrolling on body while preloader is active
-    document.body.style.overflow = 'hidden';
+    let loadTimer;
+    let removeTimer;
 
-    // Simulate page load completion (2.2 seconds display + 0.8 seconds fade animation)
-    const loadTimer = setTimeout(() => {
-      setIsLoaded(true);
-      document.body.style.overflow = 'auto'; // Re-enable scrolling
-    }, 2200);
+    const startPreloader = () => {
+      setIsLoaded(false);
+      setShouldRender(true);
+      document.body.style.overflow = 'hidden';
 
-    // Completely unmount the preloader component from DOM after fade-out transition
-    const removeTimer = setTimeout(() => {
-      setShouldRender(false);
-    }, 3000);
+      // Clear any existing timers
+      clearTimeout(loadTimer);
+      clearTimeout(removeTimer);
+
+      loadTimer = setTimeout(() => {
+        setIsLoaded(true);
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+      }, 2200);
+
+      removeTimer = setTimeout(() => {
+        setShouldRender(false);
+      }, 3000);
+    };
+
+    // Run on initial mount
+    startPreloader();
+
+    // Listen for custom trigger event
+    const handleTrigger = () => {
+      startPreloader();
+    };
+    window.addEventListener('trigger-preloader', handleTrigger);
 
     return () => {
       clearTimeout(loadTimer);
       clearTimeout(removeTimer);
-      document.body.style.overflow = 'auto'; // Fallback re-enable
+      window.removeEventListener('trigger-preloader', handleTrigger);
+      document.body.style.overflow = 'auto';
     };
   }, []);
 

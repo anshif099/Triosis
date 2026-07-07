@@ -8,8 +8,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 80px;
+  height: 100px; /* Exact height */
+  padding: 0 80px;
   width: 100%;
+  max-width: 1555px; /* Exact max-width */
+  margin: 0 auto; /* Center when screen is wider than 1555px */
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -21,7 +24,7 @@
 }
 
 .logo-container img {
-  width: 100px;
+  width: 100px; /* Logo size set back to 100x100 */
   height: 100px;
   object-fit: contain;
   display: block;

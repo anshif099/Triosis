@@ -20,10 +20,16 @@ const WaveText = ({ text }) => {
 };
 
 function Header() {
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    window.dispatchEvent(new Event('trigger-preloader'));
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
+  };
+
   return (
     <header className="header">
       <div className="logo-container">
-        <a href="#">
+        <a href="#" onClick={handleHomeClick}>
           <img src={headerLogo} alt="Adsdot Logo" />
         </a>
       </div>
@@ -31,7 +37,7 @@ function Header() {
       <nav>
         <ul className="nav-links">
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={handleHomeClick}>
               <WaveText text="Home" />
             </a>
           </li>

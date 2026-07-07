@@ -84,30 +84,41 @@ const AnnoorLogo = () => (
 );
 
 function BrandLogos() {
-  // Array of Brand Logo renderers
-  const logosRow1 = [
-    <VerifastLogo />,
-    <MegaBoothLogo />,
-    <AhlaLogo />,
-    <AimlexLogo />,
-    <AlAzrLogo />,
-    <MisbahLogo />,
-    <AnnoorLogo />
+  // Trigger loading screen preloader, then redirect in current tab
+  const handleBrandClick = (url) => {
+    // 1. Dispatch custom preloader event to start letters animation overlay
+    window.dispatchEvent(new Event('trigger-preloader'));
+
+    // 2. Perform redirection after 1 second transition delay
+    setTimeout(() => {
+      window.location.href = url;
+    }, 1000);
+  };
+
+  // Row lists containing branding component renderers and destination URLs
+  const brandsRow1 = [
+    { component: <VerifastLogo />, url: 'https://verifast.com' },
+    { component: <MegaBoothLogo />, url: 'https://megabooth.com' },
+    { component: <AhlaLogo />, url: 'https://ahla.com' },
+    { component: <AimlexLogo />, url: 'https://aimlex.com' },
+    { component: <AlAzrLogo />, url: 'https://alazr.com' },
+    { component: <MisbahLogo />, url: 'https://misbahacademy.com' },
+    { component: <AnnoorLogo />, url: 'https://annooronlineacademy.com' }
   ];
 
-  const logosRow2 = [
-    <AhlaLogo />,
-    <AimlexLogo />,
-    <AlAzrLogo />,
-    <MisbahLogo />,
-    <AnnoorLogo />,
-    <VerifastLogo />,
-    <MegaBoothLogo />
+  const brandsRow2 = [
+    { component: <AhlaLogo />, url: 'https://ahla.com' },
+    { component: <AimlexLogo />, url: 'https://aimlex.com' },
+    { component: <AlAzrLogo />, url: 'https://alazr.com' },
+    { component: <MisbahLogo />, url: 'https://misbahacademy.com' },
+    { component: <AnnoorLogo />, url: 'https://annooronlineacademy.com' },
+    { component: <VerifastLogo />, url: 'https://verifast.com' },
+    { component: <MegaBoothLogo />, url: 'https://megabooth.com' }
   ];
 
-  // Double elements to facilitate smooth continuous scrolling transition
-  const doubleRow1 = [...logosRow1, ...logosRow1];
-  const doubleRow2 = [...logosRow2, ...logosRow2];
+  // Double rows for seamless continuous marquees scrolling
+  const doubleRow1 = [...brandsRow1, ...brandsRow1];
+  const doubleRow2 = [...brandsRow2, ...brandsRow2];
 
   return (
     <section className="logos-section">
@@ -116,9 +127,13 @@ function BrandLogos() {
         {/* Row 1: Right to Left */}
         <div className="logos-marquee-wrapper">
           <div className="logos-marquee direction-left">
-            {doubleRow1.map((logo, index) => (
-              <div className="logo-card" key={index}>
-                {logo}
+            {doubleRow1.map((brand, index) => (
+              <div 
+                className="logo-card" 
+                key={`r1-${index}`}
+                onClick={() => handleBrandClick(brand.url)}
+              >
+                {brand.component}
               </div>
             ))}
           </div>
@@ -127,9 +142,13 @@ function BrandLogos() {
         {/* Row 2: Left to Right */}
         <div className="logos-marquee-wrapper">
           <div className="logos-marquee direction-right">
-            {doubleRow2.map((logo, index) => (
-              <div className="logo-card" key={index}>
-                {logo}
+            {doubleRow2.map((brand, index) => (
+              <div 
+                className="logo-card" 
+                key={`r2-${index}`}
+                onClick={() => handleBrandClick(brand.url)}
+              >
+                {brand.component}
               </div>
             ))}
           </div>

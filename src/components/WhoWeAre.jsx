@@ -3,6 +3,12 @@ import heroLogo from '../assets/hero.png';
 import './WhoWeAre.css';
 
 function WhoWeAre() {
+  const handleGetStartedClick = (e) => {
+    e.preventDefault();
+    window.dispatchEvent(new Event('trigger-preloader'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <section className="whoweare-section">
       <div className="whoweare-container">
@@ -16,7 +22,7 @@ function WhoWeAre() {
             <h2 className="whoweare-headline">
               Your ideas deserve more than just great visuals they deserve creative performance.
             </h2>
-            <a href="#contact" className="get-started-btn">
+            <a href="#" className="get-started-btn" onClick={handleGetStartedClick}>
               Get Started <span className="arrow">→</span>
             </a>
           </div>

@@ -256,3 +256,34 @@
     height: 30px;
   }
 }
+
+@media (max-width: 480px) {
+  .testimonial-card {
+    width: 270px;
+    min-height: 230px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .quote-text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .testimonial-user {
+    margin-top: 15px;
+    padding-top: 12px;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .avatar-svg {
+    width: 18px;
+    height: 18px;
+  }
+  .user-name {
+    font-size: 13px;
+  }
+  .user-role {
+    font-size: 9px;
+  }
+}

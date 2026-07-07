@@ -166,6 +166,15 @@
   .services-left h3 {
     font-size: 28px;
   }
+  .services-image {
+    height: 200px;
+    max-width: 100%;
+    border-radius: 24px;
+    transform: rotateX(8deg);
+  }
+  .services-image:hover {
+    transform: rotateX(4deg) scale(1.01);
+  }
   .services-list li {
     font-size: 14px;
   }

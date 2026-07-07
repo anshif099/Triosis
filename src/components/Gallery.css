@@ -264,3 +264,40 @@
     margin-bottom: 16px;
   }
 }
+
+@media (max-width: 480px) {
+  .scroll-capsule-gallery {
+    height: 380px;
+    gap: 8px;
+  }
+  .scroll-capsule-item {
+    height: 360px;
+  }
+  .scroll-capsule-item.collapsed {
+    width: 45px;
+  }
+  .scroll-capsule-item.expanded {
+    width: 160px;
+    border-radius: 24px;
+  }
+  .horizontal-label {
+    padding: 10px 16px;
+    bottom: 15px;
+    left: 10px;
+    right: 10px;
+    border-radius: 16px;
+  }
+  .label-title {
+    font-size: 14px;
+  }
+  .label-subtitle {
+    font-size: 8px;
+  }
+  .vertical-title {
+    font-size: 9px;
+    margin-bottom: 12px;
+  }
+  .vertical-subtitle {
+    font-size: 7px;
+  }
+}

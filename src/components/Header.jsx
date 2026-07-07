@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import headerLogo from '../assets/header.png';
 import './Header.css';
 
@@ -20,10 +20,21 @@ const WaveText = ({ text }) => {
 };
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleHomeClick = (e) => {
     e.preventDefault();
+    setMenuOpen(false);
     window.dispatchEvent(new Event('trigger-preloader'));
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
   };
 
   return (
@@ -34,7 +45,17 @@ function Header() {
         </a>
       </div>
 
-      <nav>
+      <button 
+        className={`hamburger-btn ${menuOpen ? 'active' : ''}`} 
+        onClick={toggleMenu}
+        aria-label="Toggle menu"
+      >
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+      </button>
+
+      <nav className={`nav-container ${menuOpen ? 'menu-open' : ''}`}>
         <ul className="nav-links">
           <li className="nav-item">
             <a href="#" className="nav-link" onClick={handleHomeClick}>
@@ -47,43 +68,48 @@ function Header() {
             </a>
             <ul className="dropdown-menu">
               <li className="dropdown-item">
-                <a href="#">About Us</a>
+                <a href="#" onClick={closeMenu}>About Us</a>
               </li>
               <li className="dropdown-item">
-                <a href="#">Career</a>
+                <a href="#" onClick={closeMenu}>Career</a>
               </li>
               <li className="dropdown-item">
-                <a href="#">Our Team</a>
+                <a href="#" onClick={closeMenu}>Our Team</a>
               </li>
               <li className="dropdown-item">
-                <a href="#">FAQs</a>
+                <a href="#" onClick={closeMenu}>FAQs</a>
               </li>
             </ul>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={closeMenu}>
               <WaveText text="Services" />
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={closeMenu}>
               <WaveText text="Portfolio" />
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={closeMenu}>
               <WaveText text="Blog" />
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={closeMenu}>
               <WaveText text="Contact Us" />
             </a>
           </li>
         </ul>
+        <div className="mobile-action-btn">
+          <a href="#" className="consultation-btn" onClick={closeMenu}>
+            Book Free Consultation
+          </a>
+        </div>
       </nav>
 
-      <div>
+      <div className="desktop-action-btn">
         <a href="#" className="consultation-btn">
           Book Free Consultation
         </a>

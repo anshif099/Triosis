@@ -1,4 +1,5 @@
 import React from 'react';
+import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Hero from '../components/Hero.jsx';
 import Gallery from '../components/Gallery.jsx';
@@ -14,6 +15,7 @@ import Footer from '../components/Footer.jsx';
 function Home() {
   return (
     <div className="home-page">
+      <Preloader />
       <Header />
       <Hero />
       <Gallery />

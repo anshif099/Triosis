@@ -28,6 +28,14 @@ function Cursor() {
       const target = e.target;
       if (!target) return;
 
+      // Resolve computed cursor to detect CSS-defined pointer cursors
+      let hasPointer = false;
+      if (target instanceof Element) {
+        try {
+          hasPointer = window.getComputedStyle(target).cursor === 'pointer';
+        } catch (err) {}
+      }
+
       const isInteractive = 
         target.tagName === 'A' || 
         target.tagName === 'BUTTON' || 
@@ -35,7 +43,15 @@ function Cursor() {
         target.closest('button') || 
         target.classList.contains('nav-link') || 
         target.classList.contains('dropdown-item') ||
-        target.style.cursor === 'pointer';
+        target.closest('.logo-card') ||
+        target.closest('.team-card') ||
+        target.closest('.social-btn') ||
+        target.closest('.footer-social-btn') ||
+        target.closest('.back-to-top-btn') ||
+        target.closest('.get-started-btn') ||
+        target.closest('.explore-posts-btn') ||
+        target.closest('.journal-card') ||
+        hasPointer;
 
       if (isInteractive) {
         setHovered(true);

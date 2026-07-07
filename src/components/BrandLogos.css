@@ -1,0 +1,124 @@
+.logos-section {
+  background-color: rgb(169, 18, 18);
+  padding: 80px 0 120px 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.logos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* Marquee Row Container */
+.logos-marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+
+/* Edge faded overlays */
+.logos-marquee-wrapper::before,
+.logos-marquee-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 180px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.logos-marquee-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgb(169, 18, 18) 0%, rgba(169, 18, 18, 0) 100%);
+}
+
+.logos-marquee-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgb(169, 18, 18) 0%, rgba(169, 18, 18, 0) 100%);
+}
+
+.logos-marquee {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+}
+
+/* Top Marquee (Right to Left) */
+.logos-marquee.direction-left {
+  animation: scroll-left-logos 28s linear infinite;
+}
+
+/* Bottom Marquee (Left to Right) */
+.logos-marquee.direction-right {
+  animation: scroll-right-logos 28s linear infinite;
+}
+
+/* Pause scroll animation on card hover */
+.logos-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left-logos {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(calc(-50% - 12px), 0, 0);
+  }
+}
+
+@keyframes scroll-right-logos {
+  0% {
+    transform: translate3d(calc(-50% - 12px), 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Card Styling */
+.logo-card {
+  width: 250px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              background-color 0.4s ease, 
+              border-color 0.4s ease;
+  cursor: pointer;
+}
+
+.logo-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .logos-section {
+    padding: 60px 0 80px 0;
+  }
+  .logos-container {
+    gap: 16px;
+  }
+  .logo-card {
+    width: 190px;
+    height: 90px;
+    border-radius: 16px;
+  }
+}

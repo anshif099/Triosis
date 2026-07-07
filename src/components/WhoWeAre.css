@@ -1,0 +1,253 @@
+.whoweare-section {
+  background-color: rgb(169, 18, 18);
+  padding: 120px 100px 140px 100px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.whoweare-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Row 1: Label & Headline */
+.whoweare-row-top {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 90px;
+}
+
+.whoweare-label {
+  flex: 1;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding-top: 15px;
+  text-align: left;
+}
+
+.whoweare-headline-block {
+  flex: 3;
+  text-align: left;
+}
+
+.whoweare-headline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0 0 35px 0;
+  letter-spacing: -0.5px;
+}
+
+.get-started-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.get-started-btn .arrow {
+  transition: transform 0.3s ease;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.get-started-btn:hover {
+  background-color: #ffffff;
+  color: rgb(169, 18, 18);
+  border-color: #ffffff;
+}
+
+.get-started-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Row 2: Massive Stats & Intro Text & Logo */
+.whoweare-row-middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 80px;
+  margin-bottom: 100px;
+}
+
+.whoweare-big-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stat-number-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.big-number {
+  font-family: 'Poppins', sans-serif;
+  font-size: 160px;
+  font-weight: 600;
+  line-height: 0.8;
+  color: #ffffff;
+  letter-spacing: -5px;
+}
+
+.unit {
+  font-family: 'Poppins', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 15px;
+  margin-left: 5px;
+}
+
+.stat-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #A8A8A8;
+  line-height: 1.5;
+  margin: 25px 0 0 0;
+  text-align: left;
+  max-width: 250px;
+}
+
+.whoweare-intro-logo {
+  flex: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.intro-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  max-width: 530px;
+  text-align: left;
+  margin: 0 0 50px 0;
+}
+
+.tilted-logo-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 40px;
+}
+
+.tilted-logo {
+  width: 200px;
+  height: auto;
+  transform: rotate(-25deg);
+  opacity: 0.95;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25));
+  display: block;
+}
+
+/* Row 3: bottom Grid stats */
+.whoweare-row-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 60px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.stat-count {
+  font-family: 'Poppins', sans-serif;
+  font-size: 64px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.stat-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #A8A8A8;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 1024px) {
+  .whoweare-section {
+    padding: 80px 40px 100px 40px;
+  }
+  .whoweare-row-top {
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+  .whoweare-headline {
+    font-size: 38px;
+  }
+  .whoweare-row-middle {
+    flex-direction: column;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  .whoweare-intro-logo {
+    align-items: flex-start;
+    width: 100%;
+  }
+  .tilted-logo-wrapper {
+    justify-content: flex-start;
+    padding-right: 0;
+  }
+  .tilted-logo {
+    width: 160px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .whoweare-section {
+    padding: 60px 20px 80px 20px;
+  }
+  .whoweare-headline {
+    font-size: 28px;
+  }
+  .big-number {
+    font-size: 120px;
+  }
+  .stat-count {
+    font-size: 48px;
+  }
+  .get-started-btn {
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+}

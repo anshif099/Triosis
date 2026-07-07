@@ -1,0 +1,276 @@
+.journal-section {
+  background-color: rgb(169, 18, 18);
+  padding: 100px 100px 140px 100px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.journal-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Header with aligned title and CTA */
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+  width: 100%;
+}
+
+.journal-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -1.5px;
+  text-align: left;
+}
+
+.explore-posts-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
+  padding: 12px 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.explore-posts-btn:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.explore-posts-btn .arrow {
+  transition: transform 0.3s ease;
+}
+
+.explore-posts-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Journal List / Card Layout */
+.journal-list {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.journal-card {
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Image container with teardrop date badge */
+.journal-image-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.journal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.journal-card:hover .journal-image {
+  transform: scale(1.04);
+}
+
+/* Teardrop leaf shape date badge */
+.date-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 68px;
+  height: 68px;
+  background-color: #121212;
+  border-radius: 50% 50% 50% 0; /* Teardrop leaf shape */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  transform: rotate(-45deg); /* Point pointed corner up-right */
+  z-index: 5;
+  transition: transform 0.4s ease;
+}
+
+.journal-card:hover .date-badge {
+  transform: rotate(-45deg) scale(1.05);
+}
+
+.normal-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg); /* Counter-rotate back */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+}
+
+.hover-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg) scale(0.6); /* Counter-rotate and shrink */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.journal-card:hover .normal-content {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.6);
+}
+
+.journal-card:hover .hover-content {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.arrow-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #121212;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.badge-arrow-svg {
+  width: 18px;
+  height: 18px;
+}
+
+.date-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -2px;
+}
+
+.date-day {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.date-month {
+  font-family: 'Poppins', sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  margin-top: 1px;
+}
+
+/* Meta info: Category & Author */
+.journal-meta {
+  display: flex;
+  gap: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
+.journal-category {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.journal-author {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Title text info */
+.journal-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+  transition: opacity 0.3s ease;
+}
+
+.journal-card:hover .journal-card-title {
+  opacity: 0.85;
+}
+
+.journal-divider {
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .journal-section {
+    padding: 80px 40px 100px 40px;
+  }
+  .journal-title {
+    font-size: 42px;
+  }
+  .journal-card {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 768px) {
+  .journal-section {
+    padding: 60px 20px 80px 20px;
+  }
+  .journal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .journal-title {
+    font-size: 32px;
+  }
+  .explore-posts-btn {
+    margin-bottom: 0;
+  }
+  .journal-image-container {
+    height: 240px;
+  }
+}

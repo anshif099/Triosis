@@ -1,13 +1,18 @@
 .header {
-  background-color: rgb(169, 18, 18);
+  background-color: rgba(169, 18, 18, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 80px;
-  position: relative;
   width: 100%;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .logo-container {

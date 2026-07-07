@@ -1,0 +1,135 @@
+.projects-section {
+  position: relative;
+  height: 200vh; /* Scroll length for the animation */
+  background-color: rgb(169, 18, 18);
+  width: 100%;
+}
+
+.projects-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 100px;
+}
+
+.projects-layout {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projects-title {
+  position: absolute;
+  font-family: 'Poppins', sans-serif;
+  font-size: 68px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: -1.5px;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.1s linear, transform 0.1s linear;
+}
+
+.project-card {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+  width: 100%;
+  max-width: 440px;
+  transition: opacity 0.1s linear, transform 0.1s linear;
+}
+
+.project-image-wrapper {
+  width: 100%;
+  height: 480px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+}
+
+.project-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-info {
+  margin-top: 24px;
+  text-align: left;
+}
+
+.project-info h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.project-info p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #A8A8A8;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 1024px) {
+  .projects-sticky {
+    padding: 0 40px;
+  }
+  .projects-title {
+    font-size: 48px;
+  }
+  .project-card {
+    max-width: 380px;
+  }
+  .project-image-wrapper {
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-section {
+    height: 140vh; /* Shorter scroll height on mobile */
+  }
+  .projects-sticky {
+    padding: 0 20px;
+  }
+  .projects-title {
+    font-size: 36px;
+    letter-spacing: -0.5px;
+  }
+  .project-card {
+    max-width: 290px;
+  }
+  .project-image-wrapper {
+    height: 320px;
+  }
+  .project-info h4 {
+    font-size: 20px;
+  }
+  .project-info p {
+    font-size: 11px;
+  }
+}

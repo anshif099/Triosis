@@ -40,12 +40,12 @@ function WhoWeAre() {
 
           <div className="whoweare-intro-logo">
             <p className="intro-text">
-              At Adsdot, we blend strategy, design, and digital innovation to help businesses 
+              At Triosis, we blend strategy, design, and digital innovation to help businesses 
               grow with confidence. Our team crafts powerful brand identities, compelling visuals, 
               and high-performing marketing campaigns that connect with the right audience and create measurable impact.
             </p>
             <div className="tilted-logo-wrapper">
-              <img src={heroLogo} alt="Adsdot Symbol Logo" className="tilted-logo" />
+              <img src={heroLogo} alt="Triosis Symbol Logo" className="tilted-logo" />
             </div>
           </div>
         </div>

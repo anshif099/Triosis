@@ -4,28 +4,28 @@ import './Testimonials.css';
 const testimonialsData = [
   {
     id: 1,
-    quote: "Adsdot transformed our business identity with their exceptional branding solutions. Their creativity and attention to detail gave us a logo and brand style that truly reflects our values. We've received countless compliments from our customers!",
+    quote: "Triosis transformed our business identity with their exceptional branding solutions. Their creativity and attention to detail gave us a logo and brand style that truly reflects our values. We've received countless compliments from our customers!",
     author: "Emily Watson",
     role: "Co-Founder, GreenLife",
     isDark: true
   },
   {
     id: 2,
-    quote: "Adsdot has been an invaluable creative partner for us. Their exceptional designs, from our college football team jersey to engaging digital content, have greatly enhanced our presence. Their dedication and creativity make them a trusted partner in our digital journey.",
+    quote: "Triosis has been an invaluable creative partner for us. Their exceptional designs, from our college football team jersey to engaging digital content, have greatly enhanced our presence. Their dedication and creativity make them a trusted partner in our digital journey.",
     author: "Dr. Suhail P",
     role: "Founder, Zodiac Research",
     isDark: true
   },
   {
     id: 3,
-    quote: "Exceptional creativity and strategic execution—ADSDOT has elevated our brand with outstanding results. Highly recommended!",
+    quote: "Exceptional creativity and strategic execution—TRIOSIS has elevated our brand with outstanding results. Highly recommended!",
     author: "Dr. Suhail P",
     role: "Founder, Zodiac Research",
     isDark: false
   },
   {
     id: 4,
-    quote: "Working with Adsdot has been a game-changer for our brand. Their creative posters for our product launches were captivating and drew in our target audience perfectly. Their team is highly talented and easy to work with!",
+    quote: "Working with Triosis has been a game-changer for our brand. Their creative posters for our product launches were captivating and drew in our target audience perfectly. Their team is highly talented and easy to work with!",
     author: "Sarah Jenkins",
     role: "Marketing Director, Bloom Co.",
     isDark: true

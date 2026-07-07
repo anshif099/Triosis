@@ -53,7 +53,7 @@ function Journal() {
             {/* Meta info: Category & Author */}
             <div className="journal-meta">
               <span className="journal-category">Creative Designing</span>
-              <span className="journal-author">By : Adsdot</span>
+              <span className="journal-author">By : Triosis</span>
             </div>
 
             <h3 className="journal-card-title">

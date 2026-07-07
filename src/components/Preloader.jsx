@@ -50,12 +50,13 @@ function Preloader() {
   return (
     <div className={`preloader-overlay ${isLoaded ? 'fade-out' : ''}`}>
       <div className="preloader-text-wrap">
-        <span className="preloader-letter">A</span>
-        <span className="preloader-letter">D</span>
-        <span className="preloader-letter">S</span>
-        <span className="preloader-letter">D</span>
-        <span className="preloader-letter">O</span>
         <span className="preloader-letter">T</span>
+        <span className="preloader-letter">R</span>
+        <span className="preloader-letter">I</span>
+        <span className="preloader-letter">O</span>
+        <span className="preloader-letter">S</span>
+        <span className="preloader-letter">I</span>
+        <span className="preloader-letter">S</span>
       </div>
     </div>
   );

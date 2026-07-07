@@ -41,7 +41,7 @@ function Header() {
     <header className="header">
       <div className="logo-container">
         <a href="#" onClick={handleHomeClick}>
-          <img src={headerLogo} alt="Adsdot Logo" />
+          <img src={headerLogo} alt="Triosis Logo" />
         </a>
       </div>
 

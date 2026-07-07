@@ -44,6 +44,7 @@
 .preloader-letter:nth-child(4) { animation-delay: 0.54s; }
 .preloader-letter:nth-child(5) { animation-delay: 0.72s; }
 .preloader-letter:nth-child(6) { animation-delay: 0.9s; }
+.preloader-letter:nth-child(7) { animation-delay: 1.08s; }
 
 @keyframes letter-glow-wave {
   0%, 100% {

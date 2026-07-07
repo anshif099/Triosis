@@ -97,10 +97,14 @@ function Footer() {
           <h4 className="footer-column-title">Find Us</h4>
           <div className="address-content">
             <p className="address-text">
-              Adsdot Advertising Agency Office, Saudi Complex, Kizhisseri, Kerala 673641
+              Triosis Digital<br />
+              Tower 2, HiLITE Business Park,<br />
+              Door no : 2211, Second Floor,<br />
+              Poovangal, Pantheeramkavu,<br />
+              Kozhikode, Kerala 673014
             </p>
-            <a href="mailto:info@adsdot.in" className="contact-link">
-              info@adsdot.in
+            <a href="mailto:info@triosis.in" className="contact-link">
+              info@triosis.in
             </a>
             <a href="tel:+919605507008" className="contact-link">
               +91 9605507008
@@ -127,7 +131,7 @@ function Footer() {
       {/* Footer Bottom copyright */}
       <div className="footer-bottom">
         <p className="copyright-text">
-          © {new Date().getFullYear()} Adsdot. All Rights Reserved.
+          © {new Date().getFullYear()} Triosis. All Rights Reserved.
         </p>
       </div>
 

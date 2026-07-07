@@ -20,7 +20,7 @@ function Hero() {
 
         <div className="hero-right">
           <div className="we-help-container">
-            <img src={heroLogo} alt="Adsdot Symbol" className="we-help-logo" />
+            <img src={heroLogo} alt="Triosis Symbol" className="we-help-logo" />
             <p className="we-help-text">
               We help ambitious brands grow through structured strategy, 
               intelligent creativity, and consistent marketing systems, 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import headerLogo from '../assets/header.png';
+import ConsultationModal from './ConsultationModal.jsx';
 import './Header.css';
 
 // Helper component to split text into individual spans for wave animation
@@ -22,6 +23,13 @@ const WaveText = ({ text }) => {
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleConsultationClick = (e) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+    setMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -179,18 +187,19 @@ function Header() {
             </li>
           </ul>
           <div className="mobile-action-btn">
-            <a href="#" className="consultation-btn" onClick={closeMenu}>
+            <a href="#" className="consultation-btn" onClick={handleConsultationClick}>
               Book Free Consultation
             </a>
           </div>
         </nav>
 
         <div className="desktop-action-btn">
-          <a href="#" className="consultation-btn">
+          <a href="#" className="consultation-btn" onClick={handleConsultationClick}>
             Book Free Consultation
           </a>
         </div>
       </div>
+      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </header>
   );
 }

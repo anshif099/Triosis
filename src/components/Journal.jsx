@@ -3,6 +3,11 @@ import blogCover from '../assets/blog_cover.jpg';
 import './Journal.css';
 
 function Journal() {
+  const goToBlog = (e) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'blog' } }));
+  };
   return (
     <section className="journal-section">
       <div className="journal-container">
@@ -18,7 +23,7 @@ function Journal() {
               Explore practical articles on digital marketing, AI, branding, SEO, web development, and business growth.
             </p>
           </div>
-          <a href="#explore" className="explore-posts-btn">
+          <a href="#" className="explore-posts-btn" onClick={goToBlog}>
             Explore all posts <span className="arrow">→</span>
           </a>
         </div>

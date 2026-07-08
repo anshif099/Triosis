@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import headerLogo from '../assets/header.png';
 import './Header.css';
 
@@ -21,6 +21,19 @@ const WaveText = ({ text }) => {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsAtTop(false);
+      } else {
+        setIsAtTop(true);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleHomeClick = (e) => {
     e.preventDefault();
@@ -38,7 +51,7 @@ function Header() {
   };
 
   return (
-    <header className="header">
+    <header className={`header ${isAtTop ? 'at-top' : ''}`}>
       <div className="header-inner">
         <div className="logo-container">
           <a href="#" onClick={handleHomeClick}>

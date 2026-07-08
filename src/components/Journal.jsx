@@ -30,7 +30,7 @@ function Journal() {
 
         {/* Journal Cards List */}
         <div className="journal-list">
-          <div className="journal-card">
+          <div className="journal-card" onClick={goToBlog} style={{ cursor: 'pointer' }}>
             
             <div className="journal-image-container">
               <img 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Home from './pages/home.jsx';
 import AboutUs from './pages/AboutUs.jsx';
 import Career from './pages/Career.jsx';
+import OurTeamPage from './pages/OurTeamPage.jsx';
 import Cursor from './components/Cursor.jsx';
 import './App.css';
 
@@ -27,6 +28,7 @@ function App() {
       {currentPage === 'home' && <Home />}
       {currentPage === 'about' && <AboutUs />}
       {currentPage === 'career' && <Career />}
+      {currentPage === 'our-team' && <OurTeamPage />}
     </div>
   );
 }

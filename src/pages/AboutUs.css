@@ -123,6 +123,95 @@
   }
 }
 
+/* About Details Section */
+.about-details-section {
+  background-color: var(--section-bg);
+  padding: 160px 100px;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.about-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-details-left {
+  text-align: left;
+}
+
+.stat-number {
+  font-family: 'Poppins', sans-serif;
+  font-size: 130px;
+  font-weight: 700;
+  line-height: 0.9;
+  color: #ffffff;
+  margin: 0 0 30px 0;
+  letter-spacing: -4px;
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.stat-plus {
+  font-size: 55px;
+  color: var(--accent);
+  margin-left: 5px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.stat-description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #a8a8a8;
+  margin: 0;
+  max-width: 320px;
+}
+
+.about-details-right {
+  text-align: left;
+}
+
+.details-heading-large {
+  font-family: 'Poppins', sans-serif;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #ffffff;
+  margin: 0 0 50px 0;
+  letter-spacing: -1px;
+}
+
+.details-mission-block {
+  position: relative;
+  padding-left: 45px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.details-mission-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: #a8a8a8;
+  margin: 0 0 25px 0;
+}
+
+.details-accent-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border-radius: 50%;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .about-intro-section {
@@ -138,6 +227,22 @@
   }
   .ticker-text, .ticker-bullet {
     font-size: 38px;
+  }
+  .about-details-section {
+    padding: 120px 40px;
+  }
+  .about-details-container {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  .stat-number {
+    font-size: 110px;
+  }
+  .details-heading-large {
+    font-size: 32px;
+  }
+  .details-mission-block {
+    padding-left: 30px;
   }
 }
 
@@ -157,5 +262,21 @@
   }
   .about-ticker-track, .ticker-element {
     gap: 30px;
+  }
+  .about-details-section {
+    padding: 90px 20px;
+  }
+  .stat-number {
+    font-size: 90px;
+  }
+  .stat-plus {
+    font-size: 40px;
+  }
+  .details-heading-large {
+    font-size: 24px;
+    line-height: 1.4;
+  }
+  .details-mission-text {
+    font-size: 14.5px;
   }
 }

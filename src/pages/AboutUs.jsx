@@ -52,6 +52,37 @@ function AboutUs() {
         </div>
       </section>
 
+      {/* About Details Section */}
+      <section className="about-details-section">
+        <div className="about-details-container">
+          {/* Left Column: Stat */}
+          <div className="about-details-left">
+            <div className="details-stat-box">
+              <div className="stat-number">
+                3<span className="stat-plus">+</span>
+              </div>
+              <p className="stat-description">
+                Years of transforming brands through bold ideas, innovative design, and full-spectrum marketing solutions that build visibility, trust, and measurable growth.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Mission and Agency Description */}
+          <div className="about-details-right">
+            <h2 className="details-heading-large">
+              Triosis is a next-gen advertising agency built for brands that want to lead, not follow. We merge smart strategy, striking visuals, and high-performance marketing to help businesses scale in the digital world.
+            </h2>
+            
+            <div className="details-mission-block">
+              <p className="details-mission-text">
+                From social media and design to branding, SEO, and paid advertising, we deliver integrated marketing solutions that amplify your presence across every platform. Our mission is simple—turn your vision into real-world results through creativity, precision, and seamless execution.
+              </p>
+              <div className="details-accent-dot"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

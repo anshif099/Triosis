@@ -49,15 +49,10 @@ function ContactPage() {
         maxZoom: 20
       }).addTo(mapInstance);
 
-      const customIcon = window.L.divIcon({
-        className: 'leaflet-custom-marker-wrapper',
-        html: `
-          <div class="leaflet-custom-marker">
-            <img src="/logo.png" alt="Logo" class="leaflet-marker-logo" />
-          </div>
-        `,
-        iconSize: [44, 44],
-        iconAnchor: [22, 44]
+      const customIcon = window.L.icon({
+        iconUrl: '/logo.png',
+        iconSize: [48, 48],
+        iconAnchor: [24, 48]
       });
 
       window.L.marker([11.254632, 75.824642], { icon: customIcon }).addTo(mapInstance);

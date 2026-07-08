@@ -439,10 +439,10 @@
   color: rgba(255,255,255,0.6);
 }
 
-.map-pin-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--accent);
+.contact-map-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 

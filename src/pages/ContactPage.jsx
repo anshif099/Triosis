@@ -78,9 +78,11 @@ function ContactPage() {
             <div className="contact-info-block">
               <h4 className="contact-info-label">ADDRESS</h4>
               <p className="contact-info-text">
-                Adsdot Advertising Agency Office,<br />
-                Saudi Complex, Kizhisseri, Kerala<br />
-                673641
+                Triosis Digital<br />
+                Tower 2, HiLITE Business Park,<br />
+                Door no : 2211, Second Floor,<br />
+                Poovangal, Pantheeramkavu,<br />
+                Kozhikode, Kerala 673014
               </p>
             </div>
 
@@ -162,18 +164,18 @@ function ContactPage() {
       <section className="contact-map-section">
         <div className="contact-map-wrapper">
           <div className="contact-map-label">
-            <svg className="map-pin-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            <span>Saudi Complex, Kizhisseri, Kerala 673641</span>
+            <img src="/logo.png" alt="Location Icon" className="contact-map-icon" />
+            <span>
+              Triosis Digital, Tower 2, HiLITE Business Park, Door no : 2211, Second Floor, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014
+            </span>
           </div>
           <iframe
             className="contact-map-iframe"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3912.0!2d76.0853!3d11.2588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba6594e3082b3c7%3A0x1!2sSaudi+Complex%2C+Kizhisseri%2C+Kerala+673641!5e0!3m2!1sen!2sin!4v1720415000000"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3912.898863659223!2d75.82361627405977!3d11.26782808891461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba65c1cc686c1d7%3A0x633512217c4587c6!2sHiLITE%20Business%20Park!5e0!3m2!1sen!2sin!4v1720437600000!5m2!1sen!2sin"
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Adsdot Location"
+            title="Triosis Digital Location"
           ></iframe>
         </div>
       </section>

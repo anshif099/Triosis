@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -25,6 +25,52 @@ function ContactPage() {
     setTimeout(() => setSubmitted(false), 4000);
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
+
+  useEffect(() => {
+    let mapInstance = null;
+
+    const initMap = () => {
+      if (!window.L) {
+        setTimeout(initMap, 100);
+        return;
+      }
+
+      // Check if element exists to avoid crashes
+      const mapEl = document.getElementById('contact-leaflet-map');
+      if (!mapEl) return;
+
+      mapInstance = window.L.map('contact-leaflet-map', {
+        scrollWheelZoom: false
+      }).setView([11.254632, 75.824642], 15);
+
+      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(mapInstance);
+
+      const customIcon = window.L.divIcon({
+        className: 'leaflet-custom-marker-wrapper',
+        html: `
+          <div class="leaflet-custom-marker">
+            <img src="/logo.png" alt="Logo" class="leaflet-marker-logo" />
+          </div>
+        `,
+        iconSize: [44, 44],
+        iconAnchor: [22, 44]
+      });
+
+      window.L.marker([11.254632, 75.824642], { icon: customIcon }).addTo(mapInstance);
+    };
+
+    initMap();
+
+    return () => {
+      if (mapInstance) {
+        mapInstance.remove();
+      }
+    };
+  }, []);
 
   return (
     <div className="contact-page-container">
@@ -169,14 +215,10 @@ function ContactPage() {
               Triosis Digital, Tower 2, HiLITE Business Park, Door no : 2211, Second Floor, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014
             </span>
           </div>
-          <iframe
+          <div
+            id="contact-leaflet-map"
             className="contact-map-iframe"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.1979401490214!2d75.82245317502447!3d11.25463205022872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba65d4b55555555%3A0x7b587a8f89552d3!2sHiLITE%20Business%20Park!5e0!3m2!1sen!2sin!4v1720437840000!5m2!1sen!2sin"
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Triosis Digital Location"
-          ></iframe>
+          ></div>
         </div>
       </section>
 

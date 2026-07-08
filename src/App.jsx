@@ -7,6 +7,7 @@ import FaqsPage from './pages/FaqsPage.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
 import PortfolioPage from './pages/PortfolioPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
 import Cursor from './components/Cursor.jsx';
 import './App.css';
 
@@ -37,6 +38,7 @@ function App() {
       {currentPage === 'services' && <ServicesPage />}
       {currentPage === 'portfolio' && <PortfolioPage />}
       {currentPage === 'blog' && <BlogPage />}
+      {currentPage === 'contact' && <ContactPage />}
     </div>
   );
 }

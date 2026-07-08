@@ -171,7 +171,7 @@ function ContactPage() {
           </div>
           <iframe
             className="contact-map-iframe"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3912.898863659223!2d75.82361627405977!3d11.26782808891461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba65c1cc686c1d7%3A0x633512217c4587c6!2sHiLITE%20Business%20Park!5e0!3m2!1sen!2sin!4v1720437600000!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.1979401490214!2d75.82245317502447!3d11.25463205022872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba65d4b55555555%3A0x7b587a8f89552d3!2sHiLITE%20Business%20Park!5e0!3m2!1sen!2sin!4v1720437840000!5m2!1sen!2sin"
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

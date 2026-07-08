@@ -38,7 +38,7 @@ function Header() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
-    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container') && !document.querySelector('.apply-job-page-container');
+    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container');
     if (onHome) {
       window.dispatchEvent(new Event('trigger-preloader'));
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly

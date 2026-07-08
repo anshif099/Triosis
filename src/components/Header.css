@@ -35,13 +35,20 @@
 .logo-container {
   display: flex;
   align-items: center;
+  width: 130px;
+  height: 100px;
+  position: relative;
 }
 
 .logo-container img {
-  width: 100px; /* Logo size set back to 100x100 */
-  height: 100px;
+  width: 130px;
+  height: 130px;
   object-fit: contain;
   display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 .nav-links {

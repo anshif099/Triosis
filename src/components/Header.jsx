@@ -38,7 +38,7 @@ function Header() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
-    const onHome = !document.querySelector('.about-page-container');
+    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container');
     if (onHome) {
       window.dispatchEvent(new Event('trigger-preloader'));
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
@@ -53,6 +53,13 @@ function Header() {
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
     window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'about' } }));
+  };
+
+  const handleCareerClick = (e) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'career' } }));
   };
 
   const toggleMenu = () => {
@@ -98,7 +105,7 @@ function Header() {
                   <a href="#" onClick={handleAboutClick}>About Us</a>
                 </li>
                 <li className="dropdown-item">
-                  <a href="#" onClick={closeMenu}>Career</a>
+                  <a href="#" onClick={handleCareerClick}>Career</a>
                 </li>
                 <li className="dropdown-item">
                   <a href="#" onClick={closeMenu}>Our Team</a>

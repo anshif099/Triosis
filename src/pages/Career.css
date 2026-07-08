@@ -1,0 +1,15 @@
+.career-page-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.career-content-placeholder {
+  min-height: calc(100vh - 100px - 380px); /* Adjusts height to push footer to bottom */
+  background-color: var(--section-bg);
+}
+
+@media (max-width: 768px) {
+  .career-content-placeholder {
+    min-height: calc(100vh - 100px - 450px);
+  }
+}

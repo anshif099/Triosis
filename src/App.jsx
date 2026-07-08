@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Home from './pages/home.jsx';
 import AboutUs from './pages/AboutUs.jsx';
+import Career from './pages/Career.jsx';
 import Cursor from './components/Cursor.jsx';
 import './App.css';
 
@@ -25,6 +26,7 @@ function App() {
       <Cursor />
       {currentPage === 'home' && <Home />}
       {currentPage === 'about' && <AboutUs />}
+      {currentPage === 'career' && <Career />}
     </div>
   );
 }

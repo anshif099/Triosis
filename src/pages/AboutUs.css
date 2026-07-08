@@ -1,0 +1,297 @@
+.about-page-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* About Hero Section */
+.about-hero {
+  background-color: var(--section-bg);
+  padding: 180px 100px 140px 100px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.about-hero-glow {
+  position: absolute;
+  top: -10%;
+  left: 25%;
+  width: 50%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(37, 99, 235, 0.05) 50%, rgba(15, 23, 42, 0) 70%);
+  filter: blur(80px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.about-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 24px;
+}
+
+.about-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 72px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #ffffff;
+  margin: 0 0 32px 0;
+  letter-spacing: -2px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #a8a8a8;
+  margin: 0;
+}
+
+/* Our Journey Section */
+.about-journey {
+  background-color: var(--section-bg);
+  padding: 100px 100px;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.about-journey-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 80px;
+}
+
+.journey-left {
+  flex: 1.2;
+  text-align: left;
+}
+
+.journey-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.journey-separator {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 2px;
+  margin-top: 30px;
+}
+
+.journey-right {
+  flex: 1.5;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.journey-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #a8a8a8;
+  margin: 0;
+}
+
+/* Core Values Section */
+.about-values {
+  background-color: var(--section-bg);
+  padding: 120px 100px 160px 100px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.values-header {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.values-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 54px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.values-separator {
+  background-color: rgba(255, 255, 255, 0.25);
+  width: 1px;
+  height: 50px;
+  margin: 35px auto 0 auto;
+}
+
+.values-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.value-card {
+  background-color: #121212;
+  border-radius: 28px;
+  padding: 35px;
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+  transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+.value-card:hover {
+  background-color: var(--secondary);
+  transform: translateY(-4px);
+}
+
+.value-card .icon-container {
+  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+}
+
+.value-card:hover .icon-container {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08) rotate(5deg);
+}
+
+.value-svg {
+  width: 32px;
+  height: 32px;
+}
+
+.value-card-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.value-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.value-card-desc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #a8a8a8;
+  margin: 0;
+  transition: color 0.4s ease;
+}
+
+.value-card:hover .value-card-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .about-hero {
+    padding: 140px 40px 100px 40px;
+  }
+  .about-title {
+    font-size: 52px;
+  }
+  .about-journey {
+    padding: 80px 40px;
+  }
+  .about-journey-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .about-values {
+    padding: 80px 40px 100px 40px;
+  }
+  .values-title {
+    font-size: 42px;
+  }
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-hero {
+    padding: 120px 20px 80px 20px;
+  }
+  .about-title {
+    font-size: 38px;
+    letter-spacing: -1px;
+  }
+  .about-description {
+    font-size: 16px;
+  }
+  .about-journey {
+    padding: 60px 20px;
+  }
+  .journey-title {
+    font-size: 32px;
+  }
+  .about-values {
+    padding: 60px 20px 80px 20px;
+  }
+  .values-title {
+    font-size: 32px;
+  }
+  .value-card {
+    padding: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .value-card-title {
+    font-size: 20px;
+  }
+}

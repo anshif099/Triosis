@@ -9,7 +9,7 @@ function Preloader() {
     let loadTimer;
     let removeTimer;
 
-    const startPreloader = () => {
+    const startPreloader = (isFast = false) => {
       setIsLoaded(false);
       setShouldRender(true);
       document.body.style.overflow = 'hidden';
@@ -18,22 +18,26 @@ function Preloader() {
       clearTimeout(loadTimer);
       clearTimeout(removeTimer);
 
+      const loadDuration = isFast ? 1100 : 2200;
+      const removeDuration = isFast ? 1600 : 3000;
+
       loadTimer = setTimeout(() => {
         setIsLoaded(true);
         document.body.style.overflow = 'auto'; // Re-enable scrolling
-      }, 2200);
+      }, loadDuration);
 
       removeTimer = setTimeout(() => {
         setShouldRender(false);
-      }, 3000);
+      }, removeDuration);
     };
 
     // Run on initial mount
     startPreloader();
 
     // Listen for custom trigger event
-    const handleTrigger = () => {
-      startPreloader();
+    const handleTrigger = (e) => {
+      const isFast = e.detail && e.detail.fast;
+      startPreloader(isFast);
     };
     window.addEventListener('trigger-preloader', handleTrigger);
 

@@ -38,8 +38,21 @@ function Header() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
-    window.dispatchEvent(new Event('trigger-preloader'));
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
+    const onHome = !document.querySelector('.about-page-container');
+    if (onHome) {
+      window.dispatchEvent(new Event('trigger-preloader'));
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
+    } else {
+      window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+      window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'home' } }));
+    }
+  };
+
+  const handleAboutClick = (e) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'about' } }));
   };
 
   const toggleMenu = () => {
@@ -82,7 +95,7 @@ function Header() {
               </a>
               <ul className="dropdown-menu">
                 <li className="dropdown-item">
-                  <a href="#" onClick={closeMenu}>About Us</a>
+                  <a href="#" onClick={handleAboutClick}>About Us</a>
                 </li>
                 <li className="dropdown-item">
                   <a href="#" onClick={closeMenu}>Career</a>

@@ -14,10 +14,10 @@
 }
 
 .header.at-top {
-  background-color: rgba(15, 23, 42, 0.4); /* Lighter Glass Translucent Navy at top */
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #0F172A; /* Solid Deep Navy at top */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-inner {

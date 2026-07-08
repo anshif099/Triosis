@@ -147,23 +147,9 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link">
-                <WaveText text="Company" /> <span className="caret-icon"></span>
+              <a href="#" className="nav-link" onClick={handleAboutClick}>
+                <WaveText text="About Us" />
               </a>
-              <ul className="dropdown-menu">
-                <li className="dropdown-item">
-                  <a href="#" onClick={handleAboutClick}>About Us</a>
-                </li>
-                <li className="dropdown-item">
-                  <a href="#" onClick={handleCareerClick}>Career</a>
-                </li>
-                <li className="dropdown-item">
-                  <a href="#" onClick={handleOurTeamClick}>Our Team</a>
-                </li>
-                <li className="dropdown-item">
-                  <a href="#" onClick={handleFaqsClick}>FAQs</a>
-                </li>
-              </ul>
             </li>
             <li className="nav-item">
               <a href="#" className="nav-link" onClick={handleServicesClick}>

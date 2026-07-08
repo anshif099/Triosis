@@ -67,14 +67,22 @@ function Footer() {
   };
 
   const socialsList = ['x', 'facebook', 'instagram', 'linkedin', 'youtube'];
+  const handleNavClick = (e, page) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page } }));
+  };
+
   const linksList = [
-    { name: 'Home', path: '#home' },
-    { name: 'About Us', path: '#about' },
-    { name: 'Services', path: '#services' },
-    { name: 'Works', path: '#works' },
-    { name: 'Career', path: '#career' },
-    { name: 'FAQ\'s', path: '#faqs' },
-    { name: 'Contact Us', path: '#contact' }
+    { name: 'Home', page: 'home' },
+    { name: 'About Us', page: 'about' },
+    { name: 'Career', page: 'career' },
+    { name: 'Our Team', page: 'our-team' },
+    { name: 'FAQs', page: 'faqs' },
+    { name: 'Services', page: 'services' },
+    { name: 'Portfolio', page: 'portfolio' },
+    { name: 'Blog', page: 'blog' },
+    { name: 'Contact Us', page: 'contact' }
   ];
 
   return (
@@ -118,7 +126,7 @@ function Footer() {
           <ul className="footer-links-list">
             {linksList.map((link) => (
               <li key={link.name}>
-                <a href={link.path} className="footer-link">
+                <a href="#" className="footer-link" onClick={(e) => handleNavClick(e, link.page)}>
                   {link.name}
                 </a>
               </li>

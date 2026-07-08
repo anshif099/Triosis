@@ -1,7 +1,7 @@
 import React from 'react';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
-import Testimonials from '../components/Testimonials.jsx';
+import StackedTestimonials from '../components/StackedTestimonials.jsx';
 import BrandLogos from '../components/BrandLogos.jsx';
 import Footer from '../components/Footer.jsx';
 import img5 from '../assets/img5.jpg';
@@ -145,7 +145,7 @@ function ServicesPage() {
       </section>
 
       {/* Testimonials - same as About Us */}
-      <Testimonials />
+      <StackedTestimonials />
 
       {/* Brand Logos */}
       <BrandLogos />

@@ -1,6 +1,7 @@
 import React from 'react';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
+import Team from '../components/Team.jsx';
 import Footer from '../components/Footer.jsx';
 import './AboutUs.css';
 
@@ -179,6 +180,9 @@ function AboutUs() {
           ))}
         </div>
       </section>
+
+      {/* Digital Experts Team Section */}
+      <Team />
 
       <Footer />
     </div>

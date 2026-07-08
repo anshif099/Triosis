@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import img9 from '../assets/img9.jpg';
+import digitalSuccessImg from '../assets/digital_success.png';
 import './RecentProjects.css';
 
 function RecentProjects() {
@@ -47,16 +47,19 @@ function RecentProjects() {
       <div className="projects-sticky">
         <div className="projects-layout">
           {/* Centered Heading that disappears on scroll */}
-          <h2 
-            className="projects-title"
+          <div 
+            className="projects-title-container"
             style={{
               opacity: titleOpacity,
               transform: `scale(${titleScale})`,
-              display: titleOpacity === 0 ? 'none' : 'block'
+              display: titleOpacity === 0 ? 'none' : 'flex'
             }}
           >
-            Our Recent<br />Projects
-          </h2>
+            <span className="projects-subtitle">Our Recent Projects</span>
+            <h2 className="projects-title">
+              Building Digital Success<br />Across Industries
+            </h2>
+          </div>
 
           {/* Project Card that slides in from bottom-left */}
           <div 
@@ -68,11 +71,11 @@ function RecentProjects() {
             }}
           >
             <div className="project-image-wrapper">
-              <img src={img9} alt="Falspace Event Design" />
+              <img src={digitalSuccessImg} alt="Digital Success Platform" />
             </div>
             <div className="project-info">
-              <h4>Falspace</h4>
-              <p>Event Design</p>
+              <h4>Digital Success Platform</h4>
+              <p>Growth & Analytics</p>
             </div>
           </div>
         </div>

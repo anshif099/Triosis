@@ -5,6 +5,11 @@ import Footer from '../components/Footer.jsx';
 import './Career.css';
 
 function Career() {
+  const handleApplyClick = (jobTitle) => {
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'apply-job', position: jobTitle } }));
+  };
+
   return (
     <div className="career-page-container">
       <Preloader />
@@ -43,7 +48,12 @@ function Career() {
                 - Content planning & posting - Trend awareness - Good communication & engagement skills
               </p>
 
-              <button className="job-apply-btn">Apply Now</button>
+              <button 
+                className="job-apply-btn"
+                onClick={() => handleApplyClick('Social Media Manager (Female Preferred)')}
+              >
+                Apply Now
+              </button>
             </div>
 
             {/* Card 2 */}
@@ -63,7 +73,12 @@ function Career() {
                 - Strong design sense - Proficient in Adobe tools / Canva - Creative, fast, and deadline-oriented
               </p>
 
-              <button className="job-apply-btn">Apply Now</button>
+              <button 
+                className="job-apply-btn"
+                onClick={() => handleApplyClick('Creative Designer')}
+              >
+                Apply Now
+              </button>
             </div>
           </div>
         </div>

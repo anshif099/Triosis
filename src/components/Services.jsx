@@ -9,57 +9,57 @@ const servicesData = [
   {
     num: '01',
     title: 'Digital Marketing',
-    desc: 'Data-driven online marketing strategies designed to boost visibility, generate leads, and grow your business across all digital platforms.',
+    desc: 'Performance-driven digital marketing strategies that increase visibility, generate qualified leads, and maximize your return on investment across every online channel.',
     image: img5,
     list: [
-      'Targeted ads (Meta, Google, YouTube)',
-      'Lead generation campaigns',
-      'SEO & keyword optimization',
-      'Performance tracking & analytics',
-      'Campaign strategy & planning',
-      'Retargeting & funnel optimization'
+      'Meta & Google Ads',
+      'Lead Generation Campaigns',
+      'SEO & Local SEO',
+      'Google Business Optimization',
+      'Marketing Automation',
+      'Analytics & Reporting'
     ]
   },
   {
     num: '02',
-    title: 'Social Media Management & Content Creation',
-    desc: 'Creative, consistent, and goal-focused content with full social media handling to build engagement, trust, and a strong brand presence.',
+    title: 'Social Media Management & Creative Content',
+    desc: 'Creative storytelling and consistent brand communication designed to increase engagement, strengthen credibility, and accelerate business growth.',
     image: img6,
     list: [
-      'Monthly content planning',
-      'Creative posters, reels & motion graphics',
-      'Social media page management',
-      'Audience engagement & community handling',
-      'Brand tone & visual consistency',
-      'Monthly performance reports'
+      'Monthly Content Calendar',
+      'Reels & Short Videos',
+      'Graphic Design',
+      'Social Media Management',
+      'Community Engagement',
+      'Monthly Reports'
     ]
   },
   {
     num: '03',
-    title: 'Web Design & Development',
-    desc: 'Modern, responsive, and high-performing websites built to convert visitors into customers and elevate your online experience.',
+    title: 'Website Design & Development',
+    desc: 'Fast, secure, responsive websites engineered to convert visitors into customers while delivering exceptional user experiences.',
     image: img7,
     list: [
-      'Modern, responsive website design',
-      'SEO-friendly development',
-      'UI/UX-focused layouts',
-      'Fast-loading performance',
-      'E-commerce & landing page setup',
-      'Website maintenance & updates'
+      'Responsive Website Design',
+      'WordPress Development',
+      'E-commerce Solutions',
+      'UI/UX Design',
+      'Landing Pages',
+      'Website Maintenance'
     ]
   },
   {
     num: '04',
-    title: 'Branding & Visual Identity',
-    desc: "Professional brand identity development including logos, color palettes, and guidelines that communicate your brand's personality and story.",
+    title: 'Branding & Creative Design',
+    desc: 'Complete branding solutions that create memorable identities and help businesses stand apart in competitive markets.',
     image: img8,
     list: [
-      'Logo design (multiple concepts)',
-      'Brand color palette & typography',
-      'Complete brand guideline',
-      'Packaging & marketing collateral',
-      'Brand strategy & positioning',
-      'Consistent visual identity system'
+      'Logo Design',
+      'Brand Identity',
+      'Brand Guidelines',
+      'Packaging Design',
+      'Corporate Branding',
+      'Marketing Collaterals'
     ]
   }
 ];

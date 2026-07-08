@@ -64,6 +64,65 @@
   margin: 0 6px;
 }
 
+/* Fast Moving Ticker Carousel */
+.about-ticker-section {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+  padding: 40px 0;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-ticker-wrapper {
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.about-ticker-track {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  width: max-content;
+  animation: scroll-fast-marquee 12s linear infinite;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.ticker-element {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  flex-shrink: 0;
+}
+
+.ticker-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 54px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.ticker-bullet {
+  font-family: 'Poppins', sans-serif;
+  font-size: 54px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+}
+
+@keyframes scroll-fast-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-33.33333%, 0, 0);
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .about-intro-section {
@@ -77,6 +136,9 @@
     font-size: 42px;
     letter-spacing: -1px;
   }
+  .ticker-text, .ticker-bullet {
+    font-size: 38px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -86,5 +148,14 @@
   .about-intro-heading {
     font-size: 32px;
     line-height: 1.35;
+  }
+  .about-ticker-section {
+    padding: 24px 0;
+  }
+  .ticker-text, .ticker-bullet {
+    font-size: 28px;
+  }
+  .about-ticker-track, .ticker-element {
+    gap: 30px;
   }
 }

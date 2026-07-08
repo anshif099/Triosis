@@ -4,6 +4,17 @@ import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import './AboutUs.css';
 
+const tickerItems = [
+  'INNOVATION',
+  'PERFORMANCE',
+  'STRATEGY',
+  'CREATIVITY',
+  'GROWTH',
+  'TECHNOLOGY',
+  'EXCELLENCE',
+  'LEADERSHIP'
+];
+
 function AboutUs() {
   return (
     <div className="about-page-container">
@@ -23,6 +34,20 @@ function AboutUs() {
             <h1 className="about-intro-heading">
               Crafting<span className="cyan-dot">.</span>smart concepts and turning them into conversion-driven marketing that elevates your brand.
             </h1>
+          </div>
+        </div>
+      </section>
+
+      {/* Fast Moving Ticker Carousel */}
+      <section className="about-ticker-section">
+        <div className="about-ticker-wrapper">
+          <div className="about-ticker-track">
+            {[...tickerItems, ...tickerItems, ...tickerItems].map((item, index) => (
+              <span className="ticker-element" key={index}>
+                <span className="ticker-text">{item}</span>
+                <span className="ticker-bullet">·</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>

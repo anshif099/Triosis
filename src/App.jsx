@@ -4,6 +4,7 @@ import AboutUs from './pages/AboutUs.jsx';
 import Career from './pages/Career.jsx';
 import OurTeamPage from './pages/OurTeamPage.jsx';
 import FaqsPage from './pages/FaqsPage.jsx';
+import ServicesPage from './pages/ServicesPage.jsx';
 import Cursor from './components/Cursor.jsx';
 import './App.css';
 
@@ -31,6 +32,7 @@ function App() {
       {currentPage === 'career' && <Career />}
       {currentPage === 'our-team' && <OurTeamPage />}
       {currentPage === 'faqs' && <FaqsPage />}
+      {currentPage === 'services' && <ServicesPage />}
     </div>
   );
 }

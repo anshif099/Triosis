@@ -38,7 +38,7 @@ function Header() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
-    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container') && !document.querySelector('.our-team-page-container') && !document.querySelector('.faqs-page-container');
+    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container') && !document.querySelector('.our-team-page-container') && !document.querySelector('.faqs-page-container') && !document.querySelector('.services-page-container');
     if (onHome) {
       window.dispatchEvent(new Event('trigger-preloader'));
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
@@ -74,6 +74,13 @@ function Header() {
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
     window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'faqs' } }));
+  };
+
+  const handleServicesClick = (e) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'services' } }));
   };
 
   const toggleMenu = () => {
@@ -130,7 +137,7 @@ function Header() {
               </ul>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link" onClick={closeMenu}>
+              <a href="#" className="nav-link" onClick={handleServicesClick}>
                 <WaveText text="Services" />
               </a>
             </li>

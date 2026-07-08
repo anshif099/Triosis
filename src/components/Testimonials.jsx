@@ -4,44 +4,23 @@ import './Testimonials.css';
 const testimonialsData = [
   {
     id: 1,
-    quote: "Triosis transformed our business identity with their exceptional branding solutions. Their creativity and attention to detail gave us a logo and brand style that truly reflects our values. We've received countless compliments from our customers!",
-    author: "Emily Watson",
-    role: "Co-Founder, GreenLife",
+    quote: "Triosis Digital completely transformed our online presence. Their strategy, creativity, and execution delivered measurable growth beyond our expectations.",
+    author: "Business Owner",
+    role: "Verified Client",
     isDark: true
   },
   {
     id: 2,
-    quote: "Triosis has been an invaluable creative partner for us. Their exceptional designs, from our college football team jersey to engaging digital content, have greatly enhanced our presence. Their dedication and creativity make them a trusted partner in our digital journey.",
-    author: "Dr. Suhail P",
-    role: "Founder, Zodiac Research",
-    isDark: true
-  },
-  {
-    id: 3,
-    quote: "Exceptional creativity and strategic execution—TRIOSIS has elevated our brand with outstanding results. Highly recommended!",
-    author: "Dr. Suhail P",
-    role: "Founder, Zodiac Research",
-    isDark: false
-  },
-  {
-    id: 4,
-    quote: "Working with Triosis has been a game-changer for our brand. Their creative posters for our product launches were captivating and drew in our target audience perfectly. Their team is highly talented and easy to work with!",
-    author: "Sarah Jenkins",
-    role: "Marketing Director, Bloom Co.",
-    isDark: true
-  },
-  {
-    id: 5,
-    quote: "Their team was extremely professional and delivered outstanding brand strategy solutions. They took our complex vision and simplified it into a beautiful brand identity system.",
-    author: "David Miller",
-    role: "Product Manager, TechFlow",
+    quote: "Their team understands branding, websites, and digital marketing exceptionally well. Every project was delivered on time with outstanding quality.",
+    author: "Managing Director",
+    role: "Verified Client",
     isDark: false
   }
 ];
 
 function Testimonials() {
-  // Duplicate array for seamless infinite looping scroll
-  const doubleData = [...testimonialsData, ...testimonialsData];
+  // Triple the data array for seamless infinite looping scroll (since 2 items is too small for a marquee)
+  const doubleData = [...testimonialsData, ...testimonialsData, ...testimonialsData];
 
   return (
     <section className="testimonials-section">

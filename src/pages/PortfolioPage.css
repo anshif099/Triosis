@@ -5,7 +5,7 @@
 
 /* ─── HERO ─────────────────────────────────────────── */
 .portfolio-hero {
-  background-color: #B91C1C; /* Deep crimson red */
+  background-color: var(--section-bg);
   padding: 180px 100px 80px 100px;
   width: 100%;
   box-sizing: border-box;
@@ -94,7 +94,7 @@
 
 /* ─── GRID SECTION ──────────────────────────────────── */
 .portfolio-grid-section {
-  background-color: #B91C1C;
+  background-color: var(--section-bg);
   padding: 0 100px 120px 100px;
   width: 100%;
   box-sizing: border-box;

@@ -212,6 +212,110 @@
   border-radius: 50%;
 }
 
+/* Hover Accordion Columns Section */
+.about-hover-services-section {
+  background-color: var(--section-bg);
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hover-services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+}
+
+.hover-service-card {
+  height: 520px;
+  padding: 80px 45px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  transition: background-color 0.4s ease;
+  position: relative;
+}
+
+.hover-service-card:last-child {
+  border-right: none;
+}
+
+.hover-card-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hover-card-icon-box {
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 40px;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+.service-hover-svg {
+  width: 38px;
+  height: 38px;
+}
+
+.hover-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  text-align: left;
+  letter-spacing: -0.5px;
+}
+
+.hover-card-description-box {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              margin-top 0.4s ease;
+  pointer-events: none;
+}
+
+.hover-service-card:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.hover-service-card:hover .hover-card-description-box {
+  max-height: 250px;
+  opacity: 1;
+  margin-top: 10px;
+  pointer-events: auto;
+}
+
+.hover-service-card:hover .hover-card-icon-box {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.hover-card-desc-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #a8a8a8;
+  margin: 0;
+  text-align: left;
+}
+
+.desc-bullet-dot {
+  color: var(--accent);
+  font-weight: 700;
+  margin-left: 6px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .about-intro-section {
@@ -243,6 +347,19 @@
   }
   .details-mission-block {
     padding-left: 30px;
+  }
+  .hover-services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hover-service-card {
+    height: 480px;
+    padding: 60px 30px;
+  }
+  .hover-service-card:nth-child(2) {
+    border-right: none;
+  }
+  .hover-service-card:nth-child(3), .hover-service-card:nth-child(4) {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -278,5 +395,28 @@
   }
   .details-mission-text {
     font-size: 14.5px;
+  }
+  .hover-services-grid {
+    grid-template-columns: 1fr;
+  }
+  .hover-service-card {
+    height: auto;
+    min-height: 250px;
+    padding: 40px 20px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .hover-service-card:last-child {
+    border-bottom: none;
+  }
+  .hover-service-card:hover .hover-card-description-box {
+    max-height: 350px;
+  }
+  .hover-card-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+  .hover-card-icon-box {
+    margin-bottom: 25px;
   }
 }

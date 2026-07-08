@@ -1,7 +1,7 @@
 .header {
-  background-color: rgba(18, 18, 18, 0.3); /* Glass translucent background */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(15, 23, 42, 0.7); /* Translucent Deep Navy */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -10,13 +10,13 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background-color 0.3s ease, border-bottom-color 0.3s ease, backdrop-filter 0.3s ease;
+  transition: background-color 0.3s ease, border-bottom-color 0.3s ease, -webkit-backdrop-filter 0.3s ease, backdrop-filter 0.3s ease;
 }
 
 .header.at-top {
-  background-color: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(12px);
+  background-color: rgba(15, 23, 42, 0.4); /* Lighter Glass Translucent Navy at top */
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 

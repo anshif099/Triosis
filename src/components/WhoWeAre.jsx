@@ -20,7 +20,7 @@ function WhoWeAre() {
           </div>
           <div className="whoweare-headline-block">
             <h2 className="whoweare-headline">
-              Your ideas deserve more than just great visuals they deserve creative performance.
+              Your business deserves more than beautiful designs—it deserves measurable digital growth.
             </h2>
             <a href="#" className="get-started-btn" onClick={handleGetStartedClick}>
               Get Started <span className="arrow">→</span>
@@ -32,17 +32,15 @@ function WhoWeAre() {
         <div className="whoweare-row-middle">
           <div className="whoweare-big-stat">
             <div className="stat-number-wrapper">
-              <span className="big-number">3</span>
-              <span className="unit">M</span>
+              <span className="big-number">18</span>
+              <span className="unit">Y</span>
             </div>
-            <p className="stat-label">3 Years of Delivering Results That Matter</p>
+            <p className="stat-label">18 Years of Delivering Digital Excellence</p>
           </div>
 
           <div className="whoweare-intro-logo">
             <p className="intro-text">
-              At Triosis, we blend strategy, design, and digital innovation to help businesses 
-              grow with confidence. Our team crafts powerful brand identities, compelling visuals, 
-              and high-performing marketing campaigns that connect with the right audience and create measurable impact.
+              At Triosis Digital, we combine strategy, creativity, technology, and marketing expertise to help businesses scale with confidence. From branding and websites to AI-powered marketing solutions, we build digital experiences that generate measurable business results.
             </p>
             <div className="tilted-logo-wrapper">
               <img src={heroLogo} alt="Triosis Symbol Logo" className="tilted-logo" />
@@ -54,16 +52,16 @@ function WhoWeAre() {
         <div className="whoweare-row-bottom">
           <div className="stats-grid">
             <div className="stat-item">
-              <span className="stat-count">100+</span>
-              <span className="stat-text">Projects Done</span>
+              <span className="stat-count">1500+</span>
+              <span className="stat-text">Projects Delivered</span>
             </div>
             <div className="stat-item">
-              <span className="stat-count">100%</span>
-              <span className="stat-text">Successful Rating</span>
+              <span className="stat-count">1000+</span>
+              <span className="stat-text">Happy Clients</span>
             </div>
             <div className="stat-item">
-              <span className="stat-count">100%</span>
-              <span className="stat-text">Growth Net Worth</span>
+              <span className="stat-count">25+</span>
+              <span className="stat-text">Countries Served</span>
             </div>
           </div>
         </div>

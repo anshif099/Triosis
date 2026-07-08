@@ -10,8 +10,22 @@ function AboutUs() {
       <Preloader />
       <Header />
 
-      {/* Empty page spacer - content will be provided later */}
-      <div className="about-content-placeholder"></div>
+      {/* About Intro Section */}
+      <section className="about-intro-section">
+        <div className="about-intro-container">
+          <div className="about-intro-left">
+            <span className="about-tag">
+              <span className="tag-dot"></span>
+              ABOUT US
+            </span>
+          </div>
+          <div className="about-intro-right">
+            <h1 className="about-intro-heading">
+              Crafting<span className="cyan-dot">.</span>smart concepts and turning them into conversion-driven marketing that elevates your brand.
+            </h1>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

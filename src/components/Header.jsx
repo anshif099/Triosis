@@ -51,7 +51,7 @@ function Header() {
   };
 
   return (
-    <header className={`header ${isAtTop ? 'at-top' : ''}`}>
+    <header className={`header ${isAtTop || menuOpen ? 'at-top' : ''}`}>
       <div className="header-inner">
         <div className="logo-container">
           <a href="#" onClick={handleHomeClick}>

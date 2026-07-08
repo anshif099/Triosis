@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Team from '../components/Team.jsx';
+import BrandLogos from '../components/BrandLogos.jsx';
 import Footer from '../components/Footer.jsx';
 import './AboutUs.css';
 
@@ -182,7 +183,7 @@ function AboutUs() {
             <h2 className="details-heading-large">
               Triosis is a next-gen advertising agency built for brands that want to lead, not follow. We merge smart strategy, striking visuals, and high-performance marketing to help businesses scale in the digital world.
             </h2>
-            
+
             <div className="details-mission-block">
               <p className="details-mission-text">
                 From social media and design to branding, SEO, and paid advertising, we deliver integrated marketing solutions that amplify your presence across every platform. Our mission is simple—turn your vision into real-world results through creativity, precision, and seamless execution.
@@ -251,10 +252,10 @@ function AboutUs() {
               {testimonials.map((test, index) => {
                 // Calculate position relative to active index
                 const relativePos = (index - activeIdx + testimonials.length) % testimonials.length;
-                
+
                 // Only show top 3 cards in the visual stack
                 const isVisible = relativePos < 3;
-                
+
                 return (
                   <div
                     className={`stacked-testimonial-card ${test.colorType} ${isVisible ? 'visible' : 'hidden'}`}
@@ -270,7 +271,7 @@ function AboutUs() {
                   >
                     <div className="quote-mark">“</div>
                     <p className="testimonial-quote-text">{test.quote}</p>
-                    
+
                     <div className="testimonial-author-box">
                       <div className="author-avatar-placeholder">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -297,6 +298,7 @@ function AboutUs() {
           </div>
         </div>
       </section>
+      <BrandLogos />
 
       <Footer />
     </div>

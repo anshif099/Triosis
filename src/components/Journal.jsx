@@ -9,9 +9,15 @@ function Journal() {
         
         {/* Header with left-aligned title & capsule button */}
         <div className="journal-header">
-          <h2 className="journal-title">
-            Learn our recent<br />journal
-          </h2>
+          <div className="journal-header-left">
+            <span className="journal-subtitle">Blog</span>
+            <h2 className="journal-title">
+              Learn From Our<br />Latest Insights
+            </h2>
+            <p className="journal-desc">
+              Explore practical articles on digital marketing, AI, branding, SEO, web development, and business growth.
+            </p>
+          </div>
           <a href="#explore" className="explore-posts-btn">
             Explore all posts <span className="arrow">→</span>
           </a>

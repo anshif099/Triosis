@@ -1,64 +1,100 @@
 import React from 'react';
-import bajeelImg from '../assets/bajeel.png';
-import ansabImg from '../assets/ansab.jpg';
-import amalImg from '../assets/amal.jpg';
 import './Team.css';
 
-const teamMembers = [
+const expertDivisions = [
   {
-    name: 'BAJEEL P',
-    role: 'Founder & CEO',
-    image: bajeelImg,
-    socials: ['x', 'instagram', 'website', 'behance']
+    name: 'Strategy & Consulting',
+    role: 'Market research, business growth, and brand positioning strategy.',
+    icon: 'strategy'
   },
   {
-    name: 'Muhamed Ansab K',
-    role: 'Co-Founder & CCO',
-    image: ansabImg,
-    socials: ['instagram']
+    name: 'Creative Design',
+    role: 'Logo, branding assets, visual identity, UI/UX, and graphics.',
+    icon: 'design'
   },
   {
-    name: 'Amal Jiyad',
-    role: 'Co-Founder & CFO',
-    image: amalImg,
-    socials: ['instagram', 'behance']
+    name: 'Web Development',
+    role: 'Fast, secure, responsive, and performance-tuned websites.',
+    icon: 'development'
+  },
+  {
+    name: 'Digital Marketing',
+    role: 'Ad campaigns, lead generation, and social media marketing systems.',
+    icon: 'marketing'
+  },
+  {
+    name: 'SEO Specialists',
+    role: 'Search optimization, keyword ranking, and visibility growth.',
+    icon: 'seo'
+  },
+  {
+    name: 'AI Automation Experts',
+    role: 'Smart workflow automation, integrations, and intelligent setups.',
+    icon: 'ai'
   }
 ];
 
-const SocialIcon = ({ type }) => {
-  if (type === 'x') {
-    return (
-      <svg className="social-svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    );
+const ExpertIcon = ({ type }) => {
+  const svgProps = {
+    className: "expert-svg",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  };
+
+  switch (type) {
+    case 'strategy':
+      return (
+        <svg {...svgProps}>
+          <circle cx="12" cy="12" r="10" />
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+        </svg>
+      );
+    case 'design':
+      return (
+        <svg {...svgProps}>
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+      );
+    case 'development':
+      return (
+        <svg {...svgProps}>
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      );
+    case 'marketing':
+      return (
+        <svg {...svgProps}>
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="6" />
+          <circle cx="12" cy="12" r="2" />
+        </svg>
+      );
+    case 'seo':
+      return (
+        <svg {...svgProps}>
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          <line x1="11" y1="8" x2="11" y2="14" />
+          <line x1="8" y1="11" x2="14" y2="11" />
+        </svg>
+      );
+    case 'ai':
+      return (
+        <svg {...svgProps}>
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3" />
+        </svg>
+      );
+    default:
+      return null;
   }
-  if (type === 'instagram') {
-    return (
-      <svg className="social-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-      </svg>
-    );
-  }
-  if (type === 'website') {
-    return (
-      <svg className="social-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="2" y1="12" x2="22" y2="12"></line>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-      </svg>
-    );
-  }
-  if (type === 'behance') {
-    return (
-      <svg className="social-svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M8.228 15.011c.522 0 .979-.108 1.371-.324a2.2 2.2 0 0 0 .907-.905c.224-.4.336-.879.336-1.436 0-.582-.124-1.071-.373-1.468a2.12 2.12 0 0 0-.991-.871 4.542 4.542 0 0 0 1.258-1.282c.221-.362.332-.796.332-1.302 0-.528-.112-.993-.336-1.393a2.158 2.158 0 0 0-.923-.923c-.41-.225-.92-.338-1.529-.338H3v10.14h5.228zm-2.85-6.524h2.247c.361 0 .638.071.83.214s.288.358.288.647c0 .265-.091.472-.272.622s-.442.225-.783.225H5.378V8.487zm0 2.923h2.399c.381 0 .675.083.882.25s.31.411.31.734c0 .324-.105.578-.316.762s-.499.276-.865.276H5.378V11.41zm11.758 3.601c.712 0 1.309-.126 1.792-.377a3.483 3.483 0 0 0 1.253-1.066c.307-.46.46-1.002.46-1.626h-2.1c0 .4-.117.712-.351.938s-.545.338-.936.338c-.461 0-.824-.148-1.09-.444-.266-.296-.407-.723-.423-1.28h6.149c.01-.157.016-.312.016-.466 0-.749-.126-1.428-.377-2.039a3.792 3.792 0 0 0-1.127-1.503c-.499-.408-1.111-.612-1.835-.612a3.84 3.84 0 0 0-1.928.482 3.447 3.447 0 0 0-1.323 1.347c-.313.576-.469 1.265-.469 2.067 0 .809.158 1.501.474 2.077a3.52 3.52 0 0 0 1.344 1.347c.582.316 1.256.475 2.025.475zm-.058-5.321c.421 0 .753.132.996.397.243.265.374.629.394 1.09h-2.82c.026-.45.148-.807.368-1.072.22-.265.575-.397 1.062-.397zm-.478-4.225V4.254h3.6v1.212h-3.6z"/>
-      </svg>
-    );
-  }
-  return null;
 };
 
 function Team() {
@@ -66,37 +102,25 @@ function Team() {
     <section className="team-section">
       <div className="team-header">
         <h2 className="team-title">
-          Let's Make <span className="text-gray">Something</span><br />
-          <span className="text-gray">Extraordinary</span> Together
+          Meet Our <span className="text-gray">Digital Experts</span>
         </h2>
         <div className="team-separator"></div>
       </div>
 
       <div className="team-list">
-        {teamMembers.map((member) => (
-          <div className="team-card" key={member.name}>
-            <div className="team-card-left">
-              <img src={member.image} alt={member.name} className="team-card-image" />
+        {expertDivisions.map((division) => (
+          <div className="team-card" key={division.name}>
+            <div className="team-card-left icon-container">
+              <ExpertIcon type={division.icon} />
             </div>
             
             <div className="team-card-middle">
-              <h3 className="member-name">{member.name}</h3>
-              <p className="member-role">{member.role}</p>
+              <h3 className="member-name">{division.name}</h3>
+              <p className="member-role">{division.role}</p>
             </div>
 
             <div className="team-card-right">
-              <div className="member-socials">
-                {member.socials.map((social) => (
-                  <a 
-                    href={`#${social}`} 
-                    className="social-btn" 
-                    key={social}
-                    onClick={(e) => e.stopPropagation()} // Prevent card navigation trigger
-                  >
-                    <SocialIcon type={social} />
-                  </a>
-                ))}
-              </div>
+              <span className="arrow-btn">→</span>
             </div>
           </div>
         ))}

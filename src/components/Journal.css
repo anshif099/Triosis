@@ -1,5 +1,5 @@
 .journal-section {
-  background-color: rgb(169, 18, 18);
+  background-color: var(--section-bg);
   padding: 100px 100px 140px 100px;
   width: 100%;
   box-sizing: border-box;

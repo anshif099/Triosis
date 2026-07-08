@@ -1,7 +1,7 @@
 .scroll-gallery-section {
   position: relative;
   height: 220vh; /* Determines the scroll speed of the expansion transition */
-  background-color: rgb(169, 18, 18);
+  background-color: var(--section-bg);
   margin-top: -80px; /* Pulls container slightly up for overlay blending */
 }
 

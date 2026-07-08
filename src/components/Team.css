@@ -1,5 +1,5 @@
 .team-section {
-  background-color: rgb(169, 18, 18);
+  background-color: var(--section-bg);
   padding: 100px 100px 120px 100px;
   width: 100%;
   box-sizing: border-box;
@@ -57,7 +57,7 @@
 }
 
 .team-card:hover {
-  background-color: #1d4ed8; /* Vibrant electric blue on hover */
+  background-color: var(--secondary);
   transform: translateY(-4px);
 }
 

@@ -1,7 +1,7 @@
 .projects-section {
   position: relative;
   height: 200vh; /* Scroll length for the animation */
-  background-color: rgb(169, 18, 18);
+  background-color: var(--section-bg);
   width: 100%;
 }
 

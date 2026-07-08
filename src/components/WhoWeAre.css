@@ -1,5 +1,5 @@
 .whoweare-section {
-  background-color: rgb(169, 18, 18);
+  background-color: var(--section-bg);
   padding: 120px 100px 140px 100px;
   width: 100%;
   box-sizing: border-box;
@@ -70,7 +70,7 @@
 
 .get-started-btn:hover {
   background-color: #ffffff;
-  color: rgb(169, 18, 18);
+  color: var(--section-bg);
   border-color: #ffffff;
 }
 

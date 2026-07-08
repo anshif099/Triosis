@@ -36,12 +36,12 @@
 
 .logos-marquee-wrapper::before {
   left: 0;
-  background: linear-gradient(to right, var(--section-bg) 0%, rgba(15, 23, 42, 0) 100%);
+  background: linear-gradient(to right, var(--section-bg) 0%, rgba(255, 87, 87, 0) 100%);
 }
 
 .logos-marquee-wrapper::after {
   right: 0;
-  background: linear-gradient(to left, var(--section-bg) 0%, rgba(15, 23, 42, 0) 100%);
+  background: linear-gradient(to left, var(--section-bg) 0%, rgba(255, 87, 87, 0) 100%);
 }
 
 .logos-marquee {

@@ -38,7 +38,7 @@ function Header() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
-    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container') && !document.querySelector('.our-team-page-container');
+    const onHome = !document.querySelector('.about-page-container') && !document.querySelector('.career-page-container') && !document.querySelector('.our-team-page-container') && !document.querySelector('.faqs-page-container');
     if (onHome) {
       window.dispatchEvent(new Event('trigger-preloader'));
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
@@ -67,6 +67,13 @@ function Header() {
     setMenuOpen(false);
     window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
     window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'our-team' } }));
+  };
+
+  const handleFaqsClick = (e) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'faqs' } }));
   };
 
   const toggleMenu = () => {
@@ -118,7 +125,7 @@ function Header() {
                   <a href="#" onClick={handleOurTeamClick}>Our Team</a>
                 </li>
                 <li className="dropdown-item">
-                  <a href="#" onClick={closeMenu}>FAQs</a>
+                  <a href="#" onClick={handleFaqsClick}>FAQs</a>
                 </li>
               </ul>
             </li>

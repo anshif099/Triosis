@@ -3,6 +3,7 @@ import Home from './pages/home.jsx';
 import AboutUs from './pages/AboutUs.jsx';
 import Career from './pages/Career.jsx';
 import OurTeamPage from './pages/OurTeamPage.jsx';
+import FaqsPage from './pages/FaqsPage.jsx';
 import Cursor from './components/Cursor.jsx';
 import './App.css';
 
@@ -29,6 +30,7 @@ function App() {
       {currentPage === 'about' && <AboutUs />}
       {currentPage === 'career' && <Career />}
       {currentPage === 'our-team' && <OurTeamPage />}
+      {currentPage === 'faqs' && <FaqsPage />}
     </div>
   );
 }

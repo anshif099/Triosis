@@ -16,19 +16,19 @@
   font-size: 54px;
   font-weight: 500;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--section-text-white);
   margin: 0;
   letter-spacing: -1px;
 }
 
 .services-title .text-gray {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--section-text-op);
 }
 
 .services-separator {
   width: 1px;
   height: 50px;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--section-border);
   margin: 40px auto 0 auto;
 }
 
@@ -56,7 +56,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--section-text-op);
   margin-bottom: 12px;
   display: block;
 }
@@ -65,7 +65,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 38px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--section-text-white);
   margin: 0 0 20px 0;
   line-height: 1.2;
 }
@@ -120,7 +120,7 @@
 .services-list li {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
-  color: #ffffff;
+  color: var(--section-text-white);
   font-weight: 400;
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
               color 0.3s ease;
@@ -130,7 +130,7 @@
 
 .services-list li:hover {
   transform: translateX(8px);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--section-text-op);
 }
 
 /* Responsive adjustment */

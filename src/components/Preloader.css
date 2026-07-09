@@ -31,7 +31,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 54px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.08); /* Dim initial state */
+  color: rgba(255, 87, 87, 0.12); /* Dim initial state */
   display: inline-block;
   letter-spacing: 2px;
   animation: letter-glow-wave 2s infinite ease-in-out;
@@ -48,15 +48,15 @@
 
 @keyframes letter-glow-wave {
   0%, 100% {
-    color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 87, 87, 0.12);
     transform: translateY(0);
   }
   35% {
-    color: rgba(255, 255, 255, 1); /* Full white glow */
+    color: #FF5757; /* Full coral red glow */
     transform: translateY(-8px); /* Subtle lift */
   }
   70% {
-    color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 87, 87, 0.12);
     transform: translateY(0);
   }
 }

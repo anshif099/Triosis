@@ -16,19 +16,19 @@
   font-size: 54px;
   font-weight: 500;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--section-text-white);
   margin: 0;
   letter-spacing: -1px;
 }
 
 .team-title .text-gray {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--section-text-op);
 }
 
 .team-separator {
   width: 1px;
   height: 50px;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--section-border);
   margin: 40px auto 0 auto;
 }
 

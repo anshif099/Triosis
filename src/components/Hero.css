@@ -27,7 +27,7 @@
   font-size: 80px;
   font-weight: 600;
   line-height: 1.1;
-  color: #ffffff;
+  color: var(--section-text-white);
   margin: 0;
   text-align: left;
   position: relative;
@@ -36,7 +36,7 @@
 }
 
 .hero-heading .dot {
-  color: #ffffff;
+  color: var(--section-text-white);
 }
 
 /* Foggy Spotlight Glow Effect */
@@ -71,6 +71,7 @@
   height: 110px;
   object-fit: contain;
   flex-shrink: 0;
+  filter: brightness(0) saturate(100%) invert(62%) sepia(45%) saturate(2222%) hue-rotate(317deg) brightness(103%) contrast(101%);
 }
 
 .we-help-text {
@@ -180,7 +181,7 @@
   justify-content: center;
   gap: 80px;
   width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--section-border);
   padding-top: 40px;
 }
 
@@ -188,7 +189,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 40px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--section-text-op);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

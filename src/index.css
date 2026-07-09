@@ -10,14 +10,17 @@
   --border: #e2e8f0;
   --code-bg: #f1f5f9;
   
-  /* Sections dark theme background */
-  --section-bg: #FF5757;
+  /* Sections light theme background & text */
+  --section-bg: #F5F5F7;
+  --section-text-white: #FF5757;
+  --section-text-op: rgba(255, 87, 87, 0.65);
+  --section-border: rgba(255, 87, 87, 0.15);
   
   --accent-bg: rgba(6, 182, 212, 0.1);
   --accent-border: rgba(6, 182, 212, 0.5);
   --social-bg: rgba(255, 87, 87, 0.05);
   --shadow:
-    rgba(255, 87, 87, 0.08) 0 10px 15px -3px, rgba(255, 87, 87, 0.04) 0 4px 6px -2px;
+    rgba(0, 0, 0, 0.05) 0 10px 15px -3px, rgba(0, 0, 0, 0.03) 0 4px 6px -2px;
 
   --sans: 'Poppins', sans-serif;
   --heading: 'Poppins', sans-serif;
@@ -93,3 +96,122 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* ─── LIGHT THEME PAGE-LEVEL OVERRIDES ─────────────────── */
+.about-intro-section,
+.about-quote-section,
+.about-vision-section,
+.about-approach-section,
+.services-page-hero,
+.services-page-list,
+.portfolio-page-hero,
+.portfolio-showcase,
+.our-team-page-hero,
+.faqs-page-hero,
+.faqs-faq-list,
+.blog-page-hero,
+.contact-page-hero,
+.contact-main-section,
+.career-page-hero,
+.career-roles-section {
+  color: var(--text);
+}
+
+.about-tag,
+.services-hero-tag,
+.portfolio-hero-tag,
+.our-team-hero-tag,
+.faqs-hero-tag,
+.blog-hero-tag,
+.contact-hero-tag,
+.career-hero-tag {
+  color: var(--section-text-op) !important;
+}
+
+.about-intro-heading,
+.about-quote-text,
+.about-quote-author,
+.about-vision-title,
+.about-approach-title,
+.services-hero-title,
+.portfolio-hero-title,
+.our-team-hero-title,
+.faqs-hero-title,
+.blog-hero-title,
+.contact-hero-title,
+.career-hero-title {
+  color: var(--section-text-white) !important;
+}
+
+/* Services page details */
+.sp-service-num { color: var(--section-text-op) !important; }
+.sp-service-title { color: var(--section-text-white) !important; }
+.sp-service-desc { color: var(--text) !important; }
+.sp-service-detail-title { color: var(--text-h) !important; }
+.sp-service-detail-desc { color: var(--text) !important; }
+.sp-service-tag-item { background-color: rgba(255, 87, 87, 0.08) !important; color: var(--section-text-white) !important; }
+.sp-service-divider { background-color: var(--section-border) !important; }
+.sp-service-list li { color: var(--section-text-op) !important; }
+.sp-service-row:hover .sp-service-list li { color: var(--section-text-white) !important; }
+.sp-arrow-btn { border-color: var(--section-border) !important; color: var(--section-text-white) !important; }
+
+/* Portfolio page details */
+.portfolio-intro-desc { color: var(--text) !important; }
+.portfolio-card-title { color: var(--section-text-white) !important; }
+.portfolio-card-category { color: var(--section-text-op) !important; }
+
+/* Team page details */
+.our-team-hero-desc { color: var(--text) !important; }
+.team-member-name { color: var(--section-text-white) !important; }
+.team-member-role { color: var(--text) !important; }
+
+/* Faqs page details */
+.faqs-hero-desc { color: var(--text) !important; }
+.faq-accordion-item { border-bottom-color: var(--section-border) !important; }
+.faq-question { color: var(--section-text-white) !important; }
+.faq-answer { color: var(--text) !important; }
+
+/* Blog page details */
+.blog-hero-desc { color: var(--text) !important; }
+.blog-post-card { background-color: #ffffff !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important; }
+.blog-post-title { color: var(--section-text-white) !important; }
+.blog-post-excerpt { color: var(--text) !important; }
+.blog-card-author { color: var(--text) !important; }
+.blog-card-title { color: var(--section-text-white) !important; }
+.blog-card:hover .blog-card-title { color: var(--section-text-op) !important; }
+.sidebar-widget-title { color: var(--text-h) !important; border-bottom-color: var(--section-border) !important; }
+.sidebar-search-box { background: #ffffff !important; border-color: var(--section-border) !important; }
+.sidebar-search-input { color: var(--text-h) !important; }
+.sidebar-search-input::placeholder { color: var(--text-op) !important; }
+.sidebar-search-btn { color: var(--section-text-white) !important; }
+.sidebar-latest-title { color: var(--text-h) !important; }
+.sidebar-latest-item:hover .sidebar-latest-title { color: var(--section-text-white) !important; }
+.sidebar-category-item { color: var(--text) !important; }
+.sidebar-category-item:hover { color: var(--section-text-white) !important; }
+.blog-no-results { color: var(--text) !important; }
+
+/* Contact page details */
+.contact-hero-heading { color: var(--section-text-white) !important; }
+.contact-watermark { color: rgba(255, 87, 87, 0.03) !important; }
+.contact-info-card { background: #ffffff !important; border: 1px solid var(--section-border) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important; }
+.contact-phone { color: var(--section-text-white) !important; }
+.contact-info-label { color: var(--section-text-op) !important; }
+.contact-info-text { color: var(--text) !important; }
+.contact-info-link { color: var(--primary) !important; }
+.contact-social-btn { border: 1px solid var(--section-border) !important; background: rgba(255, 87, 87, 0.05) !important; color: var(--section-text-white) !important; }
+.contact-social-btn:hover { background: var(--section-text-white) !important; color: #ffffff !important; border-color: var(--section-text-white) !important; }
+.contact-card-logo { color: rgba(255, 87, 87, 0.06) !important; }
+.contact-form-card { background-color: #ffffff !important; box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important; border: 1px solid var(--section-border) !important; }
+.form-input { background-color: #f8fafc !important; border-color: var(--section-border) !important; color: var(--text-h) !important; }
+.form-input::placeholder { color: #94a3b8 !important; }
+.contact-submit-btn { background-color: var(--section-text-white) !important; color: #ffffff !important; border-color: var(--section-text-white) !important; }
+.contact-submit-btn:hover { background-color: transparent !important; color: var(--section-text-white) !important; border-color: var(--section-text-white) !important; }
+
+/* Career page details */
+.career-hero-desc { color: var(--text) !important; }
+.position-card { background-color: #ffffff !important; border: 1px solid var(--section-border) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important; }
+.position-title { color: var(--section-text-white) !important; }
+.position-meta-item { color: var(--text) !important; }
+.apply-btn { border-color: var(--primary) !important; color: var(--primary) !important; }
+.apply-btn:hover { background-color: var(--primary) !important; color: #ffffff !important; }
+

@@ -9,7 +9,17 @@ import PortfolioPage from './pages/PortfolioPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import Cursor from './components/Cursor.jsx';
+import { CMSLayout, CMSNavigation } from '@anshif.rainhopes/reactcms-runtime';
 import './App.css';
+
+const mainNavigationItems = [
+  { id: 'nav-home', label: 'Home', path: '/', order: 1 },
+  { id: 'nav-about', label: 'About Us', path: '/aboutus', order: 2 },
+  { id: 'nav-services', label: 'Services', path: '/services', order: 3 },
+  { id: 'nav-portfolio', label: 'Portfolio', path: '/portfolio', order: 4 },
+  { id: 'nav-blog', label: 'Blog', path: '/blog', order: 5 },
+  { id: 'nav-contact', label: 'Contact Us', path: '/contact', order: 6 },
+];
 
 const pathToPage = {
   '/': 'home',
@@ -81,6 +91,8 @@ function App() {
 
   return (
     <div className="app">
+      <CMSLayout id="default" label="Default Layout" isDefault={true} slots={['main']} />
+      <CMSNavigation id="main-navigation" label="Main Navigation" items={mainNavigationItems} />
       <Cursor />
       {currentPage === 'home' && <Home />}
       {currentPage === 'about' && <AboutUs />}

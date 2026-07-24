@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import './Team.css';
 
 const expertDivisions = [
@@ -99,24 +100,40 @@ const ExpertIcon = ({ type }) => {
 
 function Team() {
   return (
-    <section className="team-section">
+    <EditableSection regionId="team.section" label="Team Section" className="team-section">
       <div className="team-header">
-        <h2 className="team-title">
-          Meet Our <span className="text-gray">Digital Experts</span>
-        </h2>
+        <EditableText
+          regionId="team.title"
+          label="Team Title"
+          defaultValue="Meet Our Digital Experts"
+          className="team-title"
+          as="h2"
+        />
         <div className="team-separator"></div>
       </div>
 
       <div className="team-list">
-        {expertDivisions.map((division) => (
+        {expertDivisions.map((division, index) => (
           <div className="team-card" key={division.name}>
             <div className="team-card-left icon-container">
               <ExpertIcon type={division.icon} />
             </div>
             
             <div className="team-card-middle">
-              <h3 className="member-name">{division.name}</h3>
-              <p className="member-role">{division.role}</p>
+              <EditableText
+                regionId={`team.member_${index}.name`}
+                label={`Team Member ${index + 1} Name`}
+                defaultValue={division.name}
+                className="member-name"
+                as="h3"
+              />
+              <EditableText
+                regionId={`team.member_${index}.role`}
+                label={`Team Member ${index + 1} Role`}
+                defaultValue={division.role}
+                className="member-role"
+                as="p"
+              />
             </div>
 
             <div className="team-card-right">
@@ -125,7 +142,7 @@ function Team() {
           </div>
         ))}
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

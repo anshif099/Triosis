@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import './Footer.css';
 
 // SVG Social Icons Helper
@@ -86,7 +87,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="footer-section">
+    <EditableSection regionId="footer.section" label="Footer Section" as="footer" className="footer-section">
       <div className="footer-container">
         
         {/* Column 1: Social Toggles */}
@@ -102,27 +103,35 @@ function Footer() {
 
         {/* Column 2: Location/Address details */}
         <div className="footer-address-column">
-          <h4 className="footer-column-title">Find Us</h4>
+          <EditableText regionId="footer.find_us_title" label="Footer Find Us Title" defaultValue="Find Us" className="footer-column-title" as="h4" />
           <div className="address-content">
-            <p className="address-text">
-              Triosis Digital<br />
-              Tower 2, HiLITE Business Park,<br />
-              Door no : 2211, Second Floor,<br />
-              Poovangal, Pantheeramkavu,<br />
-              Kozhikode, Kerala 673014
-            </p>
-            <a href="mailto:info@triosis.in" className="contact-link">
-              info@triosis.in
-            </a>
-            <a href="tel:+919605507008" className="contact-link">
-              +91 9605507008
-            </a>
+            <EditableText
+              regionId="footer.address"
+              label="Footer Address"
+              defaultValue="Triosis Digital Tower 2, HiLITE Business Park, Door no : 2211, Second Floor, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014"
+              className="address-text"
+              as="p"
+            />
+            <EditableText
+              regionId="footer.email"
+              label="Footer Email"
+              defaultValue="info@triosis.in"
+              className="contact-link"
+              as="a"
+            />
+            <EditableText
+              regionId="footer.phone"
+              label="Footer Phone"
+              defaultValue="+91 9605507008"
+              className="contact-link"
+              as="a"
+            />
           </div>
         </div>
 
         {/* Column 3: Navigation Links */}
         <div className="footer-links-column">
-          <h4 className="footer-column-title">Links</h4>
+          <EditableText regionId="footer.links_title" label="Footer Links Title" defaultValue="Links" className="footer-column-title" as="h4" />
           <ul className="footer-links-list">
             {linksList.map((link) => (
               <li key={link.name}>
@@ -138,9 +147,13 @@ function Footer() {
 
       {/* Footer Bottom copyright */}
       <div className="footer-bottom">
-        <p className="copyright-text">
-          © {new Date().getFullYear()} Triosis. All Rights Reserved.
-        </p>
+        <EditableText
+          regionId="footer.copyright"
+          label="Footer Copyright"
+          defaultValue={`© ${new Date().getFullYear()} Triosis. All Rights Reserved.`}
+          className="copyright-text"
+          as="p"
+        />
       </div>
 
       {/* Floating Back to Top Button */}
@@ -151,7 +164,7 @@ function Footer() {
           </svg>
         </div>
       )}
-    </footer>
+    </EditableSection>
   );
 }
 

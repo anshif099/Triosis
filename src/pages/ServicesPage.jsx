@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import StackedTestimonials from '../components/StackedTestimonials.jsx';
@@ -76,22 +77,23 @@ function ServicesPage() {
       <Header />
 
       {/* Services Hero Section */}
-      <section className="services-page-hero">
+      <EditableSection regionId="services_page.hero" label="Services Page Hero" className="services-page-hero">
         <div className="services-hero-glow"></div>
         <div className="services-hero-content">
           <div className="services-hero-tag-col">
-            <span className="services-hero-tag">
-              <span className="tag-dot"></span>
-              OUR SERVICES
-            </span>
+            <EditableText regionId="services_page.tag" label="Services Page Tag" defaultValue="OUR SERVICES" className="services-hero-tag" />
           </div>
           <div className="services-hero-title-col">
-            <h1 className="services-hero-title">
-              SERVICES &amp; <br />CAPABILITIES<span className="cyan-dot-title">.</span>
-            </h1>
+            <EditableText
+              regionId="services_page.title"
+              label="Services Page Title"
+              defaultValue="SERVICES & CAPABILITIES ."
+              className="services-hero-title"
+              as="h1"
+            />
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Services List Section */}
       <section className="services-page-list">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -79,20 +80,17 @@ function PortfolioPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="portfolio-hero">
+      <EditableSection regionId="portfolio.hero" label="Portfolio Hero" className="portfolio-hero">
         <div className="portfolio-hero-inner">
           <div className="portfolio-hero-tag-col">
-            <span className="portfolio-hero-tag">
-              <span className="port-tag-dot"></span>
-              OUR WORKS
-            </span>
+            <EditableText regionId="portfolio.tag" label="Portfolio Tag" defaultValue="OUR WORKS" className="portfolio-hero-tag" />
           </div>
           <div className="portfolio-hero-title-col">
-            <h1 className="portfolio-hero-title">PORTFOLIO</h1>
+            <EditableText regionId="portfolio.title" label="Portfolio Title" defaultValue="PORTFOLIO" className="portfolio-hero-title" as="h1" />
             <span className="portfolio-accent-dot"></span>
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Portfolio Grid */}
       <section className="portfolio-grid-section">

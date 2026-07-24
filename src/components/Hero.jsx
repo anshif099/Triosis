@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import heroLogo from '../assets/hero.png';
 import innovateBg from '../assets/innovate_bg.png';
 import transformBg from '../assets/transform_bg.png';
@@ -9,7 +10,7 @@ function Hero() {
   const [hoveredTagline, setHoveredTagline] = useState(null);
 
   return (
-    <section className={`hero-section ${hoveredTagline ? 'has-bg-hover' : ''}`}>
+    <EditableSection regionId="hero.section" label="Hero Section" className={`hero-section ${hoveredTagline ? 'has-bg-hover' : ''}`}>
       {/* Interactive hover background layers */}
       <div 
         className={`hero-hover-bg innovate-bg ${hoveredTagline === 'innovate' ? 'active' : ''}`}
@@ -26,23 +27,32 @@ function Hero() {
 
       <div className="hero-content">
         <div className="hero-left">
-          <h1 className="hero-heading">
-            Strategic<br />
-            Digital Solutions<br />
-            for Businesses<br />
-            That Want to Lead <span className="dot">.</span>
-          </h1>
+          <EditableText
+            regionId="hero.title"
+            label="Hero Heading"
+            defaultValue="Strategic Digital Solutions for Businesses That Want to Lead ."
+            className="hero-heading"
+            as="h1"
+          />
           {/* Foggy spotlight effect behind the text */}
           <div className="foggy-glow"></div>
         </div>
 
         <div className="hero-right">
           <div className="we-help-container">
-            <img src={heroLogo} alt="Triosis Symbol" className="we-help-logo" />
-            <p className="we-help-text">
-              We help ambitious businesses grow through innovative technology, creative marketing, and
-              measurable digital strategies that deliver long-term business success.
-            </p>
+            <EditableImage
+              regionId="hero.logo"
+              label="Hero Symbol Logo"
+              defaultValue={{ src: heroLogo, alt: "Triosis Symbol" }}
+              className="we-help-logo"
+            />
+            <EditableText
+              regionId="hero.subtext"
+              label="Hero Subtext"
+              defaultValue="We help ambitious businesses grow through innovative technology, creative marketing, and measurable digital strategies that deliver long-term business success."
+              className="we-help-text"
+              as="p"
+            />
           </div>
         </div>
       </div>
@@ -139,7 +149,7 @@ function Hero() {
           </span>
         </div>
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

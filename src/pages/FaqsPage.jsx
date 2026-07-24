@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -40,22 +41,23 @@ function FaqsPage() {
       <Header />
 
       {/* FAQs Hero Section */}
-      <section className="faqs-hero">
+      <EditableSection regionId="faqs.hero" label="FAQs Hero" className="faqs-hero">
         <div className="faqs-hero-glow"></div>
         <div className="faqs-hero-container">
           <div className="faqs-hero-left">
-            <span className="faqs-hero-tag">
-              <span className="tag-dot"></span>
-              FAQS
-            </span>
+            <EditableText regionId="faqs.tag" label="FAQs Tag" defaultValue="FAQS" className="faqs-hero-tag" />
           </div>
           <div className="faqs-hero-right">
-            <h1 className="faqs-hero-title">
-              FREQUENTLY <br />QUESTIONS<span className="cyan-dot-title">.</span>
-            </h1>
+            <EditableText
+              regionId="faqs.title"
+              label="FAQs Title"
+              defaultValue="FREQUENTLY QUESTIONS ."
+              className="faqs-hero-title"
+              as="h1"
+            />
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Accordion List Section */}
       <section className="faqs-accordion-section">

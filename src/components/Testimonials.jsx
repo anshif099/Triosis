@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import './Testimonials.css';
 
 const testimonialsData = [
@@ -23,11 +24,15 @@ function Testimonials() {
   const doubleData = [...testimonialsData, ...testimonialsData, ...testimonialsData];
 
   return (
-    <section className="testimonials-section">
+    <EditableSection regionId="testimonials.section" label="Testimonials Section" className="testimonials-section">
       <div className="testimonials-header">
-        <h2 className="testimonials-title">
-          What our <span className="serif-italic">clients</span> say?
-        </h2>
+        <EditableText
+          regionId="testimonials.title"
+          label="Testimonials Title"
+          defaultValue="What our clients say?"
+          className="testimonials-title"
+          as="h2"
+        />
       </div>
 
       <div className="testimonial-marquee-wrapper">
@@ -38,7 +43,13 @@ function Testimonials() {
               className={`testimonial-card ${item.isDark ? 'theme-black' : 'theme-white'}`}
             >
               <span className="quote-icon">“</span>
-              <p className="quote-text">{item.quote}</p>
+              <EditableText
+                regionId={`testimonials.quote_${item.id}`}
+                label={`Testimonial ${item.id} Quote`}
+                defaultValue={item.quote}
+                className="quote-text"
+                as="p"
+              />
               
               <div className="testimonial-user">
                 <div className="user-avatar">
@@ -47,15 +58,27 @@ function Testimonials() {
                   </svg>
                 </div>
                 <div className="user-details">
-                  <h5 className="user-name">{item.author}</h5>
-                  <p className="user-role">{item.role}</p>
+                  <EditableText
+                    regionId={`testimonials.author_${item.id}`}
+                    label={`Testimonial ${item.id} Author`}
+                    defaultValue={item.author}
+                    className="user-name"
+                    as="h5"
+                  />
+                  <EditableText
+                    regionId={`testimonials.role_${item.id}`}
+                    label={`Testimonial ${item.id} Role`}
+                    defaultValue={item.role}
+                    className="user-role"
+                    as="p"
+                  />
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Team from '../components/Team.jsx';
@@ -133,21 +134,22 @@ function AboutUs() {
       <Header />
 
       {/* About Intro Section */}
-      <section className="about-intro-section">
+      <EditableSection regionId="about.intro_section" label="About Intro Section" className="about-intro-section">
         <div className="about-intro-container">
           <div className="about-intro-left">
-            <span className="about-tag">
-              <span className="tag-dot"></span>
-              ABOUT US
-            </span>
+            <EditableText regionId="about.tag" label="About Tag" defaultValue="ABOUT US" className="about-tag" />
           </div>
           <div className="about-intro-right">
-            <h1 className="about-intro-heading">
-              Crafting<span className="cyan-dot">.</span>smart concepts and turning them into conversion-driven marketing that elevates your brand.
-            </h1>
+            <EditableText
+              regionId="about.intro_heading"
+              label="About Intro Heading"
+              defaultValue="Crafting. smart concepts and turning them into conversion-driven marketing that elevates your brand."
+              className="about-intro-heading"
+              as="h1"
+            />
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Fast Moving Ticker Carousel */}
       <section className="about-ticker-section">
@@ -164,35 +166,47 @@ function AboutUs() {
       </section>
 
       {/* About Details Section */}
-      <section className="about-details-section">
+      <EditableSection regionId="about.details_section" label="About Details Section" className="about-details-section">
         <div className="about-details-container">
           {/* Left Column: Stat */}
           <div className="about-details-left">
             <div className="details-stat-box">
               <div className="stat-number">
-                3<span className="stat-plus">+</span>
+                <EditableText regionId="about.years_count" label="Years Experience Count" defaultValue="3+" />
               </div>
-              <p className="stat-description">
-                Years of transforming brands through bold ideas, innovative design, and full-spectrum marketing solutions that build visibility, trust, and measurable growth.
-              </p>
+              <EditableText
+                regionId="about.years_desc"
+                label="Years Experience Description"
+                defaultValue="Years of transforming brands through bold ideas, innovative design, and full-spectrum marketing solutions that build visibility, trust, and measurable growth."
+                className="stat-description"
+                as="p"
+              />
             </div>
           </div>
 
           {/* Right Column: Mission and Agency Description */}
           <div className="about-details-right">
-            <h2 className="details-heading-large">
-              Triosis is a next-gen advertising agency built for brands that want to lead, not follow. We merge smart strategy, striking visuals, and high-performance marketing to help businesses scale in the digital world.
-            </h2>
+            <EditableText
+              regionId="about.heading_large"
+              label="About Headline Large"
+              defaultValue="Triosis is a next-gen advertising agency built for brands that want to lead, not follow. We merge smart strategy, striking visuals, and high-performance marketing to help businesses scale in the digital world."
+              className="details-heading-large"
+              as="h2"
+            />
 
             <div className="details-mission-block">
-              <p className="details-mission-text">
-                From social media and design to branding, SEO, and paid advertising, we deliver integrated marketing solutions that amplify your presence across every platform. Our mission is simple—turn your vision into real-world results through creativity, precision, and seamless execution.
-              </p>
+              <EditableText
+                regionId="about.mission_text"
+                label="About Mission Text"
+                defaultValue="From social media and design to branding, SEO, and paid advertising, we deliver integrated marketing solutions that amplify your presence across every platform. Our mission is simple—turn your vision into real-world results through creativity, precision, and seamless execution."
+                className="details-mission-text"
+                as="p"
+              />
               <div className="details-accent-dot"></div>
             </div>
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Hover Accordion Columns Section */}
       <section className="about-hover-services-section">

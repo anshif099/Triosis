@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Team from '../components/Team.jsx';
@@ -19,20 +20,21 @@ function OurTeamPage() {
       <Header />
 
       {/* Our Team Hero Section */}
-      <section className="our-team-hero">
+      <EditableSection regionId="our_team.hero" label="Our Team Hero" className="our-team-hero">
         <div className="team-hero-glow"></div>
         
         <div className="team-hero-top-row">
           <div className="team-hero-left">
-            <span className="team-hero-tag">
-              <span className="tag-dot"></span>
-              OUR TEAM
-            </span>
+            <EditableText regionId="our_team.tag" label="Our Team Tag" defaultValue="OUR TEAM" className="team-hero-tag" />
           </div>
           <div className="team-hero-right">
-            <h1 className="team-hero-title">
-              OUR TALENTED <br />SQUAD<span className="cyan-dot-title">.</span>
-            </h1>
+            <EditableText
+              regionId="our_team.title"
+              label="Our Team Hero Title"
+              defaultValue="OUR TALENTED SQUAD ."
+              className="team-hero-title"
+              as="h1"
+            />
           </div>
         </div>
 
@@ -50,7 +52,7 @@ function OurTeamPage() {
             ))}
           </div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Meet Our Digital Experts Grid Component */}
       <Team />

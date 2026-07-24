@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -73,22 +74,23 @@ function ContactPage() {
       <Header />
 
       {/* ── HERO ─────────────────────────────── */}
-      <section className="contact-hero">
+      <EditableSection regionId="contact.hero" label="Contact Hero" className="contact-hero">
         <div className="contact-hero-inner">
           {/* Tag + heading */}
           <div className="contact-hero-top">
-            <span className="contact-hero-tag">
-              <span className="contact-tag-dot"></span>
-              CONTACT US
-            </span>
-            <h1 className="contact-hero-heading">
-              LET'S<br />GET IN TOUCH<span className="contact-accent-dot">.</span>
-            </h1>
+            <EditableText regionId="contact.tag" label="Contact Tag" defaultValue="CONTACT US" className="contact-hero-tag" />
+            <EditableText
+              regionId="contact.heading"
+              label="Contact Hero Heading"
+              defaultValue="LET'S GET IN TOUCH ."
+              className="contact-hero-heading"
+              as="h1"
+            />
           </div>
           {/* Giant watermark text */}
           <div className="contact-watermark">CONTACT US</div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* ── WHITE MARQUEE CAROUSEL ────────────── */}
       <section className="contact-marquee-section">

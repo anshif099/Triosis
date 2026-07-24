@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -83,12 +84,12 @@ function BlogPage() {
       <Header />
 
       {/* Hero */}
-      <section className="blog-hero">
+      <EditableSection regionId="blog.hero" label="Blog Hero" className="blog-hero">
         <div className="blog-hero-inner">
-          <h1 className="blog-hero-title">OUR NEWS<span className="blog-hero-dot">.</span></h1>
+          <EditableText regionId="blog.hero_title" label="Blog Hero Title" defaultValue="OUR NEWS ." className="blog-hero-title" as="h1" />
           <span className="blog-hero-accent-dot"></span>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Main Content */}
       <section className="blog-main-section">

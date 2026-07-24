@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -48,19 +49,29 @@ function Career() {
       <Header />
 
       {/* Career Hero / Title Section */}
-      <section className="career-hero-section">
+      <EditableSection regionId="career.hero" label="Career Hero" className="career-hero-section">
         <div className="career-hero-glow"></div>
         <div className="career-hero-content">
-          <h1 className="career-hero-title">
-            CAREERS<span className="career-title-dot">.</span>
-          </h1>
+          <EditableText
+            regionId="career.hero_title"
+            label="Careers Hero Title"
+            defaultValue="CAREERS ."
+            className="career-hero-title"
+            as="h1"
+          />
         </div>
-      </section>
+      </EditableSection>
 
       {/* Job Openings Section */}
       <section className="career-openings-section">
         <div className="career-openings-container">
-          <h2 className="openings-section-title">Current Job Openings</h2>
+          <EditableText
+            regionId="career.openings_title"
+            label="Current Job Openings Title"
+            defaultValue="Current Job Openings"
+            className="openings-section-title"
+            as="h2"
+          />
 
           <div className="job-cards-grid">
             {/* Card 1 */}

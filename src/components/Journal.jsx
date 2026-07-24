@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableButton, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import blogCover from '../assets/blog_cover.jpg';
 import './Journal.css';
 
@@ -9,23 +10,35 @@ function Journal() {
     window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'blog' } }));
   };
   return (
-    <section className="journal-section">
+    <EditableSection regionId="journal.section" label="Journal Section" className="journal-section">
       <div className="journal-container">
         
         {/* Header with left-aligned title & capsule button */}
         <div className="journal-header">
           <div className="journal-header-left">
-            <span className="journal-subtitle">Blog</span>
-            <h2 className="journal-title">
-              Learn From Our<br />Latest Insights
-            </h2>
-            <p className="journal-desc">
-              Explore practical articles on digital marketing, AI, branding, SEO, web development, and business growth.
-            </p>
+            <EditableText regionId="journal.subtitle" label="Journal Subtitle" defaultValue="Blog" className="journal-subtitle" />
+            <EditableText
+              regionId="journal.title"
+              label="Journal Title"
+              defaultValue="Learn From Our Latest Insights"
+              className="journal-title"
+              as="h2"
+            />
+            <EditableText
+              regionId="journal.desc"
+              label="Journal Description"
+              defaultValue="Explore practical articles on digital marketing, AI, branding, SEO, web development, and business growth."
+              className="journal-desc"
+              as="p"
+            />
           </div>
-          <a href="#" className="explore-posts-btn" onClick={goToBlog}>
-            Explore all posts <span className="arrow">→</span>
-          </a>
+          <EditableButton
+            regionId="journal.cta"
+            label="Journal CTA Button"
+            defaultValue={{ text: "Explore all posts →", href: "#" }}
+            className="explore-posts-btn"
+            onClick={goToBlog}
+          />
         </div>
 
         {/* Journal Cards List */}
@@ -77,7 +90,7 @@ function Journal() {
         </div>
 
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

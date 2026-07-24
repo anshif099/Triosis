@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { EditableText, EditableImage } from '@anshif.rainhopes/reactcms-sdk';
 import digitalSuccessImg from '../assets/digital_success.png';
 import './RecentProjects.css';
 
@@ -55,10 +56,14 @@ function RecentProjects() {
               display: titleOpacity === 0 ? 'none' : 'flex'
             }}
           >
-            <span className="projects-subtitle">Our Recent Projects</span>
-            <h2 className="projects-title">
-              Building Digital Success<br />Across Industries
-            </h2>
+            <EditableText regionId="projects.subtitle" label="Projects Subtitle" defaultValue="Our Recent Projects" className="projects-subtitle" />
+            <EditableText
+              regionId="projects.title"
+              label="Projects Title"
+              defaultValue="Building Digital Success Across Industries"
+              className="projects-title"
+              as="h2"
+            />
           </div>
 
           {/* Project Card that slides in from bottom-left */}
@@ -71,11 +76,15 @@ function RecentProjects() {
             }}
           >
             <div className="project-image-wrapper">
-              <img src={digitalSuccessImg} alt="Digital Success Platform" />
+              <EditableImage
+                regionId="projects.card_image"
+                label="Project Card Image"
+                defaultValue={{ src: digitalSuccessImg, alt: "Digital Success Platform" }}
+              />
             </div>
             <div className="project-info">
-              <h4>Digital Success Platform</h4>
-              <p>Growth & Analytics</p>
+              <EditableText regionId="projects.card_title" label="Project Card Title" defaultValue="Digital Success Platform" as="h4" />
+              <EditableText regionId="projects.card_subtitle" label="Project Card Subtitle" defaultValue="Growth & Analytics" as="p" />
             </div>
           </div>
         </div>

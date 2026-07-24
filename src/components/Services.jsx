@@ -1,4 +1,5 @@
 import React from 'react';
+import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import img5 from '../assets/img5.jpg';
 import img6 from '../assets/img6.jpg';
 import img7 from '../assets/img7.jpg';
@@ -66,12 +67,15 @@ const servicesData = [
 
 function Services() {
   return (
-    <section className="services-section">
+    <EditableSection regionId="services.section" label="Services Section" className="services-section">
       <div className="services-header">
-        <h2 className="services-title">
-          Let's Make <span className="text-gray">Something</span><br />
-          <span className="text-gray">Extraordinary</span> Together
-        </h2>
+        <EditableText
+          regionId="services.header_title"
+          label="Services Header Title"
+          defaultValue="Let's Make Something Extraordinary Together"
+          className="services-title"
+          as="h2"
+        />
         <div className="services-separator"></div>
       </div>
 
@@ -80,15 +84,27 @@ function Services() {
           <div className="services-grid" key={service.num}>
             <div className="services-left">
               <span className="services-num">{service.num}</span>
-              <h3>{service.title}</h3>
-              <p className="services-desc">{service.desc}</p>
+              <EditableText
+                regionId={`services.${service.num}.title`}
+                label={`Service ${service.num} Title`}
+                defaultValue={service.title}
+                as="h3"
+              />
+              <EditableText
+                regionId={`services.${service.num}.desc`}
+                label={`Service ${service.num} Description`}
+                defaultValue={service.desc}
+                className="services-desc"
+                as="p"
+              />
             </div>
 
             <div className="services-center">
-              <img 
-                src={service.image} 
-                alt={service.title} 
-                className="services-image" 
+              <EditableImage
+                regionId={`services.${service.num}.image`}
+                label={`Service ${service.num} Image`}
+                defaultValue={{ src: service.image, alt: service.title }}
+                className="services-image"
               />
             </div>
 
@@ -102,7 +118,7 @@ function Services() {
           </div>
         ))}
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

@@ -484,8 +484,12 @@ var editableSync = {
   async getDraftRegions(apiKey, websiteId, pageId) {
     try {
       const db = getFirebaseDatabase(apiKey);
-      const draftRef = (0, import_database2.ref)(db, import_shared.paths.contentDraft(websiteId, pageId));
-      const snapshot = await (0, import_database2.get)(draftRef);
+      let draftRef = (0, import_database2.ref)(db, import_shared.paths.contentDraft(websiteId, pageId));
+      let snapshot = await (0, import_database2.get)(draftRef);
+      if (!snapshot.exists() && pageId !== "home") {
+        draftRef = (0, import_database2.ref)(db, import_shared.paths.contentDraft(websiteId, "home"));
+        snapshot = await (0, import_database2.get)(draftRef);
+      }
       if (!snapshot.exists()) return {};
       return decodeRegionsSnapshot(snapshot.val());
     } catch (err) {
@@ -497,8 +501,12 @@ var editableSync = {
   async getPublishedRegions(apiKey, websiteId, pageId) {
     try {
       const db = getFirebaseDatabase(apiKey);
-      const publishedRef = (0, import_database2.ref)(db, import_shared.paths.contentPublished(websiteId, pageId));
-      const snapshot = await (0, import_database2.get)(publishedRef);
+      let publishedRef = (0, import_database2.ref)(db, import_shared.paths.contentPublished(websiteId, pageId));
+      let snapshot = await (0, import_database2.get)(publishedRef);
+      if (!snapshot.exists() && pageId !== "home") {
+        publishedRef = (0, import_database2.ref)(db, import_shared.paths.contentPublished(websiteId, "home"));
+        snapshot = await (0, import_database2.get)(publishedRef);
+      }
       if (!snapshot.exists()) return {};
       return decodeRegionsSnapshot(snapshot.val());
     } catch (err) {

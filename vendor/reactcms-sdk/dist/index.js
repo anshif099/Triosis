@@ -783,7 +783,16 @@ function EditableText({
     if (value.fontSize) textStyle.fontSize = value.fontSize;
     if (value.fontWeight) textStyle.fontWeight = value.fontWeight;
     if (value.color) textStyle.color = value.color;
-    if (value.align) textStyle.textAlign = value.align;
+    const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
+    let resolvedAlign;
+    if (vw < 768 && value.alignMobile) {
+      resolvedAlign = value.alignMobile;
+    } else if (vw < 1024 && value.alignTablet) {
+      resolvedAlign = value.alignTablet;
+    } else if (value.align) {
+      resolvedAlign = value.align;
+    }
+    if (resolvedAlign) textStyle.textAlign = resolvedAlign;
   }
   const handleClick = (e) => {
     if (editMode && cms?.websiteId) {

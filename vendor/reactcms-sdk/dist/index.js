@@ -89,7 +89,7 @@ var _MessageBus = class _MessageBus {
       if (!data || typeof data !== "object" || data.rcms !== true || data.version !== "v1") {
         return;
       }
-      if (data.websiteId === websiteId) {
+      if (!data.websiteId || data.websiteId === websiteId) {
         if (data.type === "rcms/v1/field-update" && data.payload && typeof data.payload === "object") {
           const p = data.payload;
           if (p.regionId && p.value !== void 0) {

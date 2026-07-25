@@ -110,7 +110,20 @@ function CMSProvider({
   environment = "production",
   children
 }) {
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const isIframe = window.self !== window.top;
+        const search = window.location.search;
+        if (isIframe || search.includes("rcms_preview") || search.includes("rcms_edit")) {
+          return true;
+        }
+      } catch {
+        return true;
+      }
+    }
+    return false;
+  });
   const [isConnected, setIsConnected] = useState(false);
   const [currentPage] = useState(null);
   const [locale, setLocale] = useState("en");

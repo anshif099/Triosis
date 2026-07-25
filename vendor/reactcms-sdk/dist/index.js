@@ -164,7 +164,20 @@ function CMSProvider({
   environment = "production",
   children
 }) {
-  const [editMode, setEditMode] = (0, import_react6.useState)(false);
+  const [editMode, setEditMode] = (0, import_react6.useState)(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const isIframe = window.self !== window.top;
+        const search = window.location.search;
+        if (isIframe || search.includes("rcms_preview") || search.includes("rcms_edit")) {
+          return true;
+        }
+      } catch {
+        return true;
+      }
+    }
+    return false;
+  });
   const [isConnected, setIsConnected] = (0, import_react6.useState)(false);
   const [currentPage] = (0, import_react6.useState)(null);
   const [locale, setLocale] = (0, import_react6.useState)("en");

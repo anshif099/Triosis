@@ -425,10 +425,10 @@ function RuntimeProvider({
         });
       }
     );
-    const isPreviewMode = typeof window !== "undefined" && (window.self !== window.top || window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit"));
+    const isPreviewMode2 = typeof window !== "undefined" && (window.self !== window.top || window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit"));
     let unsubscribeDraft = () => {
     };
-    if (isPreviewMode) {
+    if (isPreviewMode2) {
       unsubscribeDraft = import_reactcms_sdk10.editableSync.subscribeToDraftRegions(
         apiKey,
         websiteId,
@@ -483,6 +483,36 @@ function RuntimeProvider({
       import_reactcms_sdk10.MessageBus.send("rcms/v1/regions-registered", websiteId, { pageId, regions: pageRegions });
     });
   }, [regions, websiteId, apiKey]);
+  const [publishingLive, setPublishingLive] = (0, import_react2.useState)(false);
+  const [publishedToast, setPublishedToast] = (0, import_react2.useState)(false);
+  const handlePublishFromPreview = async () => {
+    setPublishingLive(true);
+    try {
+      const resolveCurrentPageId = () => {
+        if (typeof window === "undefined") return "home";
+        const search = window.location.search;
+        if (search) {
+          try {
+            const params = new URLSearchParams(search);
+            const q = params.get("page");
+            if (q) return q;
+          } catch {
+          }
+        }
+        const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, "");
+        return rawPath || "home";
+      };
+      const currentPageId = resolveCurrentPageId();
+      await import_reactcms_sdk10.editableSync.publishDraftRegions(apiKey, websiteId, currentPageId);
+      setPublishedToast(true);
+      setTimeout(() => setPublishedToast(false), 4e3);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setPublishingLive(false);
+    }
+  };
+  const isPreviewMode = typeof window !== "undefined" && (window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit") || window.self !== window.top);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
     RuntimeContext.Provider,
     {
@@ -501,7 +531,54 @@ function RuntimeProvider({
             registerRegion,
             unregisterRegion
           },
-          children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_reactcms_sdk10.CMSProvider, { websiteId, apiKey, environment: "production", children })
+          children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_reactcms_sdk10.CMSProvider, { websiteId, apiKey, environment: "production", children: [
+            children,
+            isPreviewMode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+              "div",
+              {
+                style: {
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
+                  zIndex: 999999,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  background: "#0f172a",
+                  border: "1px solid #334155",
+                  borderRadius: "12px",
+                  padding: "8px 14px",
+                  boxShadow: "0 20px 30px -5px rgba(0, 0, 0, 0.7)",
+                  fontFamily: "sans-serif",
+                  color: "#f8fafc",
+                  fontSize: "12px"
+                },
+                children: publishedToast ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#4ade80", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }, children: "\u2713 Published Live! Changes are live on your site!" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#94a3b8", fontSize: "11px", fontWeight: 600 }, children: "\u270F\uFE0F Visual Edit Mode" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: handlePublishFromPreview,
+                      disabled: publishingLive,
+                      style: {
+                        background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "6px 14px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)"
+                      },
+                      children: publishingLive ? "Publishing..." : "\u{1F680} Publish Live"
+                    }
+                  )
+                ] })
+              }
+            )
+          ] })
         }
       )
     }

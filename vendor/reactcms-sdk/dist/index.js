@@ -546,6 +546,28 @@ var editableSync = {
       return () => {
       };
     }
+  },
+  /** Publish draft region values directly to published path in Firebase */
+  async publishDraftRegions(apiKey, websiteId, pageId) {
+    try {
+      const db = getFirebaseDatabase(apiKey);
+      const draftRef = (0, import_database2.ref)(db, import_shared.paths.contentDraft(websiteId, pageId));
+      const snapshot = await (0, import_database2.get)(draftRef);
+      if (!snapshot.exists()) return false;
+      const draftVal = snapshot.val();
+      const payload = {
+        ...typeof draftVal === "object" && draftVal !== null ? draftVal : {},
+        publishedAt: Date.now()
+      };
+      const keys = Array.from(/* @__PURE__ */ new Set([pageId, "home"]));
+      await Promise.all(
+        keys.map((key) => (0, import_database2.set)((0, import_database2.ref)(db, import_shared.paths.contentPublished(websiteId, key)), payload))
+      );
+      return true;
+    } catch (err) {
+      console.error(`[ReactCMS SDK] Failed to publish draft regions:`, err);
+      return false;
+    }
   }
 };
 

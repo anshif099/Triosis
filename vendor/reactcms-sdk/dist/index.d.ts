@@ -124,6 +124,8 @@ declare const editableSync: {
     subscribeToDraftRegions(apiKey: string, websiteId: string, pageId: string, callback: (values: DraftPageRegionValues) => void): () => void;
     /** Subscribe to published region value changes (used on live site for real-time publish updates) */
     subscribeToPublishedRegions(apiKey: string, websiteId: string, pageId: string, callback: (values: DraftPageRegionValues) => void): () => void;
+    /** Publish draft region values directly to published path in Firebase */
+    publishDraftRegions(apiKey: string, websiteId: string, pageId: string): Promise<boolean>;
 };
 
 interface EditableTextProps {

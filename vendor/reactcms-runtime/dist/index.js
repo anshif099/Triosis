@@ -282,7 +282,7 @@ function setupRuntimeMessageHandler(websiteId, callbacks) {
 }
 
 // src/RuntimeProvider.tsx
-import { jsx } from "react/jsx-runtime";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 function RuntimeProvider({
   websiteId,
   apiKey,
@@ -398,10 +398,10 @@ function RuntimeProvider({
         });
       }
     );
-    const isPreviewMode = typeof window !== "undefined" && (window.self !== window.top || window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit"));
+    const isPreviewMode2 = typeof window !== "undefined" && (window.self !== window.top || window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit"));
     let unsubscribeDraft = () => {
     };
-    if (isPreviewMode) {
+    if (isPreviewMode2) {
       unsubscribeDraft = editableSync.subscribeToDraftRegions(
         apiKey,
         websiteId,
@@ -456,6 +456,36 @@ function RuntimeProvider({
       MessageBus2.send("rcms/v1/regions-registered", websiteId, { pageId, regions: pageRegions });
     });
   }, [regions, websiteId, apiKey]);
+  const [publishingLive, setPublishingLive] = useState(false);
+  const [publishedToast, setPublishedToast] = useState(false);
+  const handlePublishFromPreview = async () => {
+    setPublishingLive(true);
+    try {
+      const resolveCurrentPageId = () => {
+        if (typeof window === "undefined") return "home";
+        const search = window.location.search;
+        if (search) {
+          try {
+            const params = new URLSearchParams(search);
+            const q = params.get("page");
+            if (q) return q;
+          } catch {
+          }
+        }
+        const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, "");
+        return rawPath || "home";
+      };
+      const currentPageId = resolveCurrentPageId();
+      await editableSync.publishDraftRegions(apiKey, websiteId, currentPageId);
+      setPublishedToast(true);
+      setTimeout(() => setPublishedToast(false), 4e3);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setPublishingLive(false);
+    }
+  };
+  const isPreviewMode = typeof window !== "undefined" && (window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit") || window.self !== window.top);
   return /* @__PURE__ */ jsx(
     RuntimeContext.Provider,
     {
@@ -474,7 +504,54 @@ function RuntimeProvider({
             registerRegion,
             unregisterRegion
           },
-          children: /* @__PURE__ */ jsx(CMSProvider, { websiteId, apiKey, environment: "production", children })
+          children: /* @__PURE__ */ jsxs(CMSProvider, { websiteId, apiKey, environment: "production", children: [
+            children,
+            isPreviewMode && /* @__PURE__ */ jsx(
+              "div",
+              {
+                style: {
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
+                  zIndex: 999999,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  background: "#0f172a",
+                  border: "1px solid #334155",
+                  borderRadius: "12px",
+                  padding: "8px 14px",
+                  boxShadow: "0 20px 30px -5px rgba(0, 0, 0, 0.7)",
+                  fontFamily: "sans-serif",
+                  color: "#f8fafc",
+                  fontSize: "12px"
+                },
+                children: publishedToast ? /* @__PURE__ */ jsx("span", { style: { color: "#4ade80", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }, children: "\u2713 Published Live! Changes are live on your site!" }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                  /* @__PURE__ */ jsx("span", { style: { color: "#94a3b8", fontSize: "11px", fontWeight: 600 }, children: "\u270F\uFE0F Visual Edit Mode" }),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: handlePublishFromPreview,
+                      disabled: publishingLive,
+                      style: {
+                        background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "6px 14px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)"
+                      },
+                      children: publishingLive ? "Publishing..." : "\u{1F680} Publish Live"
+                    }
+                  )
+                ] })
+              }
+            )
+          ] })
         }
       )
     }
@@ -539,11 +616,11 @@ import { getFirebaseDatabase as getFirebaseDatabase9 } from "@anshif.rainhopes/r
 import { paths as paths9 } from "@anshif.rainhopes/shared";
 
 // src/routing/dynamicPageRenderer.tsx
-import { jsx as jsx2, jsxs } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function DynamicPageRenderer({ slug }) {
-  return /* @__PURE__ */ jsxs("div", { style: { padding: "2rem", fontFamily: "sans-serif" }, children: [
+  return /* @__PURE__ */ jsxs2("div", { style: { padding: "2rem", fontFamily: "sans-serif" }, children: [
     /* @__PURE__ */ jsx2("h1", { children: "CMS Generated Page" }),
-    /* @__PURE__ */ jsxs("p", { children: [
+    /* @__PURE__ */ jsxs2("p", { children: [
       "This page (slug: ",
       /* @__PURE__ */ jsx2("code", { children: slug }),
       ") is dynamically served from the ReactCMS registry."

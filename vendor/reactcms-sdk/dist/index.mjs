@@ -26,7 +26,31 @@ import { createContext as createContext5 } from "react";
 var SEOContext = createContext5(null);
 
 // src/messaging/MessageBus.ts
+function getGlobalStore() {
+  if (typeof window !== "undefined") {
+    if (!window.__RCMS_REGION_STORE__) {
+      window.__RCMS_REGION_STORE__ = /* @__PURE__ */ new Map();
+    }
+    return window.__RCMS_REGION_STORE__;
+  }
+  return /* @__PURE__ */ new Map();
+}
+function getGlobalListeners() {
+  if (typeof window !== "undefined") {
+    if (!window.__RCMS_LISTENERS__) {
+      window.__RCMS_LISTENERS__ = /* @__PURE__ */ new Set();
+    }
+    return window.__RCMS_LISTENERS__;
+  }
+  return /* @__PURE__ */ new Set();
+}
 var _MessageBus = class _MessageBus {
+  static get listeners() {
+    return getGlobalListeners();
+  }
+  static get regionValuesStore() {
+    return getGlobalStore();
+  }
   static start(websiteId) {
     if (this.isListening) return;
     this.isListening = true;
@@ -97,9 +121,7 @@ var _MessageBus = class _MessageBus {
     return msg.rcms === true && msg.version === "v1" && typeof msg.type === "string" && typeof msg.websiteId === "string";
   }
 };
-__publicField(_MessageBus, "listeners", /* @__PURE__ */ new Set());
 __publicField(_MessageBus, "isListening", false);
-__publicField(_MessageBus, "regionValuesStore", /* @__PURE__ */ new Map());
 var MessageBus = _MessageBus;
 
 // src/providers/CMSProvider.tsx

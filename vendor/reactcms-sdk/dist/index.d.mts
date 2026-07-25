@@ -87,9 +87,9 @@ declare const EditableRegistryContext: React.Context<EditableRegistryContextType
 
 type MessageListener = (message: RCMSMessage) => void;
 declare class MessageBus {
-    private static listeners;
+    private static get listeners();
+    private static get regionValuesStore();
     private static isListening;
-    private static regionValuesStore;
     static start(websiteId: string): void;
     static setStoredRegionValue(pageId: string, regionId: string, value: unknown): void;
     static getStoredRegionValue(pageId: string, regionId: string): unknown | undefined;

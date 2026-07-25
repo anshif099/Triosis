@@ -907,6 +907,10 @@ function EditableText({
         userSelect: "none"
       },
       onMouseDown: handleMouseDown,
+      onClick: (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      },
       "data-rcms-region": regionId,
       "data-rcms-type": "text",
       children: [
@@ -1136,6 +1140,10 @@ function EditableImage({
         userSelect: "none"
       },
       onMouseDown: handleMouseDown,
+      onClick: (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      },
       "data-rcms-region": regionId,
       "data-rcms-type": "image"
     }
@@ -1224,6 +1232,10 @@ function EditableSection({
   const pageId = page?.currentPage?.id || "global";
   const handleClick = (e) => {
     if (editMode && cms?.websiteId) {
+      const target = e.target;
+      if (target && target.closest(".rcms-editable-region") !== e.currentTarget) {
+        return;
+      }
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,

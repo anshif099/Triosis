@@ -533,51 +533,66 @@ function RuntimeProvider({
           },
           children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_reactcms_sdk10.CMSProvider, { websiteId, apiKey, environment: "production", children: [
             children,
-            isPreviewMode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-              "div",
-              {
-                style: {
-                  position: "fixed",
-                  bottom: "20px",
-                  right: "20px",
-                  zIndex: 999999,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  background: "#0f172a",
-                  border: "1px solid #334155",
-                  borderRadius: "12px",
-                  padding: "8px 14px",
-                  boxShadow: "0 20px 30px -5px rgba(0, 0, 0, 0.7)",
-                  fontFamily: "sans-serif",
-                  color: "#f8fafc",
-                  fontSize: "12px"
-                },
-                children: publishedToast ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#4ade80", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px" }, children: "\u2713 Published Live! Changes are live on your site!" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#94a3b8", fontSize: "11px", fontWeight: 600 }, children: "\u270F\uFE0F Visual Edit Mode" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: handlePublishFromPreview,
-                      disabled: publishingLive,
-                      style: {
-                        background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                        color: "#ffffff",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "6px 14px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)"
-                      },
-                      children: publishingLive ? "Publishing..." : "\u{1F680} Publish Live"
-                    }
-                  )
-                ] })
-              }
-            )
+            isPreviewMode && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+                "div",
+                {
+                  style: {
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "42px",
+                    zIndex: 9999999,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    background: "#090d16",
+                    borderBottom: "1px solid #1e293b",
+                    padding: "0 20px",
+                    boxSizing: "border-box",
+                    fontFamily: "sans-serif",
+                    color: "#f8fafc",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)"
+                  },
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: "12px" }, children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { style: { display: "flex", alignItems: "center", gap: "6px", background: "#1e293b", padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600, color: "#38bdf8" }, children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\u270F\uFE0F" }),
+                        " ReactCMS Visual Editor"
+                      ] }),
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { fontSize: "11px", color: "#64748b" }, children: "Draft auto-saves in real-time" })
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { display: "flex", alignItems: "center", gap: "12px" }, children: publishedToast ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#4ade80", fontWeight: "bold", fontSize: "12px", display: "flex", alignItems: "center", gap: "6px" }, children: "\u2713 Published Live! Changes are live on your site!" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: handlePublishFromPreview,
+                        disabled: publishingLive,
+                        style: {
+                          background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "6px 16px",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          boxShadow: "0 2px 8px rgba(37, 99, 235, 0.4)",
+                          transition: "all 0.2s ease"
+                        },
+                        children: publishingLive ? "Publishing..." : "\u{1F680} Publish Live"
+                      }
+                    ) })
+                  ]
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("style", { children: `
+                body {
+                  margin-top: 42px !important;
+                }
+              ` })
+            ] })
           ] })
         }
       )

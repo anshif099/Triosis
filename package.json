@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anshif.rainhopes/reactcms-runtime": "^1.0.8",
-    "@anshif.rainhopes/reactcms-sdk": "^1.0.16",
-    "@anshif.rainhopes/shared": "^1.0.4",
+    "@anshif.rainhopes/reactcms-runtime": "file:./vendor/reactcms-runtime",
+    "@anshif.rainhopes/reactcms-sdk": "file:./vendor/reactcms-sdk",
+    "@anshif.rainhopes/shared": "file:./vendor/shared",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

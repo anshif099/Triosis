@@ -139,6 +139,10 @@ declare function EditableText({ regionId, defaultValue, label, as: Component, cl
 interface ImageValue {
     src: string;
     alt?: string;
+    width?: string;
+    height?: string;
+    offsetX?: number;
+    offsetY?: number;
 }
 interface EditableImageProps {
     regionId: string;

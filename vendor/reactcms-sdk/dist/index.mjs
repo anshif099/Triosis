@@ -678,7 +678,7 @@ var postMessageBridge = {
 };
 
 // src/components/EditableText.tsx
-import { useContext as useContext10 } from "react";
+import { useContext as useContext10, useState as useState4, useRef } from "react";
 
 // src/utils/domStyles.ts
 function rgbToHex(colorStr) {
@@ -708,7 +708,7 @@ function getElementComputedStyle(el) {
 }
 
 // src/components/EditableText.tsx
-import { jsx as jsx4 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs } from "react/jsx-runtime";
 function EditableText({
   regionId,
   defaultValue,
@@ -719,9 +719,13 @@ function EditableText({
 }) {
   const cms = useContext10(CMSContext);
   const page = useContext10(PageContext);
-  const [value] = useEditable(regionId, defaultValue, "text", label);
+  const [value, setValue] = useEditable(regionId, defaultValue, "text", label);
   const editMode = cms?.editMode || false;
   const pageId = page?.currentPage?.id || "global";
+  const [isSelected, setIsSelected] = useState4(false);
+  const [isDragging, setIsDragging] = useState4(false);
+  const [dragOffset, setDragOffset] = useState4({ x: 0, y: 0 });
+  const dragStartRef = useRef(null);
   const isRich = typeof value === "object" && value !== null;
   const displayValue = isRich ? value.text !== void 0 ? value.text : "" : value;
   const textStyle = {};
@@ -739,10 +743,35 @@ function EditableText({
       resolvedAlign = value.align;
     }
     if (resolvedAlign) textStyle.textAlign = resolvedAlign;
+    const offX = isDragging ? dragOffset.x : value.offsetX || 0;
+    const offY = isDragging ? dragOffset.y : value.offsetY || 0;
+    if (offX || offY) {
+      textStyle.transform = `translate(${offX}px, ${offY}px)`;
+    }
+  } else if (isDragging && (dragOffset.x || dragOffset.y)) {
+    textStyle.transform = `translate(${dragOffset.x}px, ${dragOffset.y}px)`;
   }
-  const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
-      e.stopPropagation();
+  const handleUpdateAlign = (newAlign) => {
+    const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
+    let alignKey = "align";
+    if (vw < 768) alignKey = "alignMobile";
+    else if (vw < 1024) alignKey = "alignTablet";
+    const baseObj = isRich ? { ...value } : { text: displayValue };
+    baseObj[alignKey] = newAlign;
+    setValue(baseObj);
+  };
+  const handleResetPosition = () => {
+    const baseObj = isRich ? { ...value } : { text: displayValue };
+    delete baseObj.offsetX;
+    delete baseObj.offsetY;
+    setDragOffset({ x: 0, y: 0 });
+    setValue(baseObj);
+  };
+  const handleMouseDown = (e) => {
+    if (!editMode) return;
+    e.stopPropagation();
+    setIsSelected(true);
+    if (cms?.websiteId) {
       const computedStyle = getElementComputedStyle(e.currentTarget);
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -757,32 +786,203 @@ function EditableText({
         pageId
       });
     }
+    const initX = (isRich ? value.offsetX : 0) || 0;
+    const initY = (isRich ? value.offsetY : 0) || 0;
+    dragStartRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initX,
+      initY
+    };
+    const handleMouseMove = (moveEv) => {
+      if (!dragStartRef.current) return;
+      const dx = moveEv.clientX - dragStartRef.current.startX;
+      const dy = moveEv.clientY - dragStartRef.current.startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        setIsDragging(true);
+        setDragOffset({
+          x: dragStartRef.current.initX + dx,
+          y: dragStartRef.current.initY + dy
+        });
+      }
+    };
+    const handleMouseUp = (upEv) => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      if (dragStartRef.current) {
+        const dx = upEv.clientX - dragStartRef.current.startX;
+        const dy = upEv.clientY - dragStartRef.current.startY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+          const finalX = dragStartRef.current.initX + dx;
+          const finalY = dragStartRef.current.initY + dy;
+          const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
+          let alignKey = "align";
+          if (vw < 768) alignKey = "alignMobile";
+          else if (vw < 1024) alignKey = "alignTablet";
+          let newAlign = (isRich ? value[alignKey] : void 0) || "left";
+          if (dx < -40) newAlign = "left";
+          else if (dx > 40) newAlign = "right";
+          const baseObj = isRich ? { ...value } : { text: displayValue };
+          baseObj[alignKey] = newAlign;
+          baseObj.offsetX = finalX;
+          baseObj.offsetY = finalY;
+          setValue(baseObj);
+        }
+      }
+      setIsDragging(false);
+      dragStartRef.current = null;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
     return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle }, children: displayValue });
   }
-  return /* @__PURE__ */ jsx4(
+  const activeAlign = textStyle.textAlign || "left";
+  return /* @__PURE__ */ jsxs(
     Component,
     {
       className: `rcms-editable-region rcms-editable-text ${className}`,
       style: {
         ...style,
         ...textStyle,
-        outline: "2px dashed #3b82f6",
+        outline: isSelected ? "2px solid #3b82f6" : "2px dashed #3b82f6",
         outlineOffset: "2px",
         position: "relative",
-        cursor: "pointer"
+        cursor: isDragging ? "grabbing" : "grab",
+        userSelect: "none"
       },
-      onClick: handleClick,
+      onMouseDown: handleMouseDown,
       "data-rcms-region": regionId,
       "data-rcms-type": "text",
-      children: displayValue
+      children: [
+        displayValue,
+        isSelected && /* @__PURE__ */ jsxs(
+          "span",
+          {
+            style: {
+              position: "absolute",
+              top: "-42px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 99999,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              background: "#0f172a",
+              border: "1px solid #334155",
+              borderRadius: "8px",
+              padding: "4px 8px",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.6)",
+              whiteSpace: "nowrap",
+              pointerEvents: "auto",
+              fontFamily: "sans-serif",
+              fontSize: "11px"
+            },
+            onMouseDown: (e) => e.stopPropagation(),
+            onClick: (e) => e.stopPropagation(),
+            children: [
+              /* @__PURE__ */ jsx4("span", { style: { color: "#94a3b8", fontSize: "10px", fontWeight: 700, paddingRight: "4px", borderRight: "1px solid #334155" }, children: typeof window !== "undefined" && window.innerWidth < 768 ? "\u{1F4F1} Mobile" : typeof window !== "undefined" && window.innerWidth < 1024 ? "\u{1F4BB} Tablet" : "\u{1F5A5}\uFE0F Desktop" }),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Left",
+                  onClick: () => handleUpdateAlign("left"),
+                  style: {
+                    background: activeAlign === "left" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u2B05\uFE0F Left"
+                }
+              ),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Center",
+                  onClick: () => handleUpdateAlign("center"),
+                  style: {
+                    background: activeAlign === "center" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u2194\uFE0F Center"
+                }
+              ),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Right",
+                  onClick: () => handleUpdateAlign("right"),
+                  style: {
+                    background: activeAlign === "right" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u27A1\uFE0F Right"
+                }
+              ),
+              isRich && (value.offsetX || value.offsetY) ? /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Reset Position Offset",
+                  onClick: handleResetPosition,
+                  style: {
+                    background: "#dc2626",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 700
+                  },
+                  children: "\u21BA Reset Pos"
+                }
+              ) : null,
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Close",
+                  onClick: () => setIsSelected(false),
+                  style: {
+                    background: "transparent",
+                    color: "#64748b",
+                    border: "none",
+                    padding: "0 4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold"
+                  },
+                  children: "\u2715"
+                }
+              )
+            ]
+          }
+        )
+      ]
     }
   );
 }
 
 // src/components/EditableImage.tsx
-import { useContext as useContext11 } from "react";
+import { useContext as useContext11, useState as useState5, useRef as useRef2 } from "react";
 import { jsx as jsx5 } from "react/jsx-runtime";
 function EditableImage({
   regionId,
@@ -795,14 +995,30 @@ function EditableImage({
   const cms = useContext11(CMSContext);
   const page = useContext11(PageContext);
   const defaultImgObj = typeof defaultValue === "string" ? { src: defaultValue, alt: alt || "" } : defaultValue;
-  const [value] = useEditable(regionId, defaultImgObj, "image", label);
+  const [value, setValue] = useEditable(regionId, defaultImgObj, "image", label);
   const editMode = cms?.editMode || false;
   const pageId = page?.currentPage?.id || "global";
+  const [isDragging, setIsDragging] = useState5(false);
+  const [dragOffset, setDragOffset] = useState5({ x: 0, y: 0 });
+  const dragStartRef = useRef2(null);
   const imgSrc = typeof value === "string" ? value : value?.src || "";
   const imgAlt = typeof value === "string" ? alt || "" : value?.alt || alt || "";
-  const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
-      e.stopPropagation();
+  const imgStyle = { ...style };
+  if (typeof value === "object" && value !== null) {
+    if (value.width) imgStyle.width = value.width;
+    if (value.height) imgStyle.height = value.height;
+    const offX = isDragging ? dragOffset.x : value.offsetX || 0;
+    const offY = isDragging ? dragOffset.y : value.offsetY || 0;
+    if (offX || offY) {
+      imgStyle.transform = `translate(${offX}px, ${offY}px)`;
+    }
+  } else if (isDragging && (dragOffset.x || dragOffset.y)) {
+    imgStyle.transform = `translate(${dragOffset.x}px, ${dragOffset.y}px)`;
+  }
+  const handleMouseDown = (e) => {
+    if (!editMode) return;
+    e.stopPropagation();
+    if (cms?.websiteId) {
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
         type: "image",
@@ -815,9 +1031,42 @@ function EditableImage({
         pageId
       });
     }
+    const isObj = typeof value === "object" && value !== null;
+    const initX = (isObj ? value.offsetX : 0) || 0;
+    const initY = (isObj ? value.offsetY : 0) || 0;
+    dragStartRef.current = { startX: e.clientX, startY: e.clientY, initX, initY };
+    const handleMouseMove = (moveEv) => {
+      if (!dragStartRef.current) return;
+      const dx = moveEv.clientX - dragStartRef.current.startX;
+      const dy = moveEv.clientY - dragStartRef.current.startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        setIsDragging(true);
+        setDragOffset({ x: dragStartRef.current.initX + dx, y: dragStartRef.current.initY + dy });
+      }
+    };
+    const handleMouseUp = (upEv) => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      if (dragStartRef.current) {
+        const dx = upEv.clientX - dragStartRef.current.startX;
+        const dy = upEv.clientY - dragStartRef.current.startY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+          const finalX = dragStartRef.current.initX + dx;
+          const finalY = dragStartRef.current.initY + dy;
+          const baseObj = typeof value === "object" ? { ...value } : { src: imgSrc, alt: imgAlt };
+          baseObj.offsetX = finalX;
+          baseObj.offsetY = finalY;
+          setValue(baseObj);
+        }
+      }
+      setIsDragging(false);
+      dragStartRef.current = null;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style });
+    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
   }
   return /* @__PURE__ */ jsx5(
     "img",
@@ -826,12 +1075,13 @@ function EditableImage({
       alt: imgAlt,
       className: `rcms-editable-region rcms-editable-image ${className}`,
       style: {
-        ...style,
+        ...imgStyle,
         outline: "2px dashed #3b82f6",
         outlineOffset: "2px",
-        cursor: "pointer"
+        cursor: isDragging ? "grabbing" : "grab",
+        userSelect: "none"
       },
-      onClick: handleClick,
+      onMouseDown: handleMouseDown,
       "data-rcms-region": regionId,
       "data-rcms-type": "image"
     }

@@ -780,6 +780,9 @@ function EditableText({
   const [isDragging, setIsDragging] = (0, import_react17.useState)(false);
   const [dragOffset, setDragOffset] = (0, import_react17.useState)({ x: 0, y: 0 });
   const dragStartRef = (0, import_react17.useRef)(null);
+  const [isResizing, setIsResizing] = (0, import_react17.useState)(false);
+  const [resizeWidth, setResizeWidth] = (0, import_react17.useState)(null);
+  const resizeStartRef = (0, import_react17.useRef)(null);
   const isRich = typeof value === "object" && value !== null;
   const displayValue = isRich ? value.text !== void 0 ? value.text : "" : value;
   const textStyle = {};
@@ -787,6 +790,8 @@ function EditableText({
     if (value.fontSize) textStyle.fontSize = value.fontSize;
     if (value.fontWeight) textStyle.fontWeight = value.fontWeight;
     if (value.color) textStyle.color = value.color;
+    if (value.width) textStyle.width = value.width;
+    if (value.maxWidth) textStyle.maxWidth = value.maxWidth;
     const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
     let resolvedAlign;
     if (vw < 768 && value.alignMobile) {
@@ -805,6 +810,11 @@ function EditableText({
   } else if (isDragging && (dragOffset.x || dragOffset.y)) {
     textStyle.transform = `translate(${dragOffset.x}px, ${dragOffset.y}px)`;
   }
+  if (resizeWidth) {
+    textStyle.width = `${resizeWidth}px`;
+    textStyle.maxWidth = "100%";
+    textStyle.display = "inline-block";
+  }
   const handleUpdateAlign = (newAlign) => {
     const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
     let alignKey = "align";
@@ -818,8 +828,43 @@ function EditableText({
     const baseObj = isRich ? { ...value } : { text: displayValue };
     delete baseObj.offsetX;
     delete baseObj.offsetY;
+    delete baseObj.width;
     setDragOffset({ x: 0, y: 0 });
+    setResizeWidth(null);
     setValue(baseObj);
+  };
+  const handleResizeMouseDown = (e) => {
+    if (!editMode) return;
+    e.stopPropagation();
+    e.preventDefault();
+    setIsResizing(true);
+    const targetEl = e.currentTarget.parentElement;
+    const startWidth = targetEl ? targetEl.getBoundingClientRect().width : 300;
+    resizeStartRef.current = {
+      startX: e.clientX,
+      startWidth
+    };
+    const handleMouseMove = (moveEv) => {
+      if (!resizeStartRef.current) return;
+      const dx = moveEv.clientX - resizeStartRef.current.startX;
+      const newWidth = Math.max(120, Math.round(resizeStartRef.current.startWidth + dx));
+      setResizeWidth(newWidth);
+    };
+    const handleMouseUp = (upEv) => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      if (resizeStartRef.current) {
+        const dx = upEv.clientX - resizeStartRef.current.startX;
+        const finalWidth = Math.max(120, Math.round(resizeStartRef.current.startWidth + dx));
+        const baseObj = isRich ? { ...value } : { text: displayValue };
+        baseObj.width = `${finalWidth}px`;
+        setValue(baseObj);
+      }
+      setIsResizing(false);
+      resizeStartRef.current = null;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
   const handleMouseDown = (e) => {
     if (!editMode) return;
@@ -1032,6 +1077,30 @@ function EditableText({
                 }
               )
             ]
+          }
+        ),
+        editMode && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          "span",
+          {
+            title: "Drag handle to resize text area width",
+            style: {
+              position: "absolute",
+              bottom: "-6px",
+              right: "-6px",
+              width: "12px",
+              height: "12px",
+              background: isResizing ? "#2563eb" : "#3b82f6",
+              border: "2px solid #ffffff",
+              borderRadius: "3px",
+              cursor: "se-resize",
+              zIndex: 99999,
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
+            },
+            onMouseDown: handleResizeMouseDown,
+            onClick: (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }
           }
         )
       ]

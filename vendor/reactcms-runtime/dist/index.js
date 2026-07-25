@@ -398,6 +398,29 @@ function RuntimeProvider({
         });
       }
     );
+    const isPreviewMode = typeof window !== "undefined" && (window.self !== window.top || window.location.search.includes("rcms_preview") || window.location.search.includes("rcms_edit"));
+    let unsubscribeDraft = () => {
+    };
+    if (isPreviewMode) {
+      unsubscribeDraft = editableSync.subscribeToDraftRegions(
+        apiKey,
+        websiteId,
+        currentPageId,
+        (draftRegions) => {
+          Object.entries(draftRegions).forEach(([regionId, value]) => {
+            MessageBus2.setStoredRegionValue(currentPageId, regionId, value);
+            MessageBus2.dispatchLocal({
+              rcms: true,
+              version: "v1",
+              type: "rcms/v1/field-update",
+              websiteId,
+              payload: { pageId: currentPageId, regionId, value },
+              timestamp: Date.now()
+            });
+          });
+        }
+      );
+    }
     const unsubscribeMessages = setupRuntimeMessageHandler(websiteId, {
       onThemeUpdate: (updatedTheme) => {
         registerTheme(websiteId, apiKey, updatedTheme);
@@ -413,6 +436,7 @@ function RuntimeProvider({
     return () => {
       HeartbeatService.stop();
       unsubscribePublished();
+      unsubscribeDraft();
       unsubscribeMessages();
     };
   }, [websiteId, apiKey, routes]);

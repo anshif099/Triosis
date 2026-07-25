@@ -497,18 +497,35 @@ var editableSync = {
   async publishDraftRegions(apiKey, websiteId, pageId) {
     try {
       const db = getFirebaseDatabase(apiKey);
-      const draftRef = ref(db, paths.contentDraft(websiteId, pageId));
-      const snapshot = await get(draftRef);
-      if (!snapshot.exists()) return false;
-      const draftVal = snapshot.val();
-      const payload = {
-        ...typeof draftVal === "object" && draftVal !== null ? draftVal : {},
-        publishedAt: Date.now()
-      };
-      const keys = Array.from(/* @__PURE__ */ new Set([pageId, "home"]));
-      await Promise.all(
-        keys.map((key) => set(ref(db, paths.contentPublished(websiteId, key)), payload))
-      );
+      const allDraftsRef = ref(db, `content/${websiteId}/sync/draft/pages`);
+      const snapshot = await get(allDraftsRef);
+      if (!snapshot.exists()) {
+        const singleRef = ref(db, paths.contentDraft(websiteId, pageId));
+        const singleSnap = await get(singleRef);
+        if (!singleSnap.exists()) return false;
+        const draftVal = singleSnap.val();
+        const payload = {
+          ...typeof draftVal === "object" && draftVal !== null ? draftVal : {},
+          publishedAt: Date.now()
+        };
+        await Promise.all([
+          set(ref(db, paths.contentPublished(websiteId, pageId)), payload),
+          set(ref(db, paths.contentPublished(websiteId, "home")), payload)
+        ]);
+        return true;
+      }
+      const pagesObj = snapshot.val();
+      const promises = [];
+      Object.entries(pagesObj).forEach(([pId, draftVal]) => {
+        if (!draftVal || typeof draftVal !== "object") return;
+        const payload = {
+          ...draftVal,
+          publishedAt: Date.now()
+        };
+        promises.push(set(ref(db, paths.contentPublished(websiteId, pId)), payload));
+        promises.push(set(ref(db, paths.contentPublished(websiteId, "home")), payload));
+      });
+      await Promise.all(promises);
       return true;
     } catch (err) {
       console.error(`[ReactCMS SDK] Failed to publish draft regions:`, err);

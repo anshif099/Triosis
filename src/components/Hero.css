@@ -124,12 +124,18 @@
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  .hero-right {
+    justify-content: flex-start !important;
+    width: 100% !important;
+    transform: none !important;
+  }
   .we-help-container {
     display: flex !important;
     align-items: flex-start !important;
     gap: 16px !important;
     max-width: 100% !important;
     margin-top: 8px !important;
+    transform: none !important;
   }
   .we-help-logo {
     width: 42px !important;
@@ -138,6 +144,7 @@
     visibility: visible !important;
     opacity: 1 !important;
     flex-shrink: 0 !important;
+    transform: none !important;
   }
   .we-help-text {
     font-size: 15px !important;
@@ -146,6 +153,7 @@
     visibility: visible !important;
     opacity: 1 !important;
     margin: 0 !important;
+    transform: none !important;
   }
 }
 
@@ -578,12 +586,18 @@
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  .hero-right {
+    justify-content: flex-start !important;
+    width: 100% !important;
+    transform: none !important;
+  }
   .we-help-container {
     display: flex !important;
     align-items: flex-start !important;
     gap: 12px !important;
     max-width: 100% !important;
     margin-top: 4px !important;
+    transform: none !important;
   }
   .we-help-logo {
     width: 36px !important;
@@ -592,6 +606,7 @@
     visibility: visible !important;
     opacity: 1 !important;
     flex-shrink: 0 !important;
+    transform: none !important;
   }
   .we-help-text {
     font-size: 13.5px !important;
@@ -601,6 +616,7 @@
     visibility: visible !important;
     opacity: 1 !important;
     margin: 0 !important;
+    transform: none !important;
   }
   .hero-taglines-wrapper {
     margin-top: 24px !important;

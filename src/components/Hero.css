@@ -539,3 +539,50 @@
     letter-spacing: 2px;
   }
 }
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 32px 16px 60px 16px;
+  }
+  .hero-heading {
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  .we-help-container {
+    gap: 12px;
+  }
+  .we-help-logo {
+    width: 36px;
+    height: 60px;
+  }
+  .we-help-text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .hero-taglines-wrapper {
+    margin-top: 30px;
+  }
+  .hero-taglines {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding-top: 16px;
+    justify-content: center;
+  }
+  .tagline-word {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .foggy-glow {
+    width: 240px;
+    height: 90px;
+  }
+  .animation-popup-card {
+    bottom: 60px;
+    width: 200px;
+    height: 150px;
+    padding: 12px;
+  }
+}

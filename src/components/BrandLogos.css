@@ -123,3 +123,14 @@
     border-radius: 16px;
   }
 }
+
+@media (max-width: 480px) {
+  .logos-section {
+    padding: 40px 0 60px 0;
+  }
+  .logo-card {
+    width: 140px;
+    height: 75px;
+    border-radius: 12px;
+  }
+}

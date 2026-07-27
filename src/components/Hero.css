@@ -86,25 +86,53 @@
 }
 
 /* Responsive Styles */
-@media (max-width: 1024px) {
+@media (max-width: 1240px) {
   .hero-section {
-    padding: 60px 40px 100px 40px;
+    padding: 60px 40px 100px 40px !important;
   }
   .hero-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 60px;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 28px !important;
   }
   .hero-heading {
-    font-size: 56px;
+    font-size: 48px !important;
+    line-height: 1.2 !important;
   }
   .foggy-glow {
     width: 320px;
     height: 120px;
   }
   .hero-right {
-    justify-content: flex-start;
-    width: 100%;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+  .we-help-container {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
+    max-width: 100% !important;
+    margin-top: 8px !important;
+    transform: none !important;
+  }
+  .we-help-logo {
+    width: 50px !important;
+    height: 90px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
+    transform: none !important;
+  }
+  .we-help-text {
+    font-size: 16px !important;
+    color: var(--text) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 !important;
+    transform: none !important;
   }
 }
 

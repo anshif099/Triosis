@@ -110,11 +110,16 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 40px 20px 80px 20px;
+    padding: 40px 20px 80px 20px !important;
   }
   .hero-heading {
-    font-size: 40px;
-    letter-spacing: -0.5px;
+    font-size: 36px !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .we-help-container {
     gap: 20px;
@@ -542,14 +547,17 @@
 
 @media (max-width: 480px) {
   .hero-section {
-    padding: 32px 16px 60px 16px;
+    padding: 32px 16px 60px 16px !important;
   }
   .hero-heading {
-    font-size: 28px;
-    line-height: 1.25;
-    letter-spacing: -0.5px;
-    word-break: break-word;
-    hyphens: auto;
+    font-size: 26px !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.5px !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .we-help-container {
     gap: 12px;

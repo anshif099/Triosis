@@ -112,6 +112,9 @@
   .hero-section {
     padding: 40px 20px 80px 20px !important;
   }
+  .hero-content {
+    gap: 24px !important;
+  }
   .hero-heading {
     font-size: 36px !important;
     letter-spacing: -0.5px !important;
@@ -122,14 +125,27 @@
     box-sizing: border-box !important;
   }
   .we-help-container {
-    gap: 20px;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    max-width: 100% !important;
+    margin-top: 8px !important;
   }
   .we-help-logo {
-    width: 45px;
-    height: 80px;
+    width: 42px !important;
+    height: 75px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
   }
   .we-help-text {
-    font-size: 15px;
+    font-size: 15px !important;
+    color: var(--text) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 !important;
   }
 }
 
@@ -549,6 +565,9 @@
   .hero-section {
     padding: 32px 16px 60px 16px !important;
   }
+  .hero-content {
+    gap: 16px !important;
+  }
   .hero-heading {
     font-size: 26px !important;
     line-height: 1.25 !important;
@@ -560,18 +579,31 @@
     box-sizing: border-box !important;
   }
   .we-help-container {
-    gap: 12px;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    max-width: 100% !important;
+    margin-top: 4px !important;
   }
   .we-help-logo {
-    width: 36px;
-    height: 60px;
+    width: 36px !important;
+    height: 60px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
   }
   .we-help-text {
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13.5px !important;
+    line-height: 1.45 !important;
+    color: var(--text) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 !important;
   }
   .hero-taglines-wrapper {
-    margin-top: 30px;
+    margin-top: 24px !important;
   }
   .hero-taglines {
     flex-wrap: wrap;

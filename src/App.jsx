@@ -8,6 +8,7 @@ import ServicesPage from './pages/ServicesPage.jsx';
 import PortfolioPage from './pages/PortfolioPage.jsx';
 import BlogPage from './pages/BlogPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
+import DynamicCMSPage from './pages/DynamicCMSPage.jsx';
 import Cursor from './components/Cursor.jsx';
 import { CMSLayout, CMSNavigation } from '@anshif.rainhopes/reactcms-runtime';
 import './App.css';
@@ -47,9 +48,25 @@ const pageToPath = {
 
 function App() {
   const getInitialPage = () => {
+    // 1. Check URL query parameters (?page=ai-integrated-digital-marketing)
+    if (typeof window !== 'undefined' && window.location.search) {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const queryPage = params.get('page') || params.get('rcms_page');
+        if (queryPage && queryPage !== 'home') {
+          return pathToPage[`/${queryPage}`] || queryPage;
+        }
+      } catch {
+        // Fallthrough
+      }
+    }
+
+    // 2. Check URL pathname
     const path = window.location.pathname.toLowerCase();
     const cleanPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
-    return pathToPage[cleanPath] || 'home';
+    if (cleanPath === '' || cleanPath === '/') return 'home';
+
+    return pathToPage[cleanPath] || cleanPath.replace(/^\/+/, '') || 'home';
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
@@ -57,7 +74,7 @@ function App() {
   useEffect(() => {
     const handleNavigate = (e) => {
       const targetPage = e.detail.page;
-      const targetPath = pageToPath[targetPage] || '/';
+      const targetPath = pageToPath[targetPage] || `/${targetPage}`;
       
       if (window.location.pathname.toLowerCase() !== targetPath.toLowerCase()) {
         window.history.pushState(null, '', targetPath);
@@ -71,14 +88,27 @@ function App() {
     };
 
     const handlePopState = () => {
+      // 1. Check URL query parameters (?page=...)
+      if (typeof window !== 'undefined' && window.location.search) {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const queryPage = params.get('page') || params.get('rcms_page');
+          if (queryPage && queryPage !== 'home') {
+            const resolved = pathToPage[`/${queryPage}`] || queryPage;
+            setCurrentPage((prev) => (prev !== resolved ? resolved : prev));
+            return;
+          }
+        } catch {
+          // Fallthrough
+        }
+      }
+
+      // 2. Check pathname
       const path = window.location.pathname.toLowerCase();
       const cleanPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
-      const targetPage = pathToPage[cleanPath] || 'home';
+      const targetPage = pathToPage[cleanPath] || (cleanPath === '' || cleanPath === '/' ? 'home' : cleanPath.replace(/^\/+/, ''));
 
-      window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
-      setTimeout(() => {
-        setCurrentPage(targetPage);
-      }, 800);
+      setCurrentPage((prev) => (prev !== targetPage ? targetPage : prev));
     };
 
     window.addEventListener('navigate', handleNavigate);
@@ -88,6 +118,8 @@ function App() {
       window.removeEventListener('popstate', handlePopState);
     };
   }, []);
+
+  const isStandardPage = ['home', 'about', 'career', 'our-team', 'faqs', 'services', 'portfolio', 'blog', 'contact'].includes(currentPage);
 
   return (
     <div className="app">
@@ -103,6 +135,9 @@ function App() {
       {currentPage === 'portfolio' && <PortfolioPage />}
       {currentPage === 'blog' && <BlogPage />}
       {currentPage === 'contact' && <ContactPage />}
+
+      {/* Dynamic CMS Generated / Created Pages */}
+      {!isStandardPage && <DynamicCMSPage pageSlug={currentPage} />}
     </div>
   );
 }

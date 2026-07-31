@@ -30,7 +30,7 @@ function Hero() {
           <EditableText
             regionId="hero.title"
             label="Hero Heading"
-            defaultValue="Strategic Digital Solutions for Businesses That Want to Lead ."
+            defaultValue={{"text":"Strategic Digital Solutions for Businesses That Want to Lead .","width":"933px"}}
             className="hero-heading"
             as="h1"
           />
@@ -43,13 +43,13 @@ function Hero() {
             <EditableImage
               regionId="hero.logo"
               label="Hero Symbol Logo"
-              defaultValue={{ src: heroLogo, alt: "Triosis Symbol" }}
+              defaultValue={{"src":"/assets/hero-DqeVD-Ry.png","alt":"Triosis Symbol","offsetX":-672,"offsetY":13}}
               className="we-help-logo"
             />
             <EditableText
               regionId="hero.subtext"
               label="Hero Subtext"
-              defaultValue="We help ambitious businesses grow through innovative technology, creative marketing, and measurable digital strategies that deliver long-term business success."
+              defaultValue={{"text":"We help ambitious businesses grow through innovative technology, creative marketing, and measurable digital strategies that deliver long-term business success.","align":"left","offsetX":-620,"offsetY":0,"width":"405px"}}
               className="we-help-text"
               as="p"
             />

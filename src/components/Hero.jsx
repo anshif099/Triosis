@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableImage, EditableSection, useEditable } from '@anshif.rainhopes/reactcms-sdk';
 import heroLogo from '../assets/hero.png';
 import innovateBg from '../assets/innovate_bg.png';
 import transformBg from '../assets/transform_bg.png';
@@ -8,21 +8,53 @@ import './Hero.css';
 
 function Hero() {
   const [hoveredTagline, setHoveredTagline] = useState(null);
+  const [clickedTagline, setClickedTagline] = useState(null);
+
+  const activeTagline = hoveredTagline || clickedTagline;
+
+  const handleTaglineClick = (taglineKey) => {
+    setClickedTagline((prev) => (prev === taglineKey ? null : taglineKey));
+  };
+
+  const [innovateBgVal] = useEditable(
+    'hero.tagline_1_bg',
+    { src: innovateBg, alt: 'Innovate Background' },
+    'image',
+    'Innovate Background Image'
+  );
+
+  const [transformBgVal] = useEditable(
+    'hero.tagline_2_bg',
+    { src: transformBg, alt: 'Transform Background' },
+    'image',
+    'Transform Background Image'
+  );
+
+  const [growBgVal] = useEditable(
+    'hero.tagline_3_bg',
+    { src: growBg, alt: 'Grow Background' },
+    'image',
+    'Grow Background Image'
+  );
+
+  const innovateBgSrc = typeof innovateBgVal === 'string' ? innovateBgVal : (innovateBgVal?.src || innovateBg);
+  const transformBgSrc = typeof transformBgVal === 'string' ? transformBgVal : (transformBgVal?.src || transformBg);
+  const growBgSrc = typeof growBgVal === 'string' ? growBgVal : (growBgVal?.src || growBg);
 
   return (
-    <EditableSection regionId="hero.section" label="Hero Section" className={`hero-section ${hoveredTagline ? 'has-bg-hover' : ''}`}>
-      {/* Interactive hover background layers */}
+    <EditableSection regionId="hero.section" label="Hero Section" className={`hero-section ${activeTagline ? 'has-bg-hover' : ''}`}>
+      {/* Interactive hover/click background layers */}
       <div 
-        className={`hero-hover-bg innovate-bg ${hoveredTagline === 'innovate' ? 'active' : ''}`}
-        style={{ backgroundImage: `url(${innovateBg})` }}
+        className={`hero-hover-bg innovate-bg ${activeTagline === 'innovate' ? 'active' : ''}`}
+        style={{ backgroundImage: `url(${innovateBgSrc})` }}
       />
       <div 
-        className={`hero-hover-bg transform-bg ${hoveredTagline === 'transform' ? 'active' : ''}`}
-        style={{ backgroundImage: `url(${transformBg})` }}
+        className={`hero-hover-bg transform-bg ${activeTagline === 'transform' ? 'active' : ''}`}
+        style={{ backgroundImage: `url(${transformBgSrc})` }}
       />
       <div 
-        className={`hero-hover-bg grow-bg ${hoveredTagline === 'grow' ? 'active' : ''}`}
-        style={{ backgroundImage: `url(${growBg})` }}
+        className={`hero-hover-bg grow-bg ${activeTagline === 'grow' ? 'active' : ''}`}
+        style={{ backgroundImage: `url(${growBgSrc})` }}
       />
 
       <div className="hero-content">
@@ -59,38 +91,47 @@ function Hero() {
 
       {/* Interactive Taglines & Popups */}
       <div className="hero-taglines-wrapper">
-        {hoveredTagline && (
-          <div className={`animation-popup-card ${hoveredTagline}-active`}>
-            {hoveredTagline === 'innovate' && (
+        {activeTagline && (
+          <div className={`animation-popup-card ${activeTagline}-active`}>
+            {activeTagline === 'innovate' && (
               <div className="animation-content innovate-anim">
                 <svg viewBox="0 0 100 100" className="anim-svg">
-                  {/* Concentric rotating orbital rings */}
                   <circle cx="50" cy="50" r="40" className="ring ring-1" />
                   <circle cx="50" cy="50" r="30" className="ring ring-2" />
                   <circle cx="50" cy="50" r="20" className="ring ring-3" />
-                  {/* Orbiting dots */}
                   <circle cx="50" cy="10" r="3" className="orbit-dot dot-1" />
                   <circle cx="90" cy="50" r="3" className="orbit-dot dot-2" />
                   <circle cx="50" cy="90" r="3" className="orbit-dot dot-3" />
-                  {/* Glowing center core */}
                   <circle cx="50" cy="50" r="8" className="core-dot" />
                 </svg>
-                <div className="popup-label">INNOVATING FUTURE TECH</div>
+                <EditableText
+                  regionId="hero.tagline_1_popup"
+                  label="Innovate Popup Label"
+                  defaultValue="INNOVATING FUTURE TECH"
+                  className="popup-label"
+                  as="div"
+                />
               </div>
             )}
 
-            {hoveredTagline === 'transform' && (
+            {activeTagline === 'transform' && (
               <div className="animation-content transform-anim">
                 <div className="morph-blobs-container">
                   <div className="morph-blob blob-1"></div>
                   <div className="morph-blob blob-2"></div>
                   <div className="morph-blob blob-3"></div>
                 </div>
-                <div className="popup-label">TRANSFORMING BUSINESSES</div>
+                <EditableText
+                  regionId="hero.tagline_2_popup"
+                  label="Transform Popup Label"
+                  defaultValue="TRANSFORMING BUSINESSES"
+                  className="popup-label"
+                  as="div"
+                />
               </div>
             )}
 
-            {hoveredTagline === 'grow' && (
+            {activeTagline === 'grow' && (
               <div className="animation-content grow-anim">
                 <svg viewBox="0 0 120 120" className="anim-svg">
                   <defs>
@@ -100,53 +141,111 @@ function Hero() {
                     </linearGradient>
                   </defs>
                   
-                  {/* Chart Grid Lines */}
                   <line x1="20" y1="20" x2="20" y2="100" className="grid-line" />
                   <line x1="20" y1="100" x2="100" y2="100" className="grid-line" />
                   
-                  {/* Growing Bars */}
                   <rect x="30" y="80" width="8" height="20" className="bar bar-1" />
                   <rect x="48" y="65" width="8" height="35" className="bar bar-2" />
                   <rect x="66" y="50" width="8" height="50" className="bar bar-3" />
                   <rect x="84" y="30" width="8" height="70" className="bar bar-4" />
                   
-                  {/* Glowing Trend Line */}
                   <path d="M 34 80 L 52 65 L 70 50 L 88 30" className="trend-line" />
                   
-                  {/* Pulse Nodes */}
                   <circle cx="34" cy="80" r="3.5" className="node node-1" />
                   <circle cx="52" cy="65" r="3.5" className="node node-2" />
                   <circle cx="70" cy="50" r="3.5" className="node node-3" />
                   <circle cx="88" cy="30" r="3.5" className="node node-4" />
                 </svg>
-                <div className="popup-label">SCALING GROWTH</div>
+                <EditableText
+                  regionId="hero.tagline_3_popup"
+                  label="Grow Popup Label"
+                  defaultValue="SCALING GROWTH"
+                  className="popup-label"
+                  as="div"
+                />
               </div>
             )}
           </div>
         )}
 
         <div className="hero-taglines">
-          <span 
-            className={`tagline-word innovate ${hoveredTagline === 'innovate' ? 'active' : ''}`}
-            onMouseEnter={() => setHoveredTagline('innovate')}
-            onMouseLeave={() => setHoveredTagline(null)}
-          >
-            Innovate.
-          </span>
-          <span 
-            className={`tagline-word transform ${hoveredTagline === 'transform' ? 'active' : ''}`}
-            onMouseEnter={() => setHoveredTagline('transform')}
-            onMouseLeave={() => setHoveredTagline(null)}
-          >
-            Transform.
-          </span>
-          <span 
-            className={`tagline-word grow ${hoveredTagline === 'grow' ? 'active' : ''}`}
-            onMouseEnter={() => setHoveredTagline('grow')}
-            onMouseLeave={() => setHoveredTagline(null)}
-          >
-            Grow.
-          </span>
+          {/* Tagline 1: Innovate */}
+          <div className="tagline-block">
+            <span 
+              className={`tagline-word innovate ${activeTagline === 'innovate' ? 'active' : ''}`}
+              onMouseEnter={() => setHoveredTagline('innovate')}
+              onMouseLeave={() => setHoveredTagline(null)}
+              onClick={() => handleTaglineClick('innovate')}
+            >
+              <EditableText
+                regionId="hero.tagline_1_text"
+                label="Tagline 1 Text (Innovate)"
+                defaultValue="Innovate."
+                as="span"
+              />
+            </span>
+            <div className="tagline-bg-thumb-container" title="Change Innovate Background Image">
+              <span className="thumb-label">BG 1:</span>
+              <EditableImage
+                regionId="hero.tagline_1_bg"
+                label="Tagline 1 BG Image"
+                defaultValue={{ src: innovateBg, alt: "Innovate Background" }}
+                className="tagline-bg-thumb"
+              />
+            </div>
+          </div>
+
+          {/* Tagline 2: Transform */}
+          <div className="tagline-block">
+            <span 
+              className={`tagline-word transform ${activeTagline === 'transform' ? 'active' : ''}`}
+              onMouseEnter={() => setHoveredTagline('transform')}
+              onMouseLeave={() => setHoveredTagline(null)}
+              onClick={() => handleTaglineClick('transform')}
+            >
+              <EditableText
+                regionId="hero.tagline_2_text"
+                label="Tagline 2 Text (Transform)"
+                defaultValue="Transform."
+                as="span"
+              />
+            </span>
+            <div className="tagline-bg-thumb-container" title="Change Transform Background Image">
+              <span className="thumb-label">BG 2:</span>
+              <EditableImage
+                regionId="hero.tagline_2_bg"
+                label="Tagline 2 BG Image"
+                defaultValue={{ src: transformBg, alt: "Transform Background" }}
+                className="tagline-bg-thumb"
+              />
+            </div>
+          </div>
+
+          {/* Tagline 3: Grow */}
+          <div className="tagline-block">
+            <span 
+              className={`tagline-word grow ${activeTagline === 'grow' ? 'active' : ''}`}
+              onMouseEnter={() => setHoveredTagline('grow')}
+              onMouseLeave={() => setHoveredTagline(null)}
+              onClick={() => handleTaglineClick('grow')}
+            >
+              <EditableText
+                regionId="hero.tagline_3_text"
+                label="Tagline 3 Text (Grow)"
+                defaultValue="Grow."
+                as="span"
+              />
+            </span>
+            <div className="tagline-bg-thumb-container" title="Change Grow Background Image">
+              <span className="thumb-label">BG 3:</span>
+              <EditableImage
+                regionId="hero.tagline_3_bg"
+                label="Tagline 3 BG Image"
+                defaultValue={{ src: growBg, alt: "Grow Background" }}
+                className="tagline-bg-thumb"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </EditableSection>

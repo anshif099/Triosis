@@ -110,15 +110,46 @@
 }
 
 .brand-logo-img {
-  max-height: 44px;
+  max-height: 48px;
   max-width: 160px;
   object-fit: contain;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
-.brand-logo-img[src=""],
-.brand-logo-img:not([src]) {
-  display: none;
+.brand-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.brand-title-text {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.brand-subtitle-text {
+  font-size: 7px;
+  font-weight: 600;
+  opacity: 0.75;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* In editMode, render empty EditableImage as a clickable blue placeholder box */
+.rcms-editable-image.brand-logo-img:not([src]),
+.rcms-editable-image.brand-logo-img[src=""] {
+  display: inline-block !important;
+  width: 120px;
+  height: 36px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1.5px dashed #3b82f6 !important;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 /* Responsive adjustment */

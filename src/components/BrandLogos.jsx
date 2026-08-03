@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { EditableText, EditableImage, EditableSection, EditableRepeater, CMSContext } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableImage, EditableButton, EditableSection, EditableRepeater, CMSContext } from '@anshif.rainhopes/reactcms-sdk';
 import './BrandLogos.css';
 
 const defaultBrands = [
@@ -14,55 +14,61 @@ const defaultBrands = [
 
 function BrandCard({ brand, index }) {
   const brandId = brand.id || (index + 1);
-  const title = brand.title || defaultBrands[index % 7].title;
-  const subtitle = brand.subtitle || defaultBrands[index % 7].subtitle;
-  const color = brand.color || defaultBrands[index % 7].color;
+  const defaultTitle = brand.title || defaultBrands[index % 7].title;
+  const defaultSubtitle = brand.subtitle || defaultBrands[index % 7].subtitle;
+  const defaultColor = brand.color || defaultBrands[index % 7].color;
+  const defaultUrl = brand.url || defaultBrands[index % 7].url;
 
   const cms = useContext(CMSContext);
   const editMode = cms?.editMode || false;
 
-  const handleBrandClick = (e, url) => {
+  const handleBrandClick = (e) => {
     if (!editMode) {
       if (e && e.preventDefault) e.preventDefault();
       window.dispatchEvent(new Event('trigger-preloader'));
       setTimeout(() => {
-        if (url && url !== '#') {
-          window.location.href = url;
+        if (defaultUrl && defaultUrl !== '#') {
+          window.location.href = defaultUrl;
         }
       }, 1000);
     }
   };
 
   return (
-    <div 
-      className="logo-card" 
-      onClick={(e) => handleBrandClick(e, brand.url)}
+    <EditableButton
+      regionId={`brand_logos.item_${brandId}.card_link`}
+      label={`Brand ${brandId} Card & Link`}
+      defaultValue={{ text: defaultTitle, href: defaultUrl }}
+      className="logo-card"
+      onClick={handleBrandClick}
+      as="div"
     >
-      <div className="brand-logo-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '4px' }}>
+      <div className="brand-logo-content">
         <EditableImage
           regionId={`brand_logos.item_${brandId}.image`}
           label={`Brand ${brandId} Logo Image`}
-          defaultValue={{ src: brand.image || '', alt: title }}
+          defaultValue={{ src: brand.image || '', alt: defaultTitle }}
           className="brand-logo-img"
         />
-        <EditableText
-          regionId={`brand_logos.item_${brandId}.title`}
-          label={`Brand ${brandId} Title`}
-          defaultValue={title}
-          className="brand-title-text"
-          style={{ color, fontWeight: '700', fontSize: '18px', letterSpacing: '-0.3px', fontFamily: 'Poppins, sans-serif' }}
-          as="span"
-        />
-        <EditableText
-          regionId={`brand_logos.item_${brandId}.subtitle`}
-          label={`Brand ${brandId} Subtitle`}
-          defaultValue={subtitle}
-          className="brand-subtitle-text"
-          style={{ fontSize: '7px', fontWeight: '600', opacity: 0.75, letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'Poppins, sans-serif' }}
-          as="span"
-        />
+        <div className="brand-text-wrapper">
+          <EditableText
+            regionId={`brand_logos.item_${brandId}.title`}
+            label={`Brand ${brandId} Title`}
+            defaultValue={defaultTitle}
+            className="brand-title-text"
+            style={{ color: defaultColor }}
+            as="span"
+          />
+          <EditableText
+            regionId={`brand_logos.item_${brandId}.subtitle`}
+            label={`Brand ${brandId} Subtitle`}
+            defaultValue={defaultSubtitle}
+            className="brand-subtitle-text"
+            as="span"
+          />
+        </div>
       </div>
-    </div>
+    </EditableButton>
   );
 }
 

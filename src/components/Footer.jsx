@@ -149,14 +149,14 @@ function Footer() {
           <ul className="footer-links-list">
             {linksList.map((link, idx) => (
               <li key={link.page}>
-                <a href="#" className="footer-link" onClick={(e) => handleNavClick(e, link.page)}>
-                  <EditableText
-                    regionId={`footer.link_${idx + 1}`}
-                    label={`Footer Link ${idx + 1} (${link.name})`}
-                    defaultValue={link.name}
-                    as="span"
-                  />
-                </a>
+                <EditableButton
+                  regionId={`footer.link_${idx + 1}`}
+                  label={`Footer Link ${idx + 1} (${link.name})`}
+                  defaultValue={{ text: link.name, href: link.page }}
+                  className="footer-link"
+                  onClick={(e) => handleNavClick(e, link.page)}
+                  as="a"
+                />
               </li>
             ))}
           </ul>

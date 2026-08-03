@@ -47,6 +47,7 @@
   position: relative;
   height: 500px;
   overflow: hidden;
+  cursor: pointer;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1),
               border-radius 0.8s cubic-bezier(0.25, 1, 0.5, 1),

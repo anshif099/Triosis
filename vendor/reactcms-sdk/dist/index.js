@@ -1,9 +1,9 @@
-"use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -16,8 +16,15 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
 // src/index.ts
 var index_exports = {};
@@ -57,7 +64,7 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 
 // src/providers/CMSProvider.tsx
-var import_react6 = require("react");
+var import_react6 = __toESM(require("react"));
 
 // src/context/CMSContext.tsx
 var import_react = require("react");
@@ -98,13 +105,14 @@ function getGlobalListeners() {
   }
   return /* @__PURE__ */ new Set();
 }
-var _MessageBus = class _MessageBus {
+var MessageBus = class _MessageBus {
   static get listeners() {
     return getGlobalListeners();
   }
   static get regionValuesStore() {
     return getGlobalStore();
   }
+  static isListening = false;
   static start(websiteId) {
     if (this.isListening) return;
     this.isListening = true;
@@ -175,11 +183,8 @@ var _MessageBus = class _MessageBus {
     return msg.rcms === true && msg.version === "v1" && typeof msg.type === "string" && typeof msg.websiteId === "string";
   }
 };
-__publicField(_MessageBus, "isListening", false);
-var MessageBus = _MessageBus;
 
 // src/providers/CMSProvider.tsx
-var import_jsx_runtime = require("react/jsx-runtime");
 function CMSProvider({
   websiteId,
   apiKey,
@@ -233,7 +238,7 @@ function CMSProvider({
       unsubscribe();
     };
   }, [websiteId]);
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+  return /* @__PURE__ */ import_react6.default.createElement(
     CMSContext.Provider,
     {
       value: {
@@ -243,24 +248,24 @@ function CMSProvider({
         editMode,
         isConnected,
         setEditMode
-      },
-      children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-        PageContext.Provider,
-        {
-          value: {
-            currentPage,
-            locale,
-            setLocale
-          },
-          children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeContext.Provider, { value: { theme, setTheme }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NavigationContext.Provider, { value: { menus, setMenus }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SEOContext.Provider, { value: { seo, setSEO }, children }) }) })
+      }
+    },
+    /* @__PURE__ */ import_react6.default.createElement(
+      PageContext.Provider,
+      {
+        value: {
+          currentPage,
+          locale,
+          setLocale
         }
-      )
-    }
+      },
+      /* @__PURE__ */ import_react6.default.createElement(ThemeContext.Provider, { value: { theme, setTheme } }, /* @__PURE__ */ import_react6.default.createElement(NavigationContext.Provider, { value: { menus, setMenus } }, /* @__PURE__ */ import_react6.default.createElement(SEOContext.Provider, { value: { seo, setSEO } }, children)))
+    )
   );
 }
 
 // src/providers/CMSThemeProvider.tsx
-var import_react7 = require("react");
+var import_react7 = __toESM(require("react"));
 
 // src/utils/cssVars.ts
 function themeTokensToCssVars(theme) {
@@ -300,7 +305,6 @@ function themeTokensToCssVars(theme) {
 }
 
 // src/providers/CMSThemeProvider.tsx
-var import_jsx_runtime2 = require("react/jsx-runtime");
 function CMSThemeProvider({ children }) {
   const context = (0, import_react7.useContext)(ThemeContext);
   (0, import_react7.useEffect)(() => {
@@ -310,12 +314,12 @@ function CMSThemeProvider({ children }) {
     Object.entries(vars).forEach(([key, val]) => {
       root.style.setProperty(key, val);
     });
-  }, [context?.theme]);
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children });
+  }, [context == null ? void 0 : context.theme]);
+  return /* @__PURE__ */ import_react7.default.createElement(import_react7.default.Fragment, null, children);
 }
 
 // src/providers/CMSSEOProvider.tsx
-var import_react8 = require("react");
+var import_react8 = __toESM(require("react"));
 
 // src/utils/seoInjector.ts
 function injectSEO(seo) {
@@ -353,15 +357,14 @@ function injectSEO(seo) {
 }
 
 // src/providers/CMSSEOProvider.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime");
 function CMSSEOProvider({ children }) {
   const context = (0, import_react8.useContext)(SEOContext);
   (0, import_react8.useEffect)(() => {
     if (context && context.seo) {
       injectSEO(context.seo);
     }
-  }, [context?.seo]);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, { children });
+  }, [context == null ? void 0 : context.seo]);
+  return /* @__PURE__ */ import_react8.default.createElement(import_react8.default.Fragment, null, children);
 }
 
 // src/hooks/useCMS.ts
@@ -590,7 +593,7 @@ var editableSync = {
 
 // src/hooks/useEditable.ts
 function resolvePageId(pageContext) {
-  if (pageContext?.currentPage) {
+  if (pageContext == null ? void 0 : pageContext.currentPage) {
     if (pageContext.currentPage.id) return pageContext.currentPage.id;
     if (pageContext.currentPage.slug) return pageContext.currentPage.slug;
     if (pageContext.currentPage.route) {
@@ -657,7 +660,7 @@ function useEditable(regionId, defaultValue, type, label) {
   const setValue = (newValue) => {
     setLocalValue(newValue);
     MessageBus.setStoredRegionValue(pageId, regionId, newValue);
-    if (cms?.websiteId) {
+    if (cms == null ? void 0 : cms.websiteId) {
       MessageBus.send("rcms/v1/field-update", cms.websiteId, {
         pageId,
         regionId,
@@ -691,11 +694,12 @@ function setupFirebaseBridge(apiKey, websiteId, pageId) {
 
 // src/hooks/useLivePreview.ts
 function useLivePreview(pageIdOverride) {
+  var _a;
   const cms = (0, import_react16.useContext)(CMSContext);
   const page = (0, import_react16.useContext)(PageContext);
-  const websiteId = cms?.websiteId || "";
-  const apiKey = cms?.apiKey || "";
-  const pageId = pageIdOverride || page?.currentPage?.id || "global";
+  const websiteId = (cms == null ? void 0 : cms.websiteId) || "";
+  const apiKey = (cms == null ? void 0 : cms.apiKey) || "";
+  const pageId = pageIdOverride || ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const [values, setValues] = (0, import_react16.useState)({});
   (0, import_react16.useEffect)(() => {
     if (!websiteId) return;
@@ -728,7 +732,7 @@ function useLivePreview(pageIdOverride) {
     }
   };
   return {
-    editMode: cms?.editMode || false,
+    editMode: (cms == null ? void 0 : cms.editMode) || false,
     values,
     updateRegion
   };
@@ -771,7 +775,7 @@ var postMessageBridge = {
 };
 
 // src/components/EditableText.tsx
-var import_react17 = require("react");
+var import_react17 = __toESM(require("react"));
 
 // src/utils/domStyles.ts
 function rgbToHex(colorStr) {
@@ -801,7 +805,6 @@ function getElementComputedStyle(el) {
 }
 
 // src/components/EditableText.tsx
-var import_jsx_runtime4 = require("react/jsx-runtime");
 function EditableText({
   regionId,
   defaultValue,
@@ -810,11 +813,12 @@ function EditableText({
   className = "",
   style = {}
 }) {
+  var _a;
   const cms = (0, import_react17.useContext)(CMSContext);
   const page = (0, import_react17.useContext)(PageContext);
   const [value, setValue] = useEditable(regionId, defaultValue, "text", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const [isSelected, setIsSelected] = (0, import_react17.useState)(false);
   const [isDragging, setIsDragging] = (0, import_react17.useState)(false);
   const [dragOffset, setDragOffset] = (0, import_react17.useState)({ x: 0, y: 0 });
@@ -949,7 +953,7 @@ function EditableText({
     setIsSelected(true);
     const touch = e.touches[0];
     if (!touch) return;
-    if (cms?.websiteId) {
+    if (cms == null ? void 0 : cms.websiteId) {
       const computedStyle = getElementComputedStyle(e.currentTarget);
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1021,7 +1025,7 @@ function EditableText({
     if (!editMode) return;
     e.stopPropagation();
     setIsSelected(true);
-    if (cms?.websiteId) {
+    if (cms == null ? void 0 : cms.websiteId) {
       const computedStyle = getElementComputedStyle(e.currentTarget);
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1086,10 +1090,10 @@ function EditableText({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Component, { className, style: { ...style, ...textStyle }, children: displayValue });
+    return /* @__PURE__ */ import_react17.default.createElement(Component, { className, style: { ...style, ...textStyle } }, displayValue);
   }
   const activeAlign = textStyle.textAlign || "left";
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+  return /* @__PURE__ */ import_react17.default.createElement(
     Component,
     {
       className: `rcms-editable-region rcms-editable-text ${className}`,
@@ -1109,161 +1113,156 @@ function EditableText({
         e.preventDefault();
       },
       "data-rcms-region": regionId,
-      "data-rcms-type": "text",
-      children: [
-        displayValue,
-        isSelected && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
-          "span",
-          {
-            style: {
-              position: "absolute",
-              top: "-42px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 99999,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "4px",
-              background: "#0f172a",
-              border: "1px solid #334155",
-              borderRadius: "8px",
-              padding: "4px 8px",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.6)",
-              whiteSpace: "nowrap",
-              pointerEvents: "auto",
-              fontFamily: "sans-serif",
-              fontSize: "11px"
-            },
-            onMouseDown: (e) => e.stopPropagation(),
-            onClick: (e) => e.stopPropagation(),
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { style: { color: "#94a3b8", fontSize: "10px", fontWeight: 700, paddingRight: "4px", borderRight: "1px solid #334155" }, children: typeof window !== "undefined" && window.innerWidth < 768 ? "\u{1F4F1} Mobile" : typeof window !== "undefined" && window.innerWidth < 1024 ? "\u{1F4BB} Tablet" : "\u{1F5A5}\uFE0F Desktop" }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-                "button",
-                {
-                  type: "button",
-                  title: "Align Left",
-                  onClick: () => handleUpdateAlign("left"),
-                  style: {
-                    background: activeAlign === "left" ? "#3b82f6" : "#1e293b",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "3px 8px",
-                    cursor: "pointer",
-                    fontWeight: 600
-                  },
-                  children: "\u2B05\uFE0F Left"
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-                "button",
-                {
-                  type: "button",
-                  title: "Align Center",
-                  onClick: () => handleUpdateAlign("center"),
-                  style: {
-                    background: activeAlign === "center" ? "#3b82f6" : "#1e293b",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "3px 8px",
-                    cursor: "pointer",
-                    fontWeight: 600
-                  },
-                  children: "\u2194\uFE0F Center"
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-                "button",
-                {
-                  type: "button",
-                  title: "Align Right",
-                  onClick: () => handleUpdateAlign("right"),
-                  style: {
-                    background: activeAlign === "right" ? "#3b82f6" : "#1e293b",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "3px 8px",
-                    cursor: "pointer",
-                    fontWeight: 600
-                  },
-                  children: "\u27A1\uFE0F Right"
-                }
-              ),
-              isRich && (value.offsetX || value.offsetY) ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-                "button",
-                {
-                  type: "button",
-                  title: "Reset Position Offset",
-                  onClick: handleResetPosition,
-                  style: {
-                    background: "#dc2626",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "3px 8px",
-                    cursor: "pointer",
-                    fontWeight: 700
-                  },
-                  children: "\u21BA Reset Pos"
-                }
-              ) : null,
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-                "button",
-                {
-                  type: "button",
-                  title: "Close",
-                  onClick: () => setIsSelected(false),
-                  style: {
-                    background: "transparent",
-                    color: "#64748b",
-                    border: "none",
-                    padding: "0 4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold"
-                  },
-                  children: "\u2715"
-                }
-              )
-            ]
+      "data-rcms-type": "text"
+    },
+    displayValue,
+    isSelected && /* @__PURE__ */ import_react17.default.createElement(
+      "span",
+      {
+        style: {
+          position: "absolute",
+          top: "-42px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 99999,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+          background: "#0f172a",
+          border: "1px solid #334155",
+          borderRadius: "8px",
+          padding: "4px 8px",
+          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.6)",
+          whiteSpace: "nowrap",
+          pointerEvents: "auto",
+          fontFamily: "sans-serif",
+          fontSize: "11px"
+        },
+        onMouseDown: (e) => e.stopPropagation(),
+        onClick: (e) => e.stopPropagation()
+      },
+      /* @__PURE__ */ import_react17.default.createElement("span", { style: { color: "#94a3b8", fontSize: "10px", fontWeight: 700, paddingRight: "4px", borderRight: "1px solid #334155" } }, typeof window !== "undefined" && window.innerWidth < 768 ? "\u{1F4F1} Mobile" : typeof window !== "undefined" && window.innerWidth < 1024 ? "\u{1F4BB} Tablet" : "\u{1F5A5}\uFE0F Desktop"),
+      /* @__PURE__ */ import_react17.default.createElement(
+        "button",
+        {
+          type: "button",
+          title: "Align Left",
+          onClick: () => handleUpdateAlign("left"),
+          style: {
+            background: activeAlign === "left" ? "#3b82f6" : "#1e293b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            padding: "3px 8px",
+            cursor: "pointer",
+            fontWeight: 600
           }
-        ),
-        editMode && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "span",
-          {
-            title: "Drag handle to resize text area width",
-            style: {
-              position: "absolute",
-              bottom: "-6px",
-              right: "-6px",
-              width: "12px",
-              height: "12px",
-              background: isResizing ? "#2563eb" : "#3b82f6",
-              border: "2px solid #ffffff",
-              borderRadius: "3px",
-              cursor: "se-resize",
-              zIndex: 99999,
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
-            },
-            onMouseDown: handleResizeMouseDown,
-            onTouchStart: handleTouchResizeStart,
-            onClick: (e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }
+        },
+        "\u2B05\uFE0F Left"
+      ),
+      /* @__PURE__ */ import_react17.default.createElement(
+        "button",
+        {
+          type: "button",
+          title: "Align Center",
+          onClick: () => handleUpdateAlign("center"),
+          style: {
+            background: activeAlign === "center" ? "#3b82f6" : "#1e293b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            padding: "3px 8px",
+            cursor: "pointer",
+            fontWeight: 600
           }
-        )
-      ]
-    }
+        },
+        "\u2194\uFE0F Center"
+      ),
+      /* @__PURE__ */ import_react17.default.createElement(
+        "button",
+        {
+          type: "button",
+          title: "Align Right",
+          onClick: () => handleUpdateAlign("right"),
+          style: {
+            background: activeAlign === "right" ? "#3b82f6" : "#1e293b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            padding: "3px 8px",
+            cursor: "pointer",
+            fontWeight: 600
+          }
+        },
+        "\u27A1\uFE0F Right"
+      ),
+      isRich && (value.offsetX || value.offsetY) ? /* @__PURE__ */ import_react17.default.createElement(
+        "button",
+        {
+          type: "button",
+          title: "Reset Position Offset",
+          onClick: handleResetPosition,
+          style: {
+            background: "#dc2626",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            padding: "3px 8px",
+            cursor: "pointer",
+            fontWeight: 700
+          }
+        },
+        "\u21BA Reset Pos"
+      ) : null,
+      /* @__PURE__ */ import_react17.default.createElement(
+        "button",
+        {
+          type: "button",
+          title: "Close",
+          onClick: () => setIsSelected(false),
+          style: {
+            background: "transparent",
+            color: "#64748b",
+            border: "none",
+            padding: "0 4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "bold"
+          }
+        },
+        "\u2715"
+      )
+    ),
+    editMode && /* @__PURE__ */ import_react17.default.createElement(
+      "span",
+      {
+        title: "Drag handle to resize text area width",
+        style: {
+          position: "absolute",
+          bottom: "-6px",
+          right: "-6px",
+          width: "12px",
+          height: "12px",
+          background: isResizing ? "#2563eb" : "#3b82f6",
+          border: "2px solid #ffffff",
+          borderRadius: "3px",
+          cursor: "se-resize",
+          zIndex: 99999,
+          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
+        },
+        onMouseDown: handleResizeMouseDown,
+        onTouchStart: handleTouchResizeStart,
+        onClick: (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }
+    )
   );
 }
 
 // src/components/EditableImage.tsx
-var import_react18 = require("react");
-var import_jsx_runtime5 = require("react/jsx-runtime");
+var import_react18 = __toESM(require("react"));
 function EditableImage({
   regionId,
   defaultValue,
@@ -1272,17 +1271,18 @@ function EditableImage({
   style = {},
   alt
 }) {
+  var _a;
   const cms = (0, import_react18.useContext)(CMSContext);
   const page = (0, import_react18.useContext)(PageContext);
   const defaultImgObj = typeof defaultValue === "string" ? { src: defaultValue, alt: alt || "" } : defaultValue;
   const [value, setValue] = useEditable(regionId, defaultImgObj, "image", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const [isDragging, setIsDragging] = (0, import_react18.useState)(false);
   const [dragOffset, setDragOffset] = (0, import_react18.useState)({ x: 0, y: 0 });
   const dragStartRef = (0, import_react18.useRef)(null);
-  const imgSrc = typeof value === "string" ? value : value?.src || "";
-  const imgAlt = typeof value === "string" ? alt || "" : value?.alt || alt || "";
+  const imgSrc = typeof value === "string" ? value : (value == null ? void 0 : value.src) || "";
+  const imgAlt = typeof value === "string" ? alt || "" : (value == null ? void 0 : value.alt) || alt || "";
   const imgStyle = { ...style };
   if (typeof value === "object" && value !== null) {
     if (value.width) imgStyle.width = value.width;
@@ -1298,7 +1298,7 @@ function EditableImage({
   const handleMouseDown = (e) => {
     if (!editMode) return;
     e.stopPropagation();
-    if (cms?.websiteId) {
+    if (cms == null ? void 0 : cms.websiteId) {
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
         type: "image",
@@ -1346,9 +1346,9 @@ function EditableImage({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
+    return /* @__PURE__ */ import_react18.default.createElement("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+  return /* @__PURE__ */ import_react18.default.createElement(
     "img",
     {
       src: imgSrc,
@@ -1373,8 +1373,7 @@ function EditableImage({
 }
 
 // src/components/EditableButton.tsx
-var import_react19 = require("react");
-var import_jsx_runtime6 = require("react/jsx-runtime");
+var import_react19 = __toESM(require("react"));
 function EditableButton({
   regionId,
   defaultValue,
@@ -1384,16 +1383,17 @@ function EditableButton({
   onClick,
   as: Component = "button"
 }) {
+  var _a;
   const cms = (0, import_react19.useContext)(CMSContext);
   const page = (0, import_react19.useContext)(PageContext);
   const defaultBtnObj = typeof defaultValue === "string" ? { text: defaultValue } : defaultValue;
   const [value] = useEditable(regionId, defaultBtnObj, "button", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
-  const btnText = typeof value === "string" ? value : value?.text || "";
-  const btnHref = typeof value === "object" ? value?.href : void 0;
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const btnText = typeof value === "string" ? value : (value == null ? void 0 : value.text) || "";
+  const btnHref = typeof value === "object" ? value == null ? void 0 : value.href : void 0;
   const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
+    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
       e.preventDefault();
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
@@ -1414,9 +1414,9 @@ function EditableButton({
   const Tag = btnHref && !editMode ? "a" : Component;
   const tagProps = Tag === "a" ? { href: btnHref } : {};
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Tag, { ...tagProps, className, style, onClick, children: btnText });
+    return /* @__PURE__ */ import_react19.default.createElement(Tag, { ...tagProps, className, style, onClick }, btnText);
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+  return /* @__PURE__ */ import_react19.default.createElement(
     Tag,
     {
       ...tagProps,
@@ -1429,15 +1429,14 @@ function EditableButton({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "button",
-      children: btnText
-    }
+      "data-rcms-type": "button"
+    },
+    btnText
   );
 }
 
 // src/components/EditableSection.tsx
-var import_react20 = require("react");
-var import_jsx_runtime7 = require("react/jsx-runtime");
+var import_react20 = __toESM(require("react"));
 function EditableSection({
   regionId,
   defaultValue = {},
@@ -1447,13 +1446,14 @@ function EditableSection({
   children,
   as: Component = "section"
 }) {
+  var _a;
   const cms = (0, import_react20.useContext)(CMSContext);
   const page = (0, import_react20.useContext)(PageContext);
   const [value] = useEditable(regionId, defaultValue, "section", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
+    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
       const target = e.target;
       if (target && target.closest(".rcms-editable-region") !== e.currentTarget) {
         return;
@@ -1473,9 +1473,9 @@ function EditableSection({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Component, { className, style, children });
+    return /* @__PURE__ */ import_react20.default.createElement(Component, { className, style }, children);
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+  return /* @__PURE__ */ import_react20.default.createElement(
     Component,
     {
       className: `rcms-editable-region rcms-editable-section ${className}`,
@@ -1488,15 +1488,14 @@ function EditableSection({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "section",
-      children
-    }
+      "data-rcms-type": "section"
+    },
+    children
   );
 }
 
 // src/components/EditableRichText.tsx
-var import_react21 = require("react");
-var import_jsx_runtime8 = require("react/jsx-runtime");
+var import_react21 = __toESM(require("react"));
 function EditableRichText({
   regionId,
   defaultValue,
@@ -1505,13 +1504,14 @@ function EditableRichText({
   style = {},
   as: Component = "div"
 }) {
+  var _a;
   const cms = (0, import_react21.useContext)(CMSContext);
   const page = (0, import_react21.useContext)(PageContext);
   const [value] = useEditable(regionId, defaultValue, "richtext", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
+    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1527,7 +1527,7 @@ function EditableRichText({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    return /* @__PURE__ */ import_react21.default.createElement(
       Component,
       {
         className,
@@ -1536,7 +1536,7 @@ function EditableRichText({
       }
     );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+  return /* @__PURE__ */ import_react21.default.createElement(
     Component,
     {
       className: `rcms-editable-region rcms-editable-richtext ${className}`,
@@ -1556,8 +1556,7 @@ function EditableRichText({
 }
 
 // src/components/EditableRepeater.tsx
-var import_react22 = require("react");
-var import_jsx_runtime9 = require("react/jsx-runtime");
+var import_react22 = __toESM(require("react"));
 function EditableRepeater({
   regionId,
   defaultValue,
@@ -1566,14 +1565,15 @@ function EditableRepeater({
   style = {},
   children
 }) {
+  var _a;
   const cms = (0, import_react22.useContext)(CMSContext);
   const page = (0, import_react22.useContext)(PageContext);
   const [value] = useEditable(regionId, defaultValue, "repeater", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
   const items = Array.isArray(value) ? value : defaultValue;
   const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
+    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1589,9 +1589,9 @@ function EditableRepeater({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { className, style, children: children(items) });
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className, style }, children(items));
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+  return /* @__PURE__ */ import_react22.default.createElement(
     "div",
     {
       className: `rcms-editable-region rcms-editable-repeater ${className}`,
@@ -1604,15 +1604,14 @@ function EditableRepeater({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "repeater",
-      children: children(items)
-    }
+      "data-rcms-type": "repeater"
+    },
+    children(items)
   );
 }
 
 // src/components/EditableVideo.tsx
-var import_react23 = require("react");
-var import_jsx_runtime10 = require("react/jsx-runtime");
+var import_react23 = __toESM(require("react"));
 function EditableVideo({
   regionId,
   defaultValue,
@@ -1620,15 +1619,16 @@ function EditableVideo({
   className = "",
   style = {}
 }) {
+  var _a;
   const cms = (0, import_react23.useContext)(CMSContext);
   const page = (0, import_react23.useContext)(PageContext);
   const defaultVidObj = typeof defaultValue === "string" ? { url: defaultValue } : defaultValue;
   const [value] = useEditable(regionId, defaultVidObj, "video", label);
-  const editMode = cms?.editMode || false;
-  const pageId = page?.currentPage?.id || "global";
-  const videoUrl = typeof value === "string" ? value : value?.url || "";
+  const editMode = (cms == null ? void 0 : cms.editMode) || false;
+  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const videoUrl = typeof value === "string" ? value : (value == null ? void 0 : value.url) || "";
   const handleClick = (e) => {
-    if (editMode && cms?.websiteId) {
+    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1646,11 +1646,11 @@ function EditableVideo({
   const isEmbed = videoUrl.includes("youtube") || videoUrl.includes("vimeo");
   if (!editMode) {
     if (isEmbed) {
-      return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("iframe", { src: videoUrl, title: label, className, style, allowFullScreen: true });
+      return /* @__PURE__ */ import_react23.default.createElement("iframe", { src: videoUrl, title: label, className, style, allowFullScreen: true });
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("video", { src: videoUrl, controls: true, className, style });
+    return /* @__PURE__ */ import_react23.default.createElement("video", { src: videoUrl, controls: true, className, style });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+  return /* @__PURE__ */ import_react23.default.createElement(
     "div",
     {
       className: `rcms-editable-region rcms-editable-video ${className}`,
@@ -1663,9 +1663,9 @@ function EditableVideo({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "video",
-      children: isEmbed ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("iframe", { src: videoUrl, title: label, className, style: { ...style, pointerEvents: "none" } }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("video", { src: videoUrl, className, style: { ...style, pointerEvents: "none" } })
-    }
+      "data-rcms-type": "video"
+    },
+    isEmbed ? /* @__PURE__ */ import_react23.default.createElement("iframe", { src: videoUrl, title: label, className, style: { ...style, pointerEvents: "none" } }) : /* @__PURE__ */ import_react23.default.createElement("video", { src: videoUrl, className, style: { ...style, pointerEvents: "none" } })
   );
 }
 //# sourceMappingURL=index.js.map

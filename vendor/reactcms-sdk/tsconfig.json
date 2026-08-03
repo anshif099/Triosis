@@ -1,11 +1,16 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
     "noEmit": false,
     "emitDeclarationOnly": true,
     "declaration": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

@@ -83,7 +83,13 @@ function Services() {
         {servicesData.map((service) => (
           <div className="services-grid" key={service.num}>
             <div className="services-left">
-              <span className="services-num">{service.num}</span>
+              <EditableText
+                regionId={`services.${service.num}.num`}
+                label={`Service ${service.num} Number`}
+                defaultValue={service.num}
+                className="services-num"
+                as="span"
+              />
               <EditableText
                 regionId={`services.${service.num}.title`}
                 label={`Service ${service.num} Title`}
@@ -111,7 +117,14 @@ function Services() {
             <div className="services-right">
               <ul className="services-list">
                 {service.list.map((item, idx) => (
-                  <li key={idx}>{item}</li>
+                  <li key={idx}>
+                    <EditableText
+                      regionId={`services.${service.num}.item_${idx + 1}`}
+                      label={`Service ${service.num} Item ${idx + 1}`}
+                      defaultValue={item}
+                      as="span"
+                    />
+                  </li>
                 ))}
               </ul>
             </div>

@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
+import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import './StackedTestimonials.css';
 
 const testimonials = [
   {
+    id: 1,
     quote: 'Triosis has been an invaluable creative partner for us. Their exceptional designs, from our college football team jersey to engaging digital content, have greatly enhanced our presence. Their dedication and creativity make them a trusted partner in our digital journey.',
     name: 'Amir Suhail KV',
     role: 'HoD, Physical Education Department - SSA Areekode',
     colorType: 'navy'
   },
   {
+    id: 2,
     quote: 'Exceptional creativity and strategic execution—Triosis has elevated our brand with outstanding results. Highly recommended!',
     name: 'Dr. Suhail P',
     role: 'Founder, Zodha Research Solutions',
     colorType: 'white'
   },
   {
+    id: 3,
     quote: 'Working with Triosis has been a game-changer for our brand. Their creative posters for our product launches were captivating and drew in our target audience perfectly. Their team is highly talented and easy to work with!',
     name: 'Muhammed janish m',
     role: 'Founder & CEO of Dhiva pickles',
     colorType: 'blue'
   },
   {
+    id: 4,
     quote: "Triosis transformed our business identity with their exceptional branding solutions. Their creativity and attention to detail gave us a logo and brand style that truly reflects our values. We've received countless compliments from our customers!",
     name: 'Muhammed Ansar',
     role: 'Founder - Falspace',
@@ -35,20 +40,39 @@ function StackedTestimonials() {
   const handlePrev = () => setActiveIdx((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="about-testimonials-section">
+    <EditableSection regionId="stacked_testimonials.section" label="Stacked Testimonials Section" className="about-testimonials-section">
       <div className="about-testimonials-container">
         {/* Left Column: Heading and Rating */}
         <div className="testimonials-left-col">
-          <span className="testimonials-tag">
-            <span className="tag-dot"></span>
-            Testimonials
-          </span>
-          <h2 className="testimonials-title-large">
-            What <span className="title-italic">our</span> <br />clients say?
-          </h2>
+          <EditableText
+            regionId="stacked_testimonials.tag"
+            label="Stacked Testimonials Tag"
+            defaultValue="Testimonials"
+            className="testimonials-tag"
+            as="span"
+          />
+          <EditableText
+            regionId="stacked_testimonials.title"
+            label="Stacked Testimonials Title"
+            defaultValue="What our clients say?"
+            className="testimonials-title-large"
+            as="h2"
+          />
           <div className="testimonials-rating-box">
-            <span className="rating-number">4.8</span>
-            <span className="rating-label">Total Reviews</span>
+            <EditableText
+              regionId="stacked_testimonials.rating_num"
+              label="Rating Number"
+              defaultValue="4.8"
+              className="rating-number"
+              as="span"
+            />
+            <EditableText
+              regionId="stacked_testimonials.rating_label"
+              label="Rating Label"
+              defaultValue="Total Reviews"
+              className="rating-label"
+              as="span"
+            />
           </div>
         </div>
 
@@ -79,7 +103,13 @@ function StackedTestimonials() {
                   }}
                 >
                   <div className="quote-mark">"</div>
-                  <p className="testimonial-quote-text">{test.quote}</p>
+                  <EditableText
+                    regionId={`stacked_testimonials.item_${test.id || (index + 1)}.quote`}
+                    label={`Testimonial ${index + 1} Quote`}
+                    defaultValue={test.quote}
+                    className="testimonial-quote-text"
+                    as="p"
+                  />
 
                   <div className="testimonial-author-box">
                     <div className="author-avatar-placeholder">
@@ -89,8 +119,20 @@ function StackedTestimonials() {
                       </svg>
                     </div>
                     <div className="author-info">
-                      <h4 className="author-name">{test.name}</h4>
-                      <p className="author-role">{test.role}</p>
+                      <EditableText
+                        regionId={`stacked_testimonials.item_${test.id || (index + 1)}.name`}
+                        label={`Testimonial ${index + 1} Author Name`}
+                        defaultValue={test.name}
+                        className="author-name"
+                        as="h4"
+                      />
+                      <EditableText
+                        regionId={`stacked_testimonials.item_${test.id || (index + 1)}.role`}
+                        label={`Testimonial ${index + 1} Author Role`}
+                        defaultValue={test.role}
+                        className="author-role"
+                        as="p"
+                      />
                     </div>
                   </div>
                 </div>
@@ -106,7 +148,7 @@ function StackedTestimonials() {
           </button>
         </div>
       </div>
-    </section>
+    </EditableSection>
   );
 }
 

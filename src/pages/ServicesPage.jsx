@@ -96,9 +96,9 @@ function ServicesPage() {
       </EditableSection>
 
       {/* Services List Section */}
-      <section className="services-page-list">
+      <EditableSection regionId="services_page.list_section" label="Services Page List Section" className="services-page-list">
         <div className="services-page-inner">
-          {servicesData.map((service, index) => (
+          {servicesData.map((service) => (
             <div className="sp-service-row" key={service.num}>
               {/* Divider line */}
               <div className="sp-service-divider"></div>
@@ -107,9 +107,10 @@ function ServicesPage() {
                 {/* Left col: image */}
                 <div className="sp-image-col">
                   <div className="sp-image-wrapper">
-                    <img
-                      src={service.image}
-                      alt={service.title}
+                    <EditableImage
+                      regionId={`services_page.${service.num}.image`}
+                      label={`Services Page Service ${service.num} Image`}
+                      defaultValue={{ src: service.image, alt: service.title }}
                       className="sp-service-image"
                     />
                   </div>
@@ -117,10 +118,23 @@ function ServicesPage() {
 
                 {/* Middle col: number + bullet list */}
                 <div className="sp-middle-col">
-                  <span className="sp-service-num">{service.num}</span>
+                  <EditableText
+                    regionId={`services_page.${service.num}.num`}
+                    label={`Services Page Service ${service.num} Number`}
+                    defaultValue={service.num}
+                    className="sp-service-num"
+                    as="span"
+                  />
                   <ul className="sp-service-list">
                     {service.list.map((item, idx) => (
-                      <li key={idx}>{item}</li>
+                      <li key={idx}>
+                        <EditableText
+                          regionId={`services_page.${service.num}.item_${idx + 1}`}
+                          label={`Services Page Service ${service.num} Item ${idx + 1}`}
+                          defaultValue={item}
+                          as="span"
+                        />
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -128,7 +142,13 @@ function ServicesPage() {
                 {/* Right col: title + description + arrow */}
                 <div className="sp-right-col">
                   <div className="sp-title-row">
-                    <h2 className="sp-service-title">{service.title}</h2>
+                    <EditableText
+                      regionId={`services_page.${service.num}.title`}
+                      label={`Services Page Service ${service.num} Title`}
+                      defaultValue={service.title}
+                      className="sp-service-title"
+                      as="h2"
+                    />
                     <div className="sp-arrow-btn">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="7" y1="17" x2="17" y2="7"></line>
@@ -136,7 +156,13 @@ function ServicesPage() {
                       </svg>
                     </div>
                   </div>
-                  <p className="sp-service-desc">{service.desc}</p>
+                  <EditableText
+                    regionId={`services_page.${service.num}.desc`}
+                    label={`Services Page Service ${service.num} Description`}
+                    defaultValue={service.desc}
+                    className="sp-service-desc"
+                    as="p"
+                  />
                 </div>
               </div>
             </div>
@@ -144,7 +170,7 @@ function ServicesPage() {
           {/* Bottom divider */}
           <div className="sp-service-divider"></div>
         </div>
-      </section>
+      </EditableSection>
 
       {/* Testimonials - same as About Us */}
       <StackedTestimonials />

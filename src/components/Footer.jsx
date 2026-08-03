@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableButton, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import './Footer.css';
 
 // SVG Social Icons Helper
@@ -67,7 +67,14 @@ function Footer() {
     });
   };
 
-  const socialsList = ['x', 'facebook', 'instagram', 'linkedin', 'youtube'];
+  const socialsList = [
+    { key: 'x', name: 'X (Twitter)', defaultUrl: 'https://x.com' },
+    { key: 'facebook', name: 'Facebook', defaultUrl: 'https://facebook.com' },
+    { key: 'instagram', name: 'Instagram', defaultUrl: 'https://instagram.com' },
+    { key: 'linkedin', name: 'LinkedIn', defaultUrl: 'https://linkedin.com' },
+    { key: 'youtube', name: 'YouTube', defaultUrl: 'https://youtube.com' }
+  ];
+
   const handleNavClick = (e, page) => {
     e.preventDefault();
     window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
@@ -94,9 +101,16 @@ function Footer() {
         <div className="footer-social-column">
           <div className="footer-socials">
             {socialsList.map((social) => (
-              <a href={`#${social}`} className="footer-social-btn" key={social}>
-                <SocialIcon type={social} />
-              </a>
+              <EditableButton
+                key={social.key}
+                regionId={`footer.social_${social.key}`}
+                label={`Footer ${social.name} Link`}
+                defaultValue={{ text: social.name, href: social.defaultUrl }}
+                className="footer-social-btn"
+                as="a"
+              >
+                <SocialIcon type={social.key} />
+              </EditableButton>
             ))}
           </div>
         </div>
@@ -133,10 +147,15 @@ function Footer() {
         <div className="footer-links-column">
           <EditableText regionId="footer.links_title" label="Footer Links Title" defaultValue="Links" className="footer-column-title" as="h4" />
           <ul className="footer-links-list">
-            {linksList.map((link) => (
-              <li key={link.name}>
+            {linksList.map((link, idx) => (
+              <li key={link.page}>
                 <a href="#" className="footer-link" onClick={(e) => handleNavClick(e, link.page)}>
-                  {link.name}
+                  <EditableText
+                    regionId={`footer.link_${idx + 1}`}
+                    label={`Footer Link ${idx + 1} (${link.name})`}
+                    defaultValue={link.name}
+                    as="span"
+                  />
                 </a>
               </li>
             ))}

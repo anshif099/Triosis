@@ -109,6 +109,18 @@
   box-shadow: 0 15px 35px rgba(255, 87, 87, 0.15);
 }
 
+.brand-logo-img {
+  max-height: 44px;
+  max-width: 160px;
+  object-fit: contain;
+  margin-bottom: 2px;
+}
+
+.brand-logo-img[src=""],
+.brand-logo-img:not([src]) {
+  display: none;
+}
+
 /* Responsive adjustment */
 @media (max-width: 768px) {
   .logos-section {

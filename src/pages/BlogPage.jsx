@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
@@ -92,7 +92,7 @@ function BlogPage() {
       </EditableSection>
 
       {/* Main Content */}
-      <section className="blog-main-section">
+      <EditableSection regionId="blog.main_section" label="Blog Main Section" className="blog-main-section">
         <div className="blog-main-inner">
 
           {/* Posts Grid */}
@@ -100,10 +100,27 @@ function BlogPage() {
             {filtered.length > 0 ? filtered.map((post) => (
               <article className="blog-card" key={post.id}>
                 <div className="blog-card-media">
-                  <img src={post.image} alt={post.title} className="blog-card-img" />
+                  <EditableImage
+                    regionId={`blog.post_${post.id}.image`}
+                    label={`Blog Post ${post.id} Image`}
+                    defaultValue={{ src: post.image, alt: post.title }}
+                    className="blog-card-img"
+                  />
                   <div className="blog-card-date-badge">
-                    <span className="blog-date-day">{post.date.day}</span>
-                    <span className="blog-date-month">{post.date.month}</span>
+                    <EditableText
+                      regionId={`blog.post_${post.id}.date_day`}
+                      label={`Blog Post ${post.id} Date Day`}
+                      defaultValue={post.date.day}
+                      className="blog-date-day"
+                      as="span"
+                    />
+                    <EditableText
+                      regionId={`blog.post_${post.id}.date_month`}
+                      label={`Blog Post ${post.id} Date Month`}
+                      defaultValue={post.date.month}
+                      className="blog-date-month"
+                      as="span"
+                    />
                   </div>
                   <div className="blog-card-overlay">
                     <span className="blog-read-label">Read More →</span>
@@ -111,11 +128,35 @@ function BlogPage() {
                 </div>
                 <div className="blog-card-body">
                   <div className="blog-card-meta">
-                    <span className="blog-card-category">{post.category}</span>
-                    <span className="blog-card-author">By : {post.author}</span>
+                    <EditableText
+                      regionId={`blog.post_${post.id}.category`}
+                      label={`Blog Post ${post.id} Category`}
+                      defaultValue={post.category}
+                      className="blog-card-category"
+                      as="span"
+                    />
+                    <EditableText
+                      regionId={`blog.post_${post.id}.author`}
+                      label={`Blog Post ${post.id} Author`}
+                      defaultValue={`By : ${post.author}`}
+                      className="blog-card-author"
+                      as="span"
+                    />
                   </div>
-                  <h2 className="blog-card-title">{post.title}</h2>
-                  <p className="blog-card-excerpt">{post.excerpt}</p>
+                  <EditableText
+                    regionId={`blog.post_${post.id}.title`}
+                    label={`Blog Post ${post.id} Title`}
+                    defaultValue={post.title}
+                    className="blog-card-title"
+                    as="h2"
+                  />
+                  <EditableText
+                    regionId={`blog.post_${post.id}.excerpt`}
+                    label={`Blog Post ${post.id} Excerpt`}
+                    defaultValue={post.excerpt}
+                    className="blog-card-excerpt"
+                    as="p"
+                  />
                 </div>
               </article>
             )) : (
@@ -127,7 +168,7 @@ function BlogPage() {
           <aside className="blog-sidebar">
             {/* Search */}
             <div className="sidebar-widget">
-              <h3 className="sidebar-widget-title">SEARCH HERE</h3>
+              <EditableText regionId="blog.sidebar_search_title" label="Sidebar Search Title" defaultValue="SEARCH HERE" className="sidebar-widget-title" as="h3" />
               <div className="sidebar-search-box">
                 <input
                   type="text"
@@ -147,16 +188,32 @@ function BlogPage() {
 
             {/* Latest Posts */}
             <div className="sidebar-widget">
-              <h3 className="sidebar-widget-title">LATEST POSTS</h3>
+              <EditableText regionId="blog.sidebar_latest_title" label="Sidebar Latest Title" defaultValue="LATEST POSTS" className="sidebar-widget-title" as="h3" />
               <div className="sidebar-latest-list">
                 {latestPosts.map((post) => (
                   <div className="sidebar-latest-item" key={post.id}>
                     <div className="sidebar-latest-thumb">
-                      <img src={post.image} alt={post.title} />
+                      <EditableImage
+                        regionId={`blog.sidebar_post_${post.id}.image`}
+                        label={`Sidebar Post ${post.id} Image`}
+                        defaultValue={{ src: post.image, alt: post.title }}
+                      />
                     </div>
                     <div className="sidebar-latest-info">
-                      <span className="sidebar-latest-cat">{post.category}</span>
-                      <p className="sidebar-latest-title">{post.title}</p>
+                      <EditableText
+                        regionId={`blog.sidebar_post_${post.id}.category`}
+                        label={`Sidebar Post ${post.id} Category`}
+                        defaultValue={post.category}
+                        className="sidebar-latest-cat"
+                        as="span"
+                      />
+                      <EditableText
+                        regionId={`blog.sidebar_post_${post.id}.title`}
+                        label={`Sidebar Post ${post.id} Title`}
+                        defaultValue={post.title}
+                        className="sidebar-latest-title"
+                        as="p"
+                      />
                     </div>
                   </div>
                 ))}
@@ -165,19 +222,24 @@ function BlogPage() {
 
             {/* Categories */}
             <div className="sidebar-widget">
-              <h3 className="sidebar-widget-title">CATEGORIES</h3>
+              <EditableText regionId="blog.sidebar_categories_title" label="Sidebar Categories Title" defaultValue="CATEGORIES" className="sidebar-widget-title" as="h3" />
               <ul className="sidebar-categories">
-                {['Creative Designing', 'Digital Marketing', 'Web Development', 'Branding', 'Social Media', 'SEO'].map((cat) => (
+                {['Creative Designing', 'Digital Marketing', 'Web Development', 'Branding', 'Social Media', 'SEO'].map((cat, idx) => (
                   <li key={cat} onClick={() => setSearchQuery(cat)} className="sidebar-category-item">
                     <span className="sidebar-cat-dot"></span>
-                    {cat}
+                    <EditableText
+                      regionId={`blog.category_item_${idx + 1}`}
+                      label={`Category Item ${idx + 1}`}
+                      defaultValue={cat}
+                      as="span"
+                    />
                   </li>
                 ))}
               </ul>
             </div>
           </aside>
         </div>
-      </section>
+      </EditableSection>
 
       <Footer />
     </div>

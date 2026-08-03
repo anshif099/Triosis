@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditableText, EditableButton, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableImage, EditableButton, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import blogCover from '../assets/blog_cover.jpg';
 import './Journal.css';
 
@@ -9,6 +9,7 @@ function Journal() {
     window.dispatchEvent(new CustomEvent('trigger-preloader', { detail: { fast: true } }));
     window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'blog' } }));
   };
+
   return (
     <EditableSection regionId="journal.section" label="Journal Section" className="journal-section">
       <div className="journal-container">
@@ -46,10 +47,11 @@ function Journal() {
           <div className="journal-card" onClick={goToBlog} style={{ cursor: 'pointer' }}>
             
             <div className="journal-image-container">
-              <img 
-                src={blogCover} 
-                alt="The Art of Designing: Where Creativity Meets Purpose" 
-                className="journal-image" 
+              <EditableImage
+                regionId="journal.card_image"
+                label="Journal Card Image"
+                defaultValue={{ src: blogCover, alt: "The Art of Designing: Where Creativity Meets Purpose" }}
+                className="journal-image"
               />
               
               {/* Teardrop leaf shape date badge */}
@@ -57,8 +59,20 @@ function Journal() {
                 {/* Normal State: Date */}
                 <div className="normal-content">
                   <div className="date-text-wrapper">
-                    <span className="date-day">28</span>
-                    <span className="date-month">MAY</span>
+                    <EditableText
+                      regionId="journal.card_date_day"
+                      label="Journal Date Day"
+                      defaultValue="28"
+                      className="date-day"
+                      as="span"
+                    />
+                    <EditableText
+                      regionId="journal.card_date_month"
+                      label="Journal Date Month"
+                      defaultValue="MAY"
+                      className="date-month"
+                      as="span"
+                    />
                   </div>
                 </div>
                 
@@ -76,13 +90,29 @@ function Journal() {
 
             {/* Meta info: Category & Author */}
             <div className="journal-meta">
-              <span className="journal-category">Creative Designing</span>
-              <span className="journal-author">By : Triosis</span>
+              <EditableText
+                regionId="journal.card_category"
+                label="Journal Category"
+                defaultValue="Creative Designing"
+                className="journal-category"
+                as="span"
+              />
+              <EditableText
+                regionId="journal.card_author"
+                label="Journal Author"
+                defaultValue="By : Triosis"
+                className="journal-author"
+                as="span"
+              />
             </div>
 
-            <h3 className="journal-card-title">
-              The Art of Designing: Where Creativity Meets Purpose
-            </h3>
+            <EditableText
+              regionId="journal.card_title"
+              label="Journal Card Title"
+              defaultValue="The Art of Designing: Where Creativity Meets Purpose"
+              className="journal-card-title"
+              as="h3"
+            />
             
             <div className="journal-divider"></div>
             

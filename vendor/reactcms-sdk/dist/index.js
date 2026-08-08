@@ -612,37 +612,58 @@ function resolvePageId(pageContext) {
   }
   return "global";
 }
+function getGitContentValue(pageId, regionId) {
+  if (typeof window === "undefined") return void 0;
+  const manifest = window.__REACTCMS_GIT_CONTENT__;
+  const pageContent = manifest?.[pageId];
+  if (!pageContent || !Object.prototype.hasOwnProperty.call(pageContent, regionId)) {
+    return void 0;
+  }
+  return pageContent[regionId];
+}
 function useEditable(regionId, defaultValue, type, label) {
   const cms = (0, import_react15.useContext)(CMSContext);
   const page = (0, import_react15.useContext)(PageContext);
   const registry = (0, import_react15.useContext)(EditableRegistryContext);
   const pageId = resolvePageId(page);
+  const gitInitial = getGitContentValue(pageId, regionId);
   const storedInitial = MessageBus.getStoredRegionValue(pageId, regionId);
   const [value, setLocalValue] = (0, import_react15.useState)(
-    storedInitial !== void 0 ? storedInitial : defaultValue
+    gitInitial !== void 0 ? gitInitial : storedInitial !== void 0 ? storedInitial : defaultValue
   );
+  const prefersGit = gitInitial !== void 0 && !cms?.editMode;
   (0, import_react15.useEffect)(() => {
     if (pageId === "global") {
       console.warn(`[ReactCMS SDK] Warning: Region "${regionId}" registered under fallback "global" because no page context was resolved.`);
     }
-    const currentStored = MessageBus.getStoredRegionValue(pageId, regionId);
-    if (currentStored !== void 0 && currentStored !== value) {
-      setLocalValue(currentStored);
+    if (prefersGit) {
+      setLocalValue((current) => Object.is(current, gitInitial) ? current : gitInitial);
+    } else {
+      const currentStored = MessageBus.getStoredRegionValue(pageId, regionId);
+      if (currentStored !== void 0) {
+        setLocalValue((current) => Object.is(current, currentStored) ? current : currentStored);
+      }
     }
     if (registry) {
-      registry.registerRegion(pageId, regionId, type, label, defaultValue);
+      registry.registerRegion(
+        pageId,
+        regionId,
+        type,
+        label,
+        gitInitial !== void 0 ? gitInitial : defaultValue
+      );
     }
     return () => {
       if (registry) {
         registry.unregisterRegion(pageId, regionId);
       }
     };
-  }, [registry, pageId, regionId, type, label]);
+  }, [registry, pageId, regionId, type, label, prefersGit, gitInitial]);
   (0, import_react15.useEffect)(() => {
     const unsubscribe = MessageBus.subscribe((msg) => {
       if (msg.type === "rcms/v1/field-update") {
         const payload = msg.payload;
-        if (payload.regionId === regionId) {
+        if (payload.regionId === regionId && !prefersGit) {
           setLocalValue(payload.value);
         }
       }
@@ -650,7 +671,7 @@ function useEditable(regionId, defaultValue, type, label) {
     return () => {
       unsubscribe();
     };
-  }, [regionId]);
+  }, [regionId, prefersGit]);
   const setValue = (newValue) => {
     setLocalValue(newValue);
     MessageBus.setStoredRegionValue(pageId, regionId, newValue);

@@ -1,5 +1,5 @@
 // src/providers/CMSProvider.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // src/context/CMSContext.tsx
 import { createContext } from "react";
@@ -40,14 +40,13 @@ function getGlobalListeners() {
   }
   return /* @__PURE__ */ new Set();
 }
-var MessageBus = class _MessageBus {
+var _MessageBus = class _MessageBus {
   static get listeners() {
     return getGlobalListeners();
   }
   static get regionValuesStore() {
     return getGlobalStore();
   }
-  static isListening = false;
   static start(websiteId) {
     if (this.isListening) return;
     this.isListening = true;
@@ -118,8 +117,11 @@ var MessageBus = class _MessageBus {
     return msg.rcms === true && msg.version === "v1" && typeof msg.type === "string" && typeof msg.websiteId === "string";
   }
 };
+_MessageBus.isListening = false;
+var MessageBus = _MessageBus;
 
 // src/providers/CMSProvider.tsx
+import { jsx } from "react/jsx-runtime";
 function CMSProvider({
   websiteId,
   apiKey,
@@ -173,7 +175,7 @@ function CMSProvider({
       unsubscribe();
     };
   }, [websiteId]);
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     CMSContext.Provider,
     {
       value: {
@@ -183,24 +185,24 @@ function CMSProvider({
         editMode,
         isConnected,
         setEditMode
-      }
-    },
-    /* @__PURE__ */ React.createElement(
-      PageContext.Provider,
-      {
-        value: {
-          currentPage,
-          locale,
-          setLocale
-        }
       },
-      /* @__PURE__ */ React.createElement(ThemeContext.Provider, { value: { theme, setTheme } }, /* @__PURE__ */ React.createElement(NavigationContext.Provider, { value: { menus, setMenus } }, /* @__PURE__ */ React.createElement(SEOContext.Provider, { value: { seo, setSEO } }, children)))
-    )
+      children: /* @__PURE__ */ jsx(
+        PageContext.Provider,
+        {
+          value: {
+            currentPage,
+            locale,
+            setLocale
+          },
+          children: /* @__PURE__ */ jsx(ThemeContext.Provider, { value: { theme, setTheme }, children: /* @__PURE__ */ jsx(NavigationContext.Provider, { value: { menus, setMenus }, children: /* @__PURE__ */ jsx(SEOContext.Provider, { value: { seo, setSEO }, children }) }) })
+        }
+      )
+    }
   );
 }
 
 // src/providers/CMSThemeProvider.tsx
-import React2, { useContext, useEffect as useEffect2 } from "react";
+import { useContext, useEffect as useEffect2 } from "react";
 
 // src/utils/cssVars.ts
 function themeTokensToCssVars(theme) {
@@ -240,6 +242,7 @@ function themeTokensToCssVars(theme) {
 }
 
 // src/providers/CMSThemeProvider.tsx
+import { Fragment, jsx as jsx2 } from "react/jsx-runtime";
 function CMSThemeProvider({ children }) {
   const context = useContext(ThemeContext);
   useEffect2(() => {
@@ -249,12 +252,12 @@ function CMSThemeProvider({ children }) {
     Object.entries(vars).forEach(([key, val]) => {
       root.style.setProperty(key, val);
     });
-  }, [context == null ? void 0 : context.theme]);
-  return /* @__PURE__ */ React2.createElement(React2.Fragment, null, children);
+  }, [context?.theme]);
+  return /* @__PURE__ */ jsx2(Fragment, { children });
 }
 
 // src/providers/CMSSEOProvider.tsx
-import React3, { useContext as useContext2, useEffect as useEffect3 } from "react";
+import { useContext as useContext2, useEffect as useEffect3 } from "react";
 
 // src/utils/seoInjector.ts
 function injectSEO(seo) {
@@ -292,14 +295,15 @@ function injectSEO(seo) {
 }
 
 // src/providers/CMSSEOProvider.tsx
+import { Fragment as Fragment2, jsx as jsx3 } from "react/jsx-runtime";
 function CMSSEOProvider({ children }) {
   const context = useContext2(SEOContext);
   useEffect3(() => {
     if (context && context.seo) {
       injectSEO(context.seo);
     }
-  }, [context == null ? void 0 : context.seo]);
-  return /* @__PURE__ */ React3.createElement(React3.Fragment, null, children);
+  }, [context?.seo]);
+  return /* @__PURE__ */ jsx3(Fragment2, { children });
 }
 
 // src/hooks/useCMS.ts
@@ -528,7 +532,7 @@ var editableSync = {
 
 // src/hooks/useEditable.ts
 function resolvePageId(pageContext) {
-  if (pageContext == null ? void 0 : pageContext.currentPage) {
+  if (pageContext?.currentPage) {
     if (pageContext.currentPage.id) return pageContext.currentPage.id;
     if (pageContext.currentPage.slug) return pageContext.currentPage.slug;
     if (pageContext.currentPage.route) {
@@ -595,7 +599,7 @@ function useEditable(regionId, defaultValue, type, label) {
   const setValue = (newValue) => {
     setLocalValue(newValue);
     MessageBus.setStoredRegionValue(pageId, regionId, newValue);
-    if (cms == null ? void 0 : cms.websiteId) {
+    if (cms?.websiteId) {
       MessageBus.send("rcms/v1/field-update", cms.websiteId, {
         pageId,
         regionId,
@@ -629,12 +633,11 @@ function setupFirebaseBridge(apiKey, websiteId, pageId) {
 
 // src/hooks/useLivePreview.ts
 function useLivePreview(pageIdOverride) {
-  var _a;
   const cms = useContext9(CMSContext);
   const page = useContext9(PageContext);
-  const websiteId = (cms == null ? void 0 : cms.websiteId) || "";
-  const apiKey = (cms == null ? void 0 : cms.apiKey) || "";
-  const pageId = pageIdOverride || ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const websiteId = cms?.websiteId || "";
+  const apiKey = cms?.apiKey || "";
+  const pageId = pageIdOverride || page?.currentPage?.id || "global";
   const [values, setValues] = useState3({});
   useEffect5(() => {
     if (!websiteId) return;
@@ -667,7 +670,7 @@ function useLivePreview(pageIdOverride) {
     }
   };
   return {
-    editMode: (cms == null ? void 0 : cms.editMode) || false,
+    editMode: cms?.editMode || false,
     values,
     updateRegion
   };
@@ -710,7 +713,7 @@ var postMessageBridge = {
 };
 
 // src/components/EditableText.tsx
-import React4, { useContext as useContext10, useState as useState4, useRef } from "react";
+import { useContext as useContext10, useState as useState4, useRef } from "react";
 
 // src/utils/domStyles.ts
 function rgbToHex(colorStr) {
@@ -740,6 +743,7 @@ function getElementComputedStyle(el) {
 }
 
 // src/components/EditableText.tsx
+import { jsx as jsx4, jsxs } from "react/jsx-runtime";
 function EditableText({
   regionId,
   defaultValue,
@@ -748,12 +752,11 @@ function EditableText({
   className = "",
   style = {}
 }) {
-  var _a;
   const cms = useContext10(CMSContext);
   const page = useContext10(PageContext);
   const [value, setValue] = useEditable(regionId, defaultValue, "text", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
   const [isSelected, setIsSelected] = useState4(false);
   const [isDragging, setIsDragging] = useState4(false);
   const [dragOffset, setDragOffset] = useState4({ x: 0, y: 0 });
@@ -888,7 +891,7 @@ function EditableText({
     setIsSelected(true);
     const touch = e.touches[0];
     if (!touch) return;
-    if (cms == null ? void 0 : cms.websiteId) {
+    if (cms?.websiteId) {
       const computedStyle = getElementComputedStyle(e.currentTarget);
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -960,7 +963,7 @@ function EditableText({
     if (!editMode) return;
     e.stopPropagation();
     setIsSelected(true);
-    if (cms == null ? void 0 : cms.websiteId) {
+    if (cms?.websiteId) {
       const computedStyle = getElementComputedStyle(e.currentTarget);
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1025,10 +1028,10 @@ function EditableText({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ React4.createElement(Component, { className, style: { ...style, ...textStyle } }, displayValue);
+    return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle }, children: displayValue });
   }
   const activeAlign = textStyle.textAlign || "left";
-  return /* @__PURE__ */ React4.createElement(
+  return /* @__PURE__ */ jsxs(
     Component,
     {
       className: `rcms-editable-region rcms-editable-text ${className}`,
@@ -1048,156 +1051,161 @@ function EditableText({
         e.preventDefault();
       },
       "data-rcms-region": regionId,
-      "data-rcms-type": "text"
-    },
-    displayValue,
-    isSelected && /* @__PURE__ */ React4.createElement(
-      "span",
-      {
-        style: {
-          position: "absolute",
-          top: "-42px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 99999,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "4px",
-          background: "#0f172a",
-          border: "1px solid #334155",
-          borderRadius: "8px",
-          padding: "4px 8px",
-          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.6)",
-          whiteSpace: "nowrap",
-          pointerEvents: "auto",
-          fontFamily: "sans-serif",
-          fontSize: "11px"
-        },
-        onMouseDown: (e) => e.stopPropagation(),
-        onClick: (e) => e.stopPropagation()
-      },
-      /* @__PURE__ */ React4.createElement("span", { style: { color: "#94a3b8", fontSize: "10px", fontWeight: 700, paddingRight: "4px", borderRight: "1px solid #334155" } }, typeof window !== "undefined" && window.innerWidth < 768 ? "\u{1F4F1} Mobile" : typeof window !== "undefined" && window.innerWidth < 1024 ? "\u{1F4BB} Tablet" : "\u{1F5A5}\uFE0F Desktop"),
-      /* @__PURE__ */ React4.createElement(
-        "button",
-        {
-          type: "button",
-          title: "Align Left",
-          onClick: () => handleUpdateAlign("left"),
-          style: {
-            background: activeAlign === "left" ? "#3b82f6" : "#1e293b",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            padding: "3px 8px",
-            cursor: "pointer",
-            fontWeight: 600
+      "data-rcms-type": "text",
+      children: [
+        displayValue,
+        isSelected && /* @__PURE__ */ jsxs(
+          "span",
+          {
+            style: {
+              position: "absolute",
+              top: "-42px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 99999,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              background: "#0f172a",
+              border: "1px solid #334155",
+              borderRadius: "8px",
+              padding: "4px 8px",
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.6)",
+              whiteSpace: "nowrap",
+              pointerEvents: "auto",
+              fontFamily: "sans-serif",
+              fontSize: "11px"
+            },
+            onMouseDown: (e) => e.stopPropagation(),
+            onClick: (e) => e.stopPropagation(),
+            children: [
+              /* @__PURE__ */ jsx4("span", { style: { color: "#94a3b8", fontSize: "10px", fontWeight: 700, paddingRight: "4px", borderRight: "1px solid #334155" }, children: typeof window !== "undefined" && window.innerWidth < 768 ? "\u{1F4F1} Mobile" : typeof window !== "undefined" && window.innerWidth < 1024 ? "\u{1F4BB} Tablet" : "\u{1F5A5}\uFE0F Desktop" }),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Left",
+                  onClick: () => handleUpdateAlign("left"),
+                  style: {
+                    background: activeAlign === "left" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u2B05\uFE0F Left"
+                }
+              ),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Center",
+                  onClick: () => handleUpdateAlign("center"),
+                  style: {
+                    background: activeAlign === "center" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u2194\uFE0F Center"
+                }
+              ),
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Align Right",
+                  onClick: () => handleUpdateAlign("right"),
+                  style: {
+                    background: activeAlign === "right" ? "#3b82f6" : "#1e293b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  },
+                  children: "\u27A1\uFE0F Right"
+                }
+              ),
+              isRich && (value.offsetX || value.offsetY) ? /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Reset Position Offset",
+                  onClick: handleResetPosition,
+                  style: {
+                    background: "#dc2626",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    fontWeight: 700
+                  },
+                  children: "\u21BA Reset Pos"
+                }
+              ) : null,
+              /* @__PURE__ */ jsx4(
+                "button",
+                {
+                  type: "button",
+                  title: "Close",
+                  onClick: () => setIsSelected(false),
+                  style: {
+                    background: "transparent",
+                    color: "#64748b",
+                    border: "none",
+                    padding: "0 4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold"
+                  },
+                  children: "\u2715"
+                }
+              )
+            ]
           }
-        },
-        "\u2B05\uFE0F Left"
-      ),
-      /* @__PURE__ */ React4.createElement(
-        "button",
-        {
-          type: "button",
-          title: "Align Center",
-          onClick: () => handleUpdateAlign("center"),
-          style: {
-            background: activeAlign === "center" ? "#3b82f6" : "#1e293b",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            padding: "3px 8px",
-            cursor: "pointer",
-            fontWeight: 600
+        ),
+        editMode && /* @__PURE__ */ jsx4(
+          "span",
+          {
+            title: "Drag handle to resize text area width",
+            style: {
+              position: "absolute",
+              bottom: "-6px",
+              right: "-6px",
+              width: "12px",
+              height: "12px",
+              background: isResizing ? "#2563eb" : "#3b82f6",
+              border: "2px solid #ffffff",
+              borderRadius: "3px",
+              cursor: "se-resize",
+              zIndex: 99999,
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
+            },
+            onMouseDown: handleResizeMouseDown,
+            onTouchStart: handleTouchResizeStart,
+            onClick: (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }
           }
-        },
-        "\u2194\uFE0F Center"
-      ),
-      /* @__PURE__ */ React4.createElement(
-        "button",
-        {
-          type: "button",
-          title: "Align Right",
-          onClick: () => handleUpdateAlign("right"),
-          style: {
-            background: activeAlign === "right" ? "#3b82f6" : "#1e293b",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            padding: "3px 8px",
-            cursor: "pointer",
-            fontWeight: 600
-          }
-        },
-        "\u27A1\uFE0F Right"
-      ),
-      isRich && (value.offsetX || value.offsetY) ? /* @__PURE__ */ React4.createElement(
-        "button",
-        {
-          type: "button",
-          title: "Reset Position Offset",
-          onClick: handleResetPosition,
-          style: {
-            background: "#dc2626",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            padding: "3px 8px",
-            cursor: "pointer",
-            fontWeight: 700
-          }
-        },
-        "\u21BA Reset Pos"
-      ) : null,
-      /* @__PURE__ */ React4.createElement(
-        "button",
-        {
-          type: "button",
-          title: "Close",
-          onClick: () => setIsSelected(false),
-          style: {
-            background: "transparent",
-            color: "#64748b",
-            border: "none",
-            padding: "0 4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold"
-          }
-        },
-        "\u2715"
-      )
-    ),
-    editMode && /* @__PURE__ */ React4.createElement(
-      "span",
-      {
-        title: "Drag handle to resize text area width",
-        style: {
-          position: "absolute",
-          bottom: "-6px",
-          right: "-6px",
-          width: "12px",
-          height: "12px",
-          background: isResizing ? "#2563eb" : "#3b82f6",
-          border: "2px solid #ffffff",
-          borderRadius: "3px",
-          cursor: "se-resize",
-          zIndex: 99999,
-          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
-        },
-        onMouseDown: handleResizeMouseDown,
-        onTouchStart: handleTouchResizeStart,
-        onClick: (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }
-    )
+        )
+      ]
+    }
   );
 }
 
 // src/components/EditableImage.tsx
-import React5, { useContext as useContext11, useState as useState5, useRef as useRef2 } from "react";
+import { useContext as useContext11, useState as useState5, useRef as useRef2 } from "react";
+import { jsx as jsx5 } from "react/jsx-runtime";
 function EditableImage({
   regionId,
   defaultValue,
@@ -1206,18 +1214,17 @@ function EditableImage({
   style = {},
   alt
 }) {
-  var _a;
   const cms = useContext11(CMSContext);
   const page = useContext11(PageContext);
   const defaultImgObj = typeof defaultValue === "string" ? { src: defaultValue, alt: alt || "" } : defaultValue;
   const [value, setValue] = useEditable(regionId, defaultImgObj, "image", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
   const [isDragging, setIsDragging] = useState5(false);
   const [dragOffset, setDragOffset] = useState5({ x: 0, y: 0 });
   const dragStartRef = useRef2(null);
-  const imgSrc = typeof value === "string" ? value : (value == null ? void 0 : value.src) || "";
-  const imgAlt = typeof value === "string" ? alt || "" : (value == null ? void 0 : value.alt) || alt || "";
+  const imgSrc = typeof value === "string" ? value : value?.src || "";
+  const imgAlt = typeof value === "string" ? alt || "" : value?.alt || alt || "";
   const imgStyle = { ...style };
   if (typeof value === "object" && value !== null) {
     if (value.width) imgStyle.width = value.width;
@@ -1233,7 +1240,7 @@ function EditableImage({
   const handleMouseDown = (e) => {
     if (!editMode) return;
     e.stopPropagation();
-    if (cms == null ? void 0 : cms.websiteId) {
+    if (cms?.websiteId) {
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
         type: "image",
@@ -1281,9 +1288,9 @@ function EditableImage({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ React5.createElement("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
+    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
   }
-  return /* @__PURE__ */ React5.createElement(
+  return /* @__PURE__ */ jsx5(
     "img",
     {
       src: imgSrc,
@@ -1308,7 +1315,8 @@ function EditableImage({
 }
 
 // src/components/EditableButton.tsx
-import React6, { useContext as useContext12 } from "react";
+import { useContext as useContext12 } from "react";
+import { jsx as jsx6 } from "react/jsx-runtime";
 function EditableButton({
   regionId,
   defaultValue,
@@ -1316,19 +1324,19 @@ function EditableButton({
   className = "",
   style = {},
   onClick,
-  as: Component = "button"
+  as: Component = "button",
+  children
 }) {
-  var _a;
   const cms = useContext12(CMSContext);
   const page = useContext12(PageContext);
   const defaultBtnObj = typeof defaultValue === "string" ? { text: defaultValue } : defaultValue;
   const [value] = useEditable(regionId, defaultBtnObj, "button", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
-  const btnText = typeof value === "string" ? value : (value == null ? void 0 : value.text) || "";
-  const btnHref = typeof value === "object" ? value == null ? void 0 : value.href : void 0;
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
+  const btnText = typeof value === "string" ? value : value?.text || "";
+  const btnHref = typeof value === "object" ? value?.href : void 0;
   const handleClick = (e) => {
-    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
+    if (editMode && cms?.websiteId) {
       e.preventDefault();
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
@@ -1348,10 +1356,11 @@ function EditableButton({
   };
   const Tag = btnHref && !editMode ? "a" : Component;
   const tagProps = Tag === "a" ? { href: btnHref } : {};
+  const renderedContent = typeof children === "function" ? children(value || defaultBtnObj) : children !== void 0 ? children : btnText;
   if (!editMode) {
-    return /* @__PURE__ */ React6.createElement(Tag, { ...tagProps, className, style, onClick }, btnText);
+    return /* @__PURE__ */ jsx6(Tag, { ...tagProps, className, style, onClick, children: renderedContent });
   }
-  return /* @__PURE__ */ React6.createElement(
+  return /* @__PURE__ */ jsx6(
     Tag,
     {
       ...tagProps,
@@ -1364,14 +1373,16 @@ function EditableButton({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "button"
-    },
-    btnText
+      "data-rcms-type": "button",
+      "data-rcms-label": label,
+      children: renderedContent
+    }
   );
 }
 
 // src/components/EditableSection.tsx
-import React7, { useContext as useContext13 } from "react";
+import { useContext as useContext13 } from "react";
+import { jsx as jsx7 } from "react/jsx-runtime";
 function EditableSection({
   regionId,
   defaultValue = {},
@@ -1381,14 +1392,23 @@ function EditableSection({
   children,
   as: Component = "section"
 }) {
-  var _a;
   const cms = useContext13(CMSContext);
   const page = useContext13(PageContext);
   const [value] = useEditable(regionId, defaultValue, "section", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
+  const sectionValue = value && typeof value === "object" ? value : {};
+  const sectionStyle = { ...style };
+  if (typeof sectionValue.background === "string") sectionStyle.background = sectionValue.background;
+  if (typeof sectionValue.paddingY === "number") {
+    sectionStyle.paddingTop = `${sectionValue.paddingY}px`;
+    sectionStyle.paddingBottom = `${sectionValue.paddingY}px`;
+  }
+  if (sectionValue.layout === "flex") sectionStyle.display = "flex";
+  if (sectionValue.layout === "grid") sectionStyle.display = "grid";
+  if (sectionValue.layout === "full") sectionStyle.width = "100%";
   const handleClick = (e) => {
-    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
+    if (editMode && cms?.websiteId) {
       const target = e.target;
       if (target && target.closest(".rcms-editable-region") !== e.currentTarget) {
         return;
@@ -1408,14 +1428,14 @@ function EditableSection({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ React7.createElement(Component, { className, style }, children);
+    return /* @__PURE__ */ jsx7(Component, { className, style: sectionStyle, children });
   }
-  return /* @__PURE__ */ React7.createElement(
+  return /* @__PURE__ */ jsx7(
     Component,
     {
       className: `rcms-editable-region rcms-editable-section ${className}`,
       style: {
-        ...style,
+        ...sectionStyle,
         outline: "2px dashed #3b82f6",
         outlineOffset: "4px",
         position: "relative",
@@ -1423,14 +1443,16 @@ function EditableSection({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "section"
-    },
-    children
+      "data-rcms-type": "section",
+      "data-rcms-label": label,
+      children
+    }
   );
 }
 
 // src/components/EditableRichText.tsx
-import React8, { useContext as useContext14 } from "react";
+import { useContext as useContext14 } from "react";
+import { jsx as jsx8 } from "react/jsx-runtime";
 function EditableRichText({
   regionId,
   defaultValue,
@@ -1439,14 +1461,13 @@ function EditableRichText({
   style = {},
   as: Component = "div"
 }) {
-  var _a;
   const cms = useContext14(CMSContext);
   const page = useContext14(PageContext);
   const [value] = useEditable(regionId, defaultValue, "richtext", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
   const handleClick = (e) => {
-    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
+    if (editMode && cms?.websiteId) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1462,7 +1483,7 @@ function EditableRichText({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ React8.createElement(
+    return /* @__PURE__ */ jsx8(
       Component,
       {
         className,
@@ -1471,7 +1492,7 @@ function EditableRichText({
       }
     );
   }
-  return /* @__PURE__ */ React8.createElement(
+  return /* @__PURE__ */ jsx8(
     Component,
     {
       className: `rcms-editable-region rcms-editable-richtext ${className}`,
@@ -1491,7 +1512,8 @@ function EditableRichText({
 }
 
 // src/components/EditableRepeater.tsx
-import React9, { useContext as useContext15 } from "react";
+import { useContext as useContext15 } from "react";
+import { jsx as jsx9 } from "react/jsx-runtime";
 function EditableRepeater({
   regionId,
   defaultValue,
@@ -1500,15 +1522,14 @@ function EditableRepeater({
   style = {},
   children
 }) {
-  var _a;
   const cms = useContext15(CMSContext);
   const page = useContext15(PageContext);
   const [value] = useEditable(regionId, defaultValue, "repeater", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
   const items = Array.isArray(value) ? value : defaultValue;
   const handleClick = (e) => {
-    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
+    if (editMode && cms?.websiteId) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1524,9 +1545,9 @@ function EditableRepeater({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ React9.createElement("div", { className, style }, children(items));
+    return /* @__PURE__ */ jsx9("div", { className, style, children: children(items) });
   }
-  return /* @__PURE__ */ React9.createElement(
+  return /* @__PURE__ */ jsx9(
     "div",
     {
       className: `rcms-editable-region rcms-editable-repeater ${className}`,
@@ -1539,14 +1560,15 @@ function EditableRepeater({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "repeater"
-    },
-    children(items)
+      "data-rcms-type": "repeater",
+      children: children(items)
+    }
   );
 }
 
 // src/components/EditableVideo.tsx
-import React10, { useContext as useContext16 } from "react";
+import { useContext as useContext16 } from "react";
+import { jsx as jsx10 } from "react/jsx-runtime";
 function EditableVideo({
   regionId,
   defaultValue,
@@ -1554,16 +1576,15 @@ function EditableVideo({
   className = "",
   style = {}
 }) {
-  var _a;
   const cms = useContext16(CMSContext);
   const page = useContext16(PageContext);
   const defaultVidObj = typeof defaultValue === "string" ? { url: defaultValue } : defaultValue;
   const [value] = useEditable(regionId, defaultVidObj, "video", label);
-  const editMode = (cms == null ? void 0 : cms.editMode) || false;
-  const pageId = ((_a = page == null ? void 0 : page.currentPage) == null ? void 0 : _a.id) || "global";
-  const videoUrl = typeof value === "string" ? value : (value == null ? void 0 : value.url) || "";
+  const editMode = cms?.editMode || false;
+  const pageId = page?.currentPage?.id || "global";
+  const videoUrl = typeof value === "string" ? value : value?.url || "";
   const handleClick = (e) => {
-    if (editMode && (cms == null ? void 0 : cms.websiteId)) {
+    if (editMode && cms?.websiteId) {
       e.stopPropagation();
       MessageBus.send("rcms/v1/region-selected", cms.websiteId, {
         regionId,
@@ -1581,11 +1602,11 @@ function EditableVideo({
   const isEmbed = videoUrl.includes("youtube") || videoUrl.includes("vimeo");
   if (!editMode) {
     if (isEmbed) {
-      return /* @__PURE__ */ React10.createElement("iframe", { src: videoUrl, title: label, className, style, allowFullScreen: true });
+      return /* @__PURE__ */ jsx10("iframe", { src: videoUrl, title: label, className, style, allowFullScreen: true });
     }
-    return /* @__PURE__ */ React10.createElement("video", { src: videoUrl, controls: true, className, style });
+    return /* @__PURE__ */ jsx10("video", { src: videoUrl, controls: true, className, style });
   }
-  return /* @__PURE__ */ React10.createElement(
+  return /* @__PURE__ */ jsx10(
     "div",
     {
       className: `rcms-editable-region rcms-editable-video ${className}`,
@@ -1598,9 +1619,9 @@ function EditableVideo({
       },
       onClick: handleClick,
       "data-rcms-region": regionId,
-      "data-rcms-type": "video"
-    },
-    isEmbed ? /* @__PURE__ */ React10.createElement("iframe", { src: videoUrl, title: label, className, style: { ...style, pointerEvents: "none" } }) : /* @__PURE__ */ React10.createElement("video", { src: videoUrl, className, style: { ...style, pointerEvents: "none" } })
+      "data-rcms-type": "video",
+      children: isEmbed ? /* @__PURE__ */ jsx10("iframe", { src: videoUrl, title: label, className, style: { ...style, pointerEvents: "none" } }) : /* @__PURE__ */ jsx10("video", { src: videoUrl, className, style: { ...style, pointerEvents: "none" } })
+    }
   );
 }
 export {

@@ -7,8 +7,8 @@ import './index.css'
 import App from './App.jsx'
 
 // ReactCMS Configuration
-const websiteId = '-Oy2TPk_l2cl0Fe-H1h1'
-const apiKey = 'rcms_pk_8i3uhg1pevb27xx4al6g'
+const websiteId = '-Oz5k0Sb8BKbOxfOSxq8'
+const apiKey = ''
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

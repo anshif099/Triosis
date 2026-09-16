@@ -33,6 +33,7 @@ window.__REACTCMS_GIT_CONTENT__ = {
       "fontSize": "32px",
       "fontSizeMobile": "22px",
       "fontSizeTablet": "28px",
+      "lineHeight": 1.2,
       "maxWidth": "100%",
       "overflowWrapDesktop": "normal",
       "text": "Ready to transform your business with Ad?",

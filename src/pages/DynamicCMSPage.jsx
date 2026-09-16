@@ -216,7 +216,7 @@ export function DynamicCMSPage({ pageSlug }) {
             label="CTA Title"
             defaultValue={`Ready to transform your business with ${displayTitle}?`}
             as="h3"
-            style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '16px', color: 'var(--primary)' }}
+            style={{ fontSize: '2.2rem', fontWeight: 700, lineHeight: 1.2, marginBottom: '16px', color: 'var(--primary)' }}
           />
           <EditableText
             regionId={`${slugKey}.cta_subtext`}

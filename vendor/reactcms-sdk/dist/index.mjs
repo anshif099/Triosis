@@ -796,6 +796,7 @@ function EditableText({
   if (isRich) {
     if (value.fontSize) textStyle.fontSize = value.fontSize;
     if (value.fontWeight) textStyle.fontWeight = value.fontWeight;
+    if (value.lineHeight) textStyle.lineHeight = value.lineHeight;
     if (value.color) textStyle.color = value.color;
     if (value.width) textStyle.width = value.width;
     if (value.maxWidth) textStyle.maxWidth = value.maxWidth;

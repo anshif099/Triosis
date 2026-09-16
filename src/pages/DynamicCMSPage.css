@@ -1,0 +1,9 @@
+.dynamic-cms-page {
+  min-height: 100vh;
+  background: var(--section-bg);
+  color: var(--text);
+}
+
+.dynamic-cms-page * {
+  box-sizing: border-box;
+}

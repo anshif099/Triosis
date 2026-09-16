@@ -6,6 +6,7 @@ import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/
 import heroLogo from '../assets/hero.png';
 import digitalSuccessImg from '../assets/digital_success.png';
 import './AboutUs.css'; // Inherits site CSS rules
+import './DynamicCMSPage.css';
 
 function formatTitle(slug) {
   if (!slug || slug === 'home') return 'Page';
@@ -21,7 +22,7 @@ export function DynamicCMSPage({ pageSlug }) {
   const slugKey = pageSlug ? pageSlug.replace(/[^a-zA-Z0-9_-]/g, '-') : 'page';
 
   return (
-    <div className="dynamic-cms-page" style={{ background: '#0a0a0a', color: '#ffffff', minHeight: '100vh' }}>
+    <div className="dynamic-cms-page">
       <Preloader />
       <Header />
 
@@ -30,7 +31,7 @@ export function DynamicCMSPage({ pageSlug }) {
         regionId={`${slugKey}.hero`} 
         label={`${displayTitle} Hero Section`} 
         className="about-hero"
-        style={{ paddingTop: '160px', paddingBottom: '80px', textAlign: 'center', position: 'relative', background: '#0a0a0a' }}
+        style={{ paddingTop: '120px', paddingBottom: '80px', textAlign: 'center', position: 'relative', background: 'var(--section-bg)' }}
       >
         <div className="about-hero-content" style={{ maxWidth: '960px', margin: '0 auto', padding: '0 24px' }}>
           <EditableText
@@ -39,7 +40,7 @@ export function DynamicCMSPage({ pageSlug }) {
             defaultValue={displayTitle}
             className="about-heading"
             as="h1"
-            style={{ fontSize: '3.2rem', fontWeight: 800, marginBottom: '20px', color: '#ff4d4d', lineHeight: 1.15 }}
+            style={{ fontSize: '3.2rem', fontWeight: 800, marginBottom: '20px', color: 'var(--primary)', lineHeight: 1.15 }}
           />
           <EditableText
             regionId={`${slugKey}.subtext`}
@@ -47,10 +48,10 @@ export function DynamicCMSPage({ pageSlug }) {
             defaultValue="Explore strategic digital solutions, tools, and courses tailored for modern business innovation and growth."
             className="about-description"
             as="p"
-            style={{ fontSize: '1.25rem', color: '#aaaaaa', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto 40px auto' }}
+            style={{ fontSize: '1.25rem', color: 'var(--text)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto 40px auto' }}
           />
 
-          <div style={{ margin: '0 auto', maxWidth: '720px', borderRadius: '16px', overflow: 'hidden', border: '1px solid #222222', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+          <div style={{ margin: '0 auto', maxWidth: '720px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--section-border)', boxShadow: '0 20px 50px rgba(15,23,42,0.12)' }}>
             <EditableImage
               regionId={`${slugKey}.hero_image`}
               label="Hero Visual Image"
@@ -65,17 +66,17 @@ export function DynamicCMSPage({ pageSlug }) {
       <EditableSection
         regionId={`${slugKey}.stats_carousel_section`}
         label="Client Success Statistics Moving Carousel"
-        style={{ padding: '28px 0', background: 'linear-gradient(90deg, #111111 0%, #1c1c1c 50%, #111111 100%)', borderTop: '1px solid #222222', borderBottom: '1px solid #222222', overflow: 'hidden' }}
+        style={{ padding: '28px 0', background: '#ffffff', borderTop: '1px solid var(--section-border)', borderBottom: '1px solid var(--section-border)', overflow: 'hidden' }}
       >
         <div style={{ display: 'flex', gap: '30px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', padding: '0 20px' }}>
-          <div style={{ display: 'inline-flex', itemsCenter: 'center', gap: '10px', background: 'rgba(255,77,77,0.12)', border: '1px solid rgba(255,77,77,0.3)', padding: '6px 14px', borderRadius: '30px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#ff4d4d', letterSpacing: '1px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(255,87,87,0.12)', border: '1px solid rgba(255,87,87,0.3)', padding: '6px 14px', borderRadius: '30px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px' }}>
               📊 CLIENT SUCCESS STATISTICS
             </span>
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', itemsCenter: 'center', gap: '8px', fontSize: '1rem', color: '#ffffff', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
               <span>🚀</span>
               <EditableText
                 regionId={`${slugKey}.stat1_text`}
@@ -84,7 +85,7 @@ export function DynamicCMSPage({ pageSlug }) {
               />
             </div>
             <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', itemsCenter: 'center', gap: '8px', fontSize: '1rem', color: '#ffffff', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
               <span>⭐</span>
               <EditableText
                 regionId={`${slugKey}.stat2_text`}
@@ -93,7 +94,7 @@ export function DynamicCMSPage({ pageSlug }) {
               />
             </div>
             <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', itemsCenter: 'center', gap: '8px', fontSize: '1rem', color: '#ffffff', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
               <span>💥</span>
               <EditableText
                 regionId={`${slugKey}.stat3_text`}
@@ -102,7 +103,7 @@ export function DynamicCMSPage({ pageSlug }) {
               />
             </div>
             <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', itemsCenter: 'center', gap: '8px', fontSize: '1rem', color: '#ffffff', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
               <span>🏆</span>
               <EditableText
                 regionId={`${slugKey}.stat4_text`}
@@ -118,7 +119,7 @@ export function DynamicCMSPage({ pageSlug }) {
       <EditableSection 
         regionId={`${slugKey}.body_section`} 
         label="Main Content & Details" 
-        style={{ padding: '90px 24px', background: '#0d0d0d', borderTop: '1px solid #1a1a1a' }}
+        style={{ padding: '90px 24px', background: 'var(--section-bg)', borderTop: '1px solid var(--section-border)' }}
       >
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
@@ -127,70 +128,70 @@ export function DynamicCMSPage({ pageSlug }) {
               label="Section Heading"
               defaultValue={`About ${displayTitle}`}
               as="h2"
-              style={{ fontSize: '2.4rem', fontWeight: 700, marginBottom: '16px', color: '#ffffff' }}
+              style={{ fontSize: '2.4rem', fontWeight: 700, marginBottom: '16px', color: 'var(--primary)' }}
             />
             <EditableText
               regionId={`${slugKey}.description`}
               label="Section Detailed Description"
               defaultValue="We deliver innovative technology, creative marketing, and measurable digital strategies to help ambitious businesses grow and achieve long-term success."
               as="p"
-              style={{ fontSize: '1.15rem', color: '#888888', lineHeight: 1.8, maxWidth: '850px', margin: '0 auto' }}
+              style={{ fontSize: '1.15rem', color: 'var(--text)', lineHeight: 1.8, maxWidth: '850px', margin: '0 auto' }}
             />
           </div>
 
           {/* 3 Feature Highlights Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            <div style={{ background: '#141414', border: '1px solid #222222', padding: '32px', borderRadius: '16px' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: '#ff4d4d' }}>⚡ High Performance</div>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
+              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>⚡ High Performance</div>
               <EditableText
                 regionId={`${slugKey}.feature1_title`}
                 label="Feature 1 Title"
                 defaultValue="Strategic Planning & Execution"
                 as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: '#ffffff' }}
+                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
               />
               <EditableText
                 regionId={`${slugKey}.feature1_desc`}
                 label="Feature 1 Description"
                 defaultValue="Tailored strategies that align with your core business objectives to maximize ROI and digital efficiency."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#aaaaaa', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#141414', border: '1px solid #222222', padding: '32px', borderRadius: '16px' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: '#ff4d4d' }}>🎯 Targeted Outreach</div>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
+              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>🎯 Targeted Outreach</div>
               <EditableText
                 regionId={`${slugKey}.feature2_title`}
                 label="Feature 2 Title"
                 defaultValue="Data-Driven Optimization"
                 as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: '#ffffff' }}
+                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
               />
               <EditableText
                 regionId={`${slugKey}.feature2_desc`}
                 label="Feature 2 Description"
                 defaultValue="Leveraging advanced analytics and AI-powered insights to refine your market position continuously."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#aaaaaa', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#141414', border: '1px solid #222222', padding: '32px', borderRadius: '16px' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: '#ff4d4d' }}>🚀 Scalable Growth</div>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
+              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>🚀 Scalable Growth</div>
               <EditableText
                 regionId={`${slugKey}.feature3_title`}
                 label="Feature 3 Title"
                 defaultValue="End-to-End Implementation"
                 as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: '#ffffff' }}
+                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
               />
               <EditableText
                 regionId={`${slugKey}.feature3_desc`}
                 label="Feature 3 Description"
                 defaultValue="From concept to launch, our team ensures seamless execution and continuous support at scale."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#aaaaaa', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
           </div>
@@ -201,7 +202,7 @@ export function DynamicCMSPage({ pageSlug }) {
       <EditableSection 
         regionId={`${slugKey}.cta_section`} 
         label="CTA Section" 
-        style={{ padding: '80px 24px', textAlign: 'center', background: '#111111', borderTop: '1px solid #1f1f1f' }}
+        style={{ padding: '80px 24px', textAlign: 'center', background: '#ffffff', borderTop: '1px solid var(--section-border)' }}
       >
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <EditableImage
@@ -215,17 +216,17 @@ export function DynamicCMSPage({ pageSlug }) {
             label="CTA Title"
             defaultValue={`Ready to transform your business with ${displayTitle}?`}
             as="h3"
-            style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '16px', color: '#ffffff' }}
+            style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '16px', color: 'var(--primary)' }}
           />
           <EditableText
             regionId={`${slugKey}.cta_subtext`}
             label="CTA Subtext"
             defaultValue="Get in touch with our expert team today to schedule a consultation."
             as="p"
-            style={{ fontSize: '1.1rem', color: '#aaaaaa', marginBottom: '32px' }}
+            style={{ fontSize: '1.1rem', color: 'var(--text)', marginBottom: '32px' }}
           />
           <button 
-            style={{ padding: '14px 36px', background: '#ff4d4d', color: '#ffffff', border: 'none', borderRadius: '30px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 10px 25px rgba(255,77,77,0.3)' }}
+            style={{ padding: '14px 36px', background: 'var(--primary)', color: '#ffffff', border: 'none', borderRadius: '4px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 10px 25px rgba(255,87,87,0.22)' }}
           >
             <EditableText
               regionId={`${slugKey}.cta_button`}
@@ -240,11 +241,11 @@ export function DynamicCMSPage({ pageSlug }) {
       <EditableSection
         regionId={`${slugKey}.why_choose_us_section`}
         label="Why Choose Us Section"
-        style={{ padding: '100px 24px', background: '#0a0a0a', borderTop: '1px solid #1a1a1a' }}
+        style={{ padding: '100px 24px', background: 'var(--section-bg)', borderTop: '1px solid var(--section-border)' }}
       >
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <div style={{ color: '#ff4d4d', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <div style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
               🌟 WHY CHOOSE US
             </div>
             <EditableText
@@ -252,145 +253,145 @@ export function DynamicCMSPage({ pageSlug }) {
               label="Why Choose Us Title"
               defaultValue="Why Industry Leaders Trust Triosis Digital"
               as="h2"
-              style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ffffff', marginBottom: '16px' }}
+              style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '16px' }}
             />
             <EditableText
               regionId={`${slugKey}.why_choose_us_subtext`}
               label="Why Choose Us Subtitle"
               defaultValue="Delivering high-ROI campaigns, creative ad strategies, and dedicated account support."
               as="p"
-              style={{ fontSize: '1.15rem', color: '#888888', maxWidth: '750px', margin: '0 auto' }}
+              style={{ fontSize: '1.15rem', color: 'var(--text)', maxWidth: '750px', margin: '0 auto' }}
             />
           </div>
 
           {/* 6 Premium Feature Cards Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px', marginBottom: '70px' }}>
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px', transition: 'transform 0.3s ease, border-color 0.3s ease' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)', transition: 'transform 0.3s ease, border-color 0.3s ease' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🏆</div>
               <EditableText
                 regionId={`${slugKey}.card1_title`}
                 label="Card 1 Title"
                 defaultValue="Proven Advertising Results"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card1_desc`}
                 label="Card 1 Description"
                 defaultValue="Tailored strategies that align with your business goals to maximize ROI and digital efficiency."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🎨</div>
               <EditableText
                 regionId={`${slugKey}.card2_title`}
                 label="Card 2 Title"
                 defaultValue="Creative Campaigns"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card2_desc`}
                 label="Card 2 Description"
                 defaultValue="Scroll-stopping ad designs, persuasive copywriting, and high-converting visual assets."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>📊</div>
               <EditableText
                 regionId={`${slugKey}.card3_title`}
                 label="Card 3 Title"
                 defaultValue="Data-Driven Strategy"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card3_desc`}
                 label="Card 3 Description"
                 defaultValue="Continuous optimization powered by real-time campaign analytics and deep audience targeting."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🎯</div>
               <EditableText
                 regionId={`${slugKey}.card4_title`}
                 label="Card 4 Title"
                 defaultValue="Google & Meta Ads Experts"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card4_desc`}
                 label="Card 4 Description"
                 defaultValue="Certified Specialists managing Google Search, Meta Instagram/Facebook, and display campaigns."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>📈</div>
               <EditableText
                 regionId={`${slugKey}.card5_title`}
                 label="Card 5 Title"
                 defaultValue="Transparent Reporting"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card5_desc`}
                 label="Card 5 Description"
                 defaultValue="Clear performance metrics, live dashboard access, and actionable weekly reporting."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
 
-            <div style={{ background: '#121212', border: '1px solid #222222', padding: '36px', borderRadius: '20px' }}>
+            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: '2rem', marginBottom: '20px' }}>👥</div>
               <EditableText
                 regionId={`${slugKey}.card6_title`}
                 label="Card 6 Title"
                 defaultValue="Dedicated Account Managers"
                 as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}
+                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
               />
               <EditableText
                 regionId={`${slugKey}.card6_desc`}
                 label="Card 6 Description"
                 defaultValue="Personalized support, strategic growth calls, and dedicated campaign specialists."
                 as="p"
-                style={{ fontSize: '0.95rem', color: '#999999', lineHeight: 1.6 }}
+                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
               />
             </div>
           </div>
 
           {/* Horizontal Statistics Section */}
-          <div style={{ background: 'linear-gradient(135deg, #181818 0%, #111111 100%)', border: '1px solid #262626', padding: '40px 30px', borderRadius: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center' }}>
+          <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '40px 30px', borderRadius: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
             <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ff4d4d', marginBottom: '6px' }}>500+</div>
-              <div style={{ fontSize: '0.9rem', color: '#aaaaaa', fontWeight: 600 }}>Successful Campaigns</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>500+</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Successful Campaigns</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ff4d4d', marginBottom: '6px' }}>98%</div>
-              <div style={{ fontSize: '0.9rem', color: '#aaaaaa', fontWeight: 600 }}>Client Satisfaction</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>98%</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Client Satisfaction</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ff4d4d', marginBottom: '6px' }}>50M+</div>
-              <div style={{ fontSize: '0.9rem', color: '#aaaaaa', fontWeight: 600 }}>Ad Impressions</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>50M+</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Ad Impressions</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ff4d4d', marginBottom: '6px' }}>250+</div>
-              <div style={{ fontSize: '0.9rem', color: '#aaaaaa', fontWeight: 600 }}>Happy Clients</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>250+</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Happy Clients</div>
             </div>
           </div>
         </div>

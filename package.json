@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@anshif.rainhopes/reactcms-renderer": "file:./vendor/reactcms-renderer",
     "@anshif.rainhopes/reactcms-runtime": "file:./vendor/reactcms-runtime",
     "@anshif.rainhopes/reactcms-sdk": "file:./vendor/reactcms-sdk",
     "@anshif.rainhopes/shared": "file:./vendor/shared",

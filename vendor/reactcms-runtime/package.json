@@ -1,6 +1,6 @@
 {
   "name": "@anshif.rainhopes/reactcms-runtime",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,12 +14,14 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@anshif.rainhopes/shared": "^1.0.4",
-    "@anshif.rainhopes/reactcms-sdk": "^1.0.17",
+    "@anshif.rainhopes/reactcms-renderer": "*",
+    "@anshif.rainhopes/shared": "*",
+    "@anshif.rainhopes/reactcms-sdk": "*",
     "firebase": "^10.8.0"
   },
   "peerDependencies": {
     "react": ">=18",
+    "react-dom": ">=18",
     "react-router-dom": ">=6 <8"
   },
   "devDependencies": {

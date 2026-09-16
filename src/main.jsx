@@ -17,6 +17,7 @@ createRoot(document.getElementById('root')).render(
       apiKey={apiKey}
       routes={routes}
       theme={null}
+      preserveApplicationPage={true}
     >
       <App />
     </RuntimeProvider>

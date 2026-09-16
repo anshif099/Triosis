@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
 import { getFirebaseDatabase } from '@anshif.rainhopes/reactcms-sdk';
 import { paths, RouteEntry } from '@anshif.rainhopes/shared';
-import { DynamicPageRenderer } from './routing/dynamicPageRenderer';
+import { BuilderSections } from './BuilderSections';
+import { RuntimeContext } from './RuntimeContext';
 
 export interface RouteRegistryProps {
   websiteId: string;
@@ -12,6 +13,7 @@ export interface RouteRegistryProps {
 
 export function RouteRegistry({ websiteId, apiKey }: RouteRegistryProps) {
   const [dynamicRoutes, setDynamicRoutes] = useState<RouteEntry[]>([]);
+  const runtime = useContext(RuntimeContext);
 
   useEffect(() => {
     const db = getFirebaseDatabase(apiKey);
@@ -20,7 +22,9 @@ export function RouteRegistry({ websiteId, apiKey }: RouteRegistryProps) {
     const unsubscribe = onValue(routesRef, (snapshot) => {
       if (snapshot.exists()) {
         const val = snapshot.val() as Record<string, RouteEntry>;
-        const list = Object.values(val).filter((r) => r.source === 'cms-generated');
+        const list = Object.values(val).filter(
+          (r) => r.source === 'cms-generated' || r.source === 'cms' || r.source === 'generated'
+        );
         setDynamicRoutes(list);
       } else {
         setDynamicRoutes([]);
@@ -36,13 +40,28 @@ export function RouteRegistry({ websiteId, apiKey }: RouteRegistryProps) {
 
   return (
     <Routes>
-      {dynamicRoutes.map((route) => (
-        <Route
-          key={route.id}
-          path={route.path}
-          element={<DynamicPageRenderer slug={route.path} />}
-        />
-      ))}
+      {dynamicRoutes.map((route) => {
+        const defaultLayout = Object.values(runtime?.layouts || {}).find(
+          (layout) => layout.isDefault
+        );
+        const layout = runtime?.layouts?.[route.layout || ""]
+          || defaultLayout
+          || runtime?.layouts?.default;
+        return (
+          <Route
+            key={route.id}
+            path={route.path}
+            element={(
+              <BuilderSections
+                websiteId={websiteId}
+                apiKey={apiKey}
+                pageId={route.path}
+                layout={layout?.component}
+              />
+            )}
+          />
+        );
+      })}
     </Routes>
   );
 }

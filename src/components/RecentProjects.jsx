@@ -8,18 +8,19 @@ function RecentProjects() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    let frameId = null;
+
     const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Calculate progress of scroll through this section
-      const totalHeight = rect.height - windowHeight;
-      if (totalHeight <= 0) return;
-
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / totalHeight));
-      setScrollProgress(progress);
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        if (!sectionRef.current) return;
+        const rect = sectionRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight || 800;
+        const totalHeight = Math.max(1, rect.height - windowHeight);
+        const progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
+        setScrollProgress(progress);
+      });
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -29,6 +30,7 @@ function RecentProjects() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
   }, []);
 
@@ -38,7 +40,7 @@ function RecentProjects() {
   const titleScale = 1 + scrollProgress * 0.05;
 
   // Project Card: fades in and slides into position starting at progress = 0.15
-  const cardProgress = Math.min(1, Math.max(0, (scrollProgress - 0.15) * 1.3));
+  const cardProgress = Math.min(1, Math.max(0, (scrollProgress - 0.1) / 0.55));
   const cardOpacity = cardProgress;
   const cardTranslateX = -80 + cardProgress * 80;
   const cardTranslateY = 60 - cardProgress * 60;

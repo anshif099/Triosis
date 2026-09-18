@@ -1,6 +1,6 @@
 .projects-section {
   position: relative;
-  height: 200vh; /* Scroll length for the animation */
+  height: 170vh; /* Enough room for the reveal without leaving a long blank area */
   background-color: var(--section-bg);
   width: 100%;
 }

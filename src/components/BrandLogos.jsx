@@ -49,6 +49,9 @@ function BrandCard({ brand, index }) {
           label={`Brand ${brandId} Logo Image`}
           defaultValue={{ src: brand.image || '', alt: defaultTitle }}
           className="brand-logo-img"
+          onError={(event) => {
+            event.currentTarget.style.display = 'none';
+          }}
         />
         <div className="brand-text-wrapper">
           <EditableText

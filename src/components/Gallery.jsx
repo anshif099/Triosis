@@ -80,17 +80,19 @@ function Gallery() {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
+    let frameId = null;
+
     const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight || 800;
-
-      const totalHeight = rect.height - windowHeight;
-      if (totalHeight <= 0) return;
-
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / totalHeight));
-      setScrollProgress(progress);
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        if (!sectionRef.current) return;
+        const rect = sectionRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight || 800;
+        const totalHeight = Math.max(1, rect.height - windowHeight);
+        const progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
+        setScrollProgress(progress);
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -100,6 +102,7 @@ function Gallery() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
   }, []);
 
@@ -119,14 +122,14 @@ function Gallery() {
   };
 
   return (
-    <EditableSection
-      regionId="gallery.section"
-      label="Scroll Gallery Section"
-      as="section"
-      className="scroll-gallery-section"
-      ref={sectionRef}
-    >
-      <div className="sticky-container">
+    <section className="scroll-gallery-section" ref={sectionRef}>
+      <EditableSection
+        regionId="gallery.section"
+        label="Scroll Gallery Section"
+        as="div"
+        className="gallery-editable-section"
+      >
+        <div className="sticky-container">
         <div className="gallery-layout">
           <div className="gallery-left">
             {/* Left side spacing layout */}
@@ -162,8 +165,9 @@ function Gallery() {
             </EditableRepeater>
           </div>
         </div>
-      </div>
-    </EditableSection>
+        </div>
+      </EditableSection>
+    </section>
   );
 }
 

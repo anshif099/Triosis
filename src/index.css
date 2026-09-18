@@ -47,7 +47,8 @@ body {
   padding: 0;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  /* `hidden` creates an overflow container and breaks descendant sticky sections. */
+  overflow-x: clip;
 }
 
 #root {
@@ -57,7 +58,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img, video, canvas, svg {

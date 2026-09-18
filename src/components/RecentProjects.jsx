@@ -1,63 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { EditableText, EditableImage } from '@anshif.rainhopes/reactcms-sdk';
 import digitalSuccessImg from '../assets/digital_success.png';
 import './RecentProjects.css';
 
 function RecentProjects() {
   const sectionRef = useRef(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    let frameId = null;
-
-    const handleScroll = () => {
-      if (frameId !== null) return;
-      frameId = window.requestAnimationFrame(() => {
-        frameId = null;
-        if (!sectionRef.current) return;
-        const rect = sectionRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight || 800;
-        const totalHeight = Math.max(1, rect.height - windowHeight);
-        const progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
-        setScrollProgress(progress);
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll);
-    handleScroll();
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      if (frameId !== null) window.cancelAnimationFrame(frameId);
-    };
-  }, []);
-
-  // Calculate dynamic animations based on progress
-  // Heading: fades out by progress = 0.55
-  const titleOpacity = Math.max(0, 1 - scrollProgress * 1.8);
-  const titleScale = 1 + scrollProgress * 0.05;
-
-  // Project Card: fades in and slides into position starting at progress = 0.15
-  const cardProgress = Math.min(1, Math.max(0, (scrollProgress - 0.1) / 0.55));
-  const cardOpacity = cardProgress;
-  const cardTranslateX = -80 + cardProgress * 80;
-  const cardTranslateY = 60 - cardProgress * 60;
 
   return (
     <section className="projects-section" ref={sectionRef}>
       <div className="projects-sticky">
         <div className="projects-layout">
-          {/* Centered Heading that disappears on scroll */}
-          <div 
-            className="projects-title-container"
-            style={{
-              opacity: titleOpacity,
-              transform: `scale(${titleScale})`,
-              display: titleOpacity === 0 ? 'none' : 'flex'
-            }}
-          >
+          <div className="projects-title-container">
             <EditableText regionId="projects.subtitle" label="Projects Subtitle" defaultValue="Our Recent Projects" className="projects-subtitle" />
             <EditableText
               regionId="projects.title"
@@ -68,15 +21,7 @@ function RecentProjects() {
             />
           </div>
 
-          {/* Project Card that slides in from bottom-left */}
-          <div 
-            className="project-card"
-            style={{
-              opacity: cardOpacity,
-              transform: `translate3d(${cardTranslateX}px, ${cardTranslateY}px, 0)`,
-              pointerEvents: cardOpacity > 0.5 ? 'auto' : 'none'
-            }}
-          >
+          <div className="project-card">
             <div className="project-image-wrapper">
               <EditableImage
                 regionId="projects.card_image"

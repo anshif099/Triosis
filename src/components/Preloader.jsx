@@ -23,7 +23,9 @@ function Preloader() {
 
       loadTimer = setTimeout(() => {
         setIsLoaded(true);
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        // Restore the original value. Forcing `auto` here creates an overflow
+        // ancestor and prevents position: sticky sections from tracking the page.
+        document.body.style.removeProperty('overflow');
       }, loadDuration);
 
       removeTimer = setTimeout(() => {
@@ -45,7 +47,7 @@ function Preloader() {
       clearTimeout(loadTimer);
       clearTimeout(removeTimer);
       window.removeEventListener('trigger-preloader', handleTrigger);
-      document.body.style.overflow = 'auto';
+      document.body.style.removeProperty('overflow');
     };
   }, []);
 

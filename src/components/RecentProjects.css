@@ -1,14 +1,12 @@
 .projects-section {
   position: relative;
-  height: 170vh; /* Enough room for the reveal without leaving a long blank area */
+  min-height: 100vh;
   background-color: var(--section-bg);
   width: 100%;
 }
 
 .projects-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,23 +20,25 @@
   position: relative;
   width: 100%;
   max-width: 1200px;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 80px;
 }
 
 .projects-title-container {
-  position: absolute;
+  position: relative;
   z-index: 1;
   pointer-events: none;
-  text-align: center;
-  transition: opacity 0.1s linear, transform 0.1s linear;
+  text-align: left;
+  opacity: 1;
+  transform: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 15px;
-  width: 100%;
+  width: 52%;
 }
 
 .projects-subtitle {
@@ -56,21 +56,28 @@
   font-weight: 700;
   line-height: 1.2;
   color: var(--section-text-white);
-  text-align: center;
+  text-align: left;
   letter-spacing: -1.5px;
   margin: 0;
 }
 
 .project-card {
-  position: absolute;
-  left: 0;
+  position: relative;
+  order: -1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   z-index: 2;
   width: 100%;
   max-width: 440px;
-  transition: opacity 0.1s linear, transform 0.1s linear;
+  opacity: 1;
+  transform: none;
+  animation: project-card-reveal 0.9s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+@keyframes project-card-reveal {
+  from { transform: translate3d(-40px, 30px, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 
 .project-image-wrapper {
@@ -132,19 +139,26 @@
 }
 
 @media (max-width: 768px) {
-  .projects-section {
-    height: 140vh; /* Shorter scroll height on mobile */
-  }
   .projects-sticky {
     padding: 0 20px;
   }
   .projects-title-container {
     gap: 8px;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .projects-layout {
+    flex-direction: column-reverse;
+    justify-content: center;
+    gap: 35px;
+    padding: 60px 0;
   }
   .projects-title {
     font-size: 28px;
     letter-spacing: -0.5px;
   }
+  .projects-title { text-align: center; }
   .projects-subtitle {
     font-size: 10px;
     letter-spacing: 2px;

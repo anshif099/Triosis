@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import { EditableText, EditableImage, EditableSection, EditableRepeater, CMSContext } from '@anshif.rainhopes/reactcms-sdk';
+import React, { useEffect, useRef, useState } from 'react';
+import { EditableText, EditableImage, EditableRepeater } from '@anshif.rainhopes/reactcms-sdk';
 import img1 from '../assets/img1.jpg';
 import img2 from '../assets/img2.jpg';
 import img3 from '../assets/img3.jpg';
@@ -72,11 +72,8 @@ function GalleryItem({ item, index, isExpanded, onMouseEnter, onMouseLeave, onCl
 
 function Gallery() {
   const sectionRef = useRef(null);
-  const cms = useContext(CMSContext);
-  const editMode = cms?.editMode || false;
-
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeItem, setActiveItem] = useState(1);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
@@ -106,30 +103,22 @@ function Gallery() {
     };
   }, []);
 
-  const checkIsExpanded = (index, itemId) => {
+  const checkIsExpanded = (index, itemId, itemCount) => {
     if (hoveredItem === itemId) return true;
-    if (activeItem === itemId && !hoveredItem) return true;
+    if (selectedItem !== null && !hoveredItem) return selectedItem === itemId;
 
-    if (index === 0) return scrollProgress >= 0.05;
-    if (index === 1) return scrollProgress >= 0.28;
-    if (index === 2) return scrollProgress >= 0.52;
-    if (index === 3) return scrollProgress >= 0.76;
-    return false;
+    // While this section is pinned, move through all cards one at a time.
+    const activeIndex = Math.min(itemCount - 1, Math.floor(scrollProgress * itemCount));
+    return index === activeIndex;
   };
 
   const handleItemClick = (itemId) => {
-    setActiveItem((prev) => (prev === itemId ? null : itemId));
+    setSelectedItem((prev) => (prev === itemId ? null : itemId));
   };
 
   return (
     <section className="scroll-gallery-section" ref={sectionRef}>
-      <EditableSection
-        regionId="gallery.section"
-        label="Scroll Gallery Section"
-        as="div"
-        className="gallery-editable-section"
-      >
-        <div className="sticky-container">
+      <div className="sticky-container">
         <div className="gallery-layout">
           <div className="gallery-left">
             {/* Left side spacing layout */}
@@ -146,7 +135,7 @@ function Gallery() {
                   <div className="scroll-capsule-gallery">
                     {itemList.map((item, index) => {
                       const itemId = item.id || (index + 1);
-                      const expanded = checkIsExpanded(index, itemId);
+                      const expanded = checkIsExpanded(index, itemId, itemList.length);
                       return (
                         <GalleryItem
                           key={itemId}
@@ -165,8 +154,7 @@ function Gallery() {
             </EditableRepeater>
           </div>
         </div>
-        </div>
-      </EditableSection>
+      </div>
     </section>
   );
 }

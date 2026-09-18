@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
+import { EditableText, EditableImage, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
 import StackedTestimonials from '../components/StackedTestimonials.jsx';

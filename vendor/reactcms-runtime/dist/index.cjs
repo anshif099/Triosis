@@ -147,14 +147,14 @@ function reorderNode(nodes, nodeId, direction) {
     return children === node.children ? node : { ...node, children };
   });
 }
-function moveRuntimeAddition(tree, nodeId, targetId, position) {
+function moveRuntimeAddition(tree, nodeId, targetId, position, horizontalPosition) {
   const node = findNode(tree.children, nodeId);
   const target = findNode(tree.children, targetId);
   if (!node || !target || nodeId === targetId || findNode(node.children || [], targetId)) return tree;
   const owner = tree.children.find((root) => root.id === targetId || findNode(root.children || [], targetId));
   const addition = {
     ...node,
-    props: { ...node.props, offsetX: 0, offsetY: 0 },
+    props: { ...node.props, offsetX: 0, offsetY: 0, ...horizontalPosition !== void 0 ? { horizontalPosition } : {} },
     metadata: { ...node.metadata, runtimePlacement: normalizedRuntimePlacement(owner?.metadata?.runtimePlacement) }
   };
   return { ...tree, children: insertNode(removeNode(tree.children, nodeId), targetId, position, addition) };
@@ -213,6 +213,13 @@ function RuntimeAdditionsPortal({
   const [host, setHost] = (0, import_react2.useState)(null);
   const [selectedIds, setSelectedIds] = (0, import_react2.useState)([]);
   const [hoveredId, setHoveredId] = (0, import_react2.useState)(null);
+  (0, import_react2.useEffect)(() => {
+    if (!host) return;
+    host.style.width = "100%";
+    host.style.minWidth = "0";
+    host.style.alignSelf = "stretch";
+    host.style.boxSizing = "border-box";
+  }, [host]);
   (0, import_react2.useEffect)(() => {
     if (typeof document === "undefined") return void 0;
     let portalHost = Array.from(document.querySelectorAll("[data-rcms-runtime-additions-host]")).find((candidate) => candidate.dataset.rcmsRuntimeAdditionsHost === hostKey) || null;
@@ -338,8 +345,8 @@ function RuntimeAdditionsPortal({
       });
     }
   }, [commit, tree]);
-  const handleMove = (0, import_react2.useCallback)((nodeId, targetId, position) => {
-    const next = moveRuntimeAddition(tree, nodeId, targetId, position);
+  const handleMove = (0, import_react2.useCallback)((nodeId, targetId, position, horizontalPosition) => {
+    const next = moveRuntimeAddition(tree, nodeId, targetId, position, horizontalPosition);
     if (next !== tree) commit(next);
   }, [commit, tree]);
   if (!host) return null;

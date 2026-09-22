@@ -64,6 +64,18 @@ var RuntimeComponentRegistry = class {
 var defaultComponentRegistry = new RuntimeComponentRegistry();
 
 // src/buttonDrag.ts
+function buttonHorizontalPosition(pointerX, grabX, buttonWidth, left, width) {
+  const travel = width - buttonWidth;
+  return travel > 0 ? Math.max(0, Math.min(1, (pointerX - grabX - left) / travel)) : 0;
+}
+function contentBounds(element) {
+  const rect = element.getBoundingClientRect();
+  const style = element.ownerDocument.defaultView.getComputedStyle(element);
+  const scale = element.offsetWidth > 0 ? rect.width / element.offsetWidth : 1;
+  const leftInset = ((parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.paddingLeft) || 0)) * scale;
+  const rightInset = ((parseFloat(style.borderRightWidth) || 0) + (parseFloat(style.paddingRight) || 0)) * scale;
+  return { left: rect.left + leftInset, width: Math.max(0, rect.width - leftInset - rightInset), scale };
+}
 function findButtonDropTarget(frame, x, y) {
   const doc = frame.ownerDocument;
   const win = doc.defaultView;
@@ -110,27 +122,35 @@ function startButtonDrag(frame, start, onDrop) {
     if (!active || ended) return;
     Object.assign(ghost.style, { left: `${x - (start.clientX - rect.left)}px`, top: `${y - (start.clientY - rect.top)}px` });
     const slot = placeholder?.getBoundingClientRect();
-    if (slot && x >= slot.left && x <= slot.right && y >= slot.top && y <= slot.bottom) return;
-    const next = findButtonDropTarget(frame, x, y);
-    if (next?.element === destination?.element && next?.position === destination?.position) return;
-    placeholder?.remove();
+    const next = slot && x >= slot.left && x <= slot.right && y >= slot.top && y <= slot.bottom ? destination : findButtonDropTarget(frame, x, y);
+    const sameTarget = next?.element === destination?.element && next?.position === destination?.position;
+    if (!sameTarget) placeholder?.remove();
     destination = next;
     if (!next?.element.parentElement) return;
+    const parent = next.element.parentElement;
+    const bounds = contentBounds(parent);
+    const horizontalPosition = buttonHorizontalPosition(x, start.clientX - rect.left, rect.width, bounds.left, bounds.width);
+    next.horizontalPosition = horizontalPosition;
     placeholder || (placeholder = doc.createElement("div"));
     placeholder.dataset.rcmsButtonDropPlaceholder = "true";
     Object.assign(placeholder.style, {
       boxSizing: "border-box",
-      width: `${rect.width}px`,
-      height: `${rect.height}px`,
-      display: "inline-block",
-      verticalAlign: "top",
+      width: `${rect.width / (bounds.scale || 1)}px`,
+      height: `${rect.height / (bounds.scale || 1)}px`,
+      display: "block",
+      position: "relative",
+      margin: "0",
       maxWidth: "100%",
+      left: `${horizontalPosition * 100}%`,
+      translate: `${-horizontalPosition * 100}% 0`,
       border: "2px dashed #2563eb",
       borderRadius: "8px",
       background: "rgba(37,99,235,.1)",
       pointerEvents: "none"
     });
-    next.element.parentElement.insertBefore(placeholder, next.position === "before" ? next.element : next.element.nextSibling);
+    if (!sameTarget || !placeholder.isConnected) {
+      parent.insertBefore(placeholder, next.position === "before" ? next.element : next.element.nextSibling);
+    }
   };
   const tick = (time) => {
     if (ended || !active) return;
@@ -169,6 +189,7 @@ function startButtonDrag(frame, start, onDrop) {
       height: `${rect.height}px`,
       margin: "0",
       transform: "none",
+      translate: "none",
       animation: "none",
       transition: "none",
       zIndex: "2147483646",
@@ -773,16 +794,20 @@ function NodeFrame({
     parallax: "rcms-slide-up"
   };
   const compactButton = node.type === "button";
+  const horizontalPosition = compactButton && typeof node.props?.horizontalPosition === "number" && Number.isFinite(node.props.horizontalPosition) ? Math.max(0, Math.min(1, node.props.horizontalPosition)) : null;
   const offsetX = Number(node.props?.offsetX) || 0;
   const offsetY = Number(node.props?.offsetY) || 0;
   const shellStyle = {
     position: "relative",
-    display: node.hidden ? "none" : compactButton ? "inline-block" : "block",
+    display: node.hidden ? "none" : compactButton && horizontalPosition === null ? "inline-block" : "block",
+    left: horizontalPosition !== null ? `${horizontalPosition * 100}%` : void 0,
+    translate: horizontalPosition !== null ? `${-horizontalPosition * 100}% 0` : void 0,
     verticalAlign: compactButton ? "top" : void 0,
     width: resizePreview ? `${resizePreview.width}px` : compactButton ? "fit-content" : void 0,
     height: resizePreview ? `${resizePreview.height}px` : void 0,
     maxWidth: compactButton ? "100%" : void 0,
-    marginLeft: compactButton && offsetX ? `${offsetX}px` : void 0,
+    marginLeft: horizontalPosition !== null ? 0 : compactButton && offsetX ? `${offsetX}px` : void 0,
+    marginRight: horizontalPosition !== null ? 0 : void 0,
     marginTop: compactButton && offsetY ? `${offsetY}px` : void 0,
     background: compactButton ? "transparent" : design.background,
     padding: compactButton ? 0 : `${design.paddingY ?? (["spacer", "divider"].includes(node.type) ? 0 : 36)}px 24px`,
@@ -828,8 +853,8 @@ function NodeFrame({
         onSelect?.(node.id, event.metaKey || event.ctrlKey || event.shiftKey);
         dragCleanup.current?.();
         dragCleanup.current = startButtonDrag(event.currentTarget, event, (destination) => {
-          if (destination.nodeId) onRelocateNode?.(destination.nodeId, destination.position);
-          else if (destination.regionId) onRelocate?.(destination.regionId, destination.position);
+          if (destination.nodeId) onRelocateNode?.(destination.nodeId, destination.position, destination.horizontalPosition);
+          else if (destination.regionId) onRelocate?.(destination.regionId, destination.position, destination.horizontalPosition);
         });
       },
       onDragStart: (event) => {
@@ -1185,13 +1210,13 @@ function RenderNode({
           value: { ...node.props || {}, width: `${width}px`, height: `${height}px` }
         });
       },
-      onRelocate: (anchorRegionId, position) => {
+      onRelocate: (anchorRegionId, position, horizontalPosition) => {
         onMutation?.({
           nodeId: node.id,
           path: [],
           value: {
             ...node,
-            props: { ...node.props || {}, offsetX: 0, offsetY: 0 },
+            props: { ...node.props || {}, offsetX: 0, offsetY: 0, horizontalPosition },
             metadata: {
               ...node.metadata || {},
               runtimePlacement: { anchorRegionId, position }
@@ -1199,8 +1224,8 @@ function RenderNode({
           }
         });
       },
-      onRelocateNode: (targetNodeId, position) => {
-        renderer.onMove?.(node.id, targetNodeId, position);
+      onRelocateNode: (targetNodeId, position, horizontalPosition) => {
+        renderer.onMove?.(node.id, targetNodeId, position, horizontalPosition);
       },
       responsiveMode,
       children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: node.type === "button" ? { ...responsiveStyle(node, responsiveMode), width: "fit-content", maxWidth: "100%" } : responsiveStyle(node, responsiveMode), children: content })

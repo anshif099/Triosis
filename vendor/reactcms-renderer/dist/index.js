@@ -63,6 +63,174 @@ var RuntimeComponentRegistry = class {
 };
 var defaultComponentRegistry = new RuntimeComponentRegistry();
 
+// src/buttonDrag.ts
+function findButtonDropTarget(frame, x, y) {
+  const doc = frame.ownerDocument;
+  const win = doc.defaultView;
+  if (x < 0 || y < 0 || x > win.innerWidth || y > win.innerHeight) return null;
+  let best = null;
+  let distance = Infinity;
+  for (const element of Array.from(doc.querySelectorAll("[data-rcms-node], [data-rcms-region]"))) {
+    if (element === frame || frame.contains(element) || element.contains(frame) || element.closest("[data-rcms-drag-ghost]")) continue;
+    const rect = element.getBoundingClientRect();
+    if (!rect.width || !rect.height || rect.bottom < 0 || rect.top > win.innerHeight) continue;
+    const horizontal = Math.max(rect.left - x, 0, x - rect.right);
+    const inline = element.dataset.rcmsType === "button" && y >= rect.top && y <= rect.bottom;
+    for (const position of ["before", "after"]) {
+      const score = inline ? Math.abs(x - (position === "before" ? rect.left : rect.right)) : Math.hypot(horizontal, y - (position === "before" ? rect.top : rect.bottom));
+      if (score < distance) {
+        distance = score;
+        best = { element, nodeId: element.dataset.rcmsNode || "", regionId: element.dataset.rcmsRegion || "", position };
+      }
+    }
+  }
+  return best;
+}
+function startButtonDrag(frame, start, onDrop) {
+  const doc = frame.ownerDocument;
+  const win = doc.defaultView;
+  const rect = frame.getBoundingClientRect();
+  const originalDisplay = frame.style.display;
+  const originalPriority = frame.style.getPropertyPriority("display");
+  let x = start.clientX;
+  let y = start.clientY;
+  let active = false;
+  let ended = false;
+  let ghost = null;
+  let placeholder = null;
+  let destination = null;
+  let animation = 0;
+  let lastTick = 0;
+  let scrollHost = frame.parentElement;
+  while (scrollHost) {
+    if (/(auto|scroll)/.test(win.getComputedStyle(scrollHost).overflowY) && scrollHost.scrollHeight > scrollHost.clientHeight) break;
+    scrollHost = scrollHost.parentElement;
+  }
+  const update = () => {
+    if (!active || ended) return;
+    Object.assign(ghost.style, { left: `${x - (start.clientX - rect.left)}px`, top: `${y - (start.clientY - rect.top)}px` });
+    const slot = placeholder?.getBoundingClientRect();
+    if (slot && x >= slot.left && x <= slot.right && y >= slot.top && y <= slot.bottom) return;
+    const next = findButtonDropTarget(frame, x, y);
+    if (next?.element === destination?.element && next?.position === destination?.position) return;
+    placeholder?.remove();
+    destination = next;
+    if (!next?.element.parentElement) return;
+    placeholder || (placeholder = doc.createElement("div"));
+    placeholder.dataset.rcmsButtonDropPlaceholder = "true";
+    Object.assign(placeholder.style, {
+      boxSizing: "border-box",
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      display: "inline-block",
+      verticalAlign: "top",
+      maxWidth: "100%",
+      border: "2px dashed #2563eb",
+      borderRadius: "8px",
+      background: "rgba(37,99,235,.1)",
+      pointerEvents: "none"
+    });
+    next.element.parentElement.insertBefore(placeholder, next.position === "before" ? next.element : next.element.nextSibling);
+  };
+  const tick = (time) => {
+    if (ended || !active) return;
+    const bounds = scrollHost?.getBoundingClientRect();
+    const top = Math.max(0, bounds?.top || 0);
+    const bottom = Math.min(win.innerHeight, bounds?.bottom ?? win.innerHeight);
+    const speed = y < top + 64 ? -Math.min(1, (top + 64 - y) / 64) : y > bottom - 64 ? Math.min(1, (y - bottom + 64) / 64) : 0;
+    const delta = speed * Math.min(time - (lastTick || time), 32) * 0.7;
+    lastTick = time;
+    if (delta) {
+      if (scrollHost) scrollHost.scrollTop += delta;
+      else win.scrollBy(0, delta);
+      update();
+    }
+    animation = win.requestAnimationFrame(tick);
+  };
+  const activate = () => {
+    if (active) return;
+    active = true;
+    ghost = frame.cloneNode(true);
+    ghost.dataset.rcmsDragGhost = "true";
+    ghost.setAttribute("aria-hidden", "true");
+    const originals = [frame, ...Array.from(frame.querySelectorAll("*"))];
+    const clones = [ghost, ...Array.from(ghost.querySelectorAll("*"))];
+    originals.forEach((element, index) => {
+      const computed = win.getComputedStyle(element);
+      for (const property of Array.from(computed)) clones[index].style.setProperty(property, computed.getPropertyValue(property));
+      clones[index].removeAttribute("id");
+      clones[index].removeAttribute("data-rcms-node");
+      clones[index].removeAttribute("data-rcms-region");
+      clones[index].style.setProperty("pointer-events", "none", "important");
+    });
+    Object.assign(ghost.style, {
+      position: "fixed",
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      margin: "0",
+      transform: "none",
+      animation: "none",
+      transition: "none",
+      zIndex: "2147483646",
+      opacity: ".85"
+    });
+    doc.body.appendChild(ghost);
+    frame.style.setProperty("display", "none", "important");
+    update();
+    animation = win.requestAnimationFrame(tick);
+  };
+  const move = (event) => {
+    if (event.pointerId !== start.pointerId) return;
+    x = event.clientX;
+    y = event.clientY;
+    if (Math.hypot(x - start.clientX, y - start.clientY) >= 4) activate();
+    update();
+  };
+  const scroll = () => {
+    activate();
+    update();
+  };
+  const cleanup = () => {
+    if (ended) return;
+    ended = true;
+    win.cancelAnimationFrame(animation);
+    win.removeEventListener("pointermove", move, true);
+    win.removeEventListener("pointerup", finish, true);
+    win.removeEventListener("pointercancel", cancel, true);
+    win.removeEventListener("scroll", scroll, true);
+    win.removeEventListener("blur", cleanup);
+    win.removeEventListener("keydown", keydown, true);
+    ghost?.remove();
+    placeholder?.remove();
+    if (originalDisplay) frame.style.setProperty("display", originalDisplay, originalPriority);
+    else frame.style.removeProperty("display");
+  };
+  const finish = (event) => {
+    if (event.pointerId !== start.pointerId) return;
+    if (event.clientX !== x || event.clientY !== y) {
+      x = event.clientX;
+      y = event.clientY;
+      update();
+    }
+    const target = destination;
+    cleanup();
+    if (active && target?.element.isConnected) onDrop(target);
+  };
+  const cancel = (event) => {
+    if (event.pointerId === start.pointerId) cleanup();
+  };
+  const keydown = (event) => {
+    if (event.key === "Escape") cleanup();
+  };
+  win.addEventListener("pointermove", move, true);
+  win.addEventListener("pointerup", finish, true);
+  win.addEventListener("pointercancel", cancel, true);
+  win.addEventListener("scroll", scroll, true);
+  win.addEventListener("blur", cleanup);
+  win.addEventListener("keydown", keydown, true);
+  return cleanup;
+}
+
 // src/RuntimeRenderer.tsx
 var import_jsx_runtime = require("react/jsx-runtime");
 function localized(node, locale, key, fallback = "") {
@@ -79,6 +247,25 @@ function responsiveStyle(node, mode) {
     ...mode === "tablet" ? node.styles?.tablet || {} : {},
     ...mode === "mobile" ? node.styles?.mobile || {} : {}
   };
+}
+function responsiveTypographyStyle(node, mode) {
+  const styles = responsiveStyle(node, mode);
+  const keys = [
+    "color",
+    "fontFamily",
+    "fontSize",
+    "fontStyle",
+    "fontWeight",
+    "letterSpacing",
+    "lineHeight",
+    "textAlign",
+    "textDecoration",
+    "textTransform"
+  ];
+  return keys.reduce((result, key) => {
+    if (styles[key] !== void 0) result[key] = styles[key];
+    return result;
+  }, {});
 }
 function inlinePath(locale, key) {
   return ["props", "locales", locale, key];
@@ -117,7 +304,7 @@ function InlineText({
     className,
     style: {
       ...style,
-      cursor: editable ? editing ? "text" : "text" : void 0,
+      cursor: editable ? editing ? "text" : style?.cursor || "text" : void 0,
       outline: editing ? "2px solid #2563eb" : void 0,
       outlineOffset: editing ? "3px" : void 0,
       minWidth: editable && selected ? "12px" : void 0
@@ -165,6 +352,9 @@ function InlineText({
 function buttonStyle(node) {
   const props = node.props || {};
   const color = props.color || "var(--rcms-color-primary, #2563eb)";
+  const isOutline = props.variant === "outline";
+  const isGhost = props.variant === "ghost";
+  const isSecondary = props.variant === "secondary";
   const shadows = {
     none: "none",
     small: "0 5px 14px rgba(15,23,42,.12)",
@@ -173,18 +363,46 @@ function buttonStyle(node) {
   };
   return {
     display: "inline-flex",
+    boxSizing: "border-box",
     alignItems: "center",
     justifyContent: "center",
+    width: props.width || void 0,
+    height: props.height || void 0,
     minHeight: props.size === "lg" ? "50px" : props.size === "sm" ? "36px" : "42px",
     padding: props.size === "lg" ? "0 26px" : props.size === "sm" ? "0 14px" : "0 20px",
     borderRadius: props.radius !== void 0 ? `${props.radius}px` : "var(--rcms-button-radius, 10px)",
-    background: props.variant === "outline" ? "transparent" : color,
-    border: `1px solid ${color}`,
-    color: props.variant === "outline" ? color : "#fff",
+    gap: "9px",
+    cursor: "pointer",
+    background: isOutline || isGhost ? "transparent" : isSecondary ? "#0f172a" : color,
+    border: isGhost ? "1px solid transparent" : `1px solid ${isSecondary ? "#0f172a" : color}`,
+    color: isOutline || isGhost ? color : "#fff",
     boxShadow: shadows[props.shadow || "medium"] || props.shadow,
     fontWeight: props.weight || "var(--rcms-button-weight, 700)",
     textDecoration: "none"
   };
+}
+function ButtonIcon({ name, src, size = 18 }) {
+  if (src) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      "img",
+      {
+        src,
+        alt: "",
+        "aria-hidden": "true",
+        style: { width: `${size}px`, height: `${size}px`, objectFit: "contain", flex: "0 0 auto" }
+      }
+    );
+  }
+  if (!name || name === "none") return null;
+  const symbols = {
+    "arrow-right": "\u2192",
+    whatsapp: "WA",
+    phone: "\u260E",
+    mail: "\u2709",
+    "external-link": "\u2197",
+    download: "\u2193"
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": "true", style: { display: "inline-grid", placeItems: "center", minWidth: "1.1em", fontSize: name === "whatsapp" ? ".68em" : "1.05em", fontWeight: 800 }, children: symbols[name] || "\u2022" });
 }
 function cards(items, bodyKey = "description") {
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: {
@@ -215,12 +433,14 @@ function BuiltinComponent({
   node,
   locale,
   mode,
+  responsiveMode,
   selected,
   children,
   mutate
 }) {
   const props = node.props || {};
   const edit = mode === "edit";
+  const typography = responsiveTypographyStyle(node, responsiveMode);
   const text = (key, fallback = "") => localized(node, locale, key, fallback);
   const inline = (key, fallback, as, style, html = false) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
     InlineText,
@@ -230,7 +450,7 @@ function BuiltinComponent({
       html,
       editable: edit && !node.locked,
       selected,
-      style,
+      style: { ...style, ...typography },
       onCommit: (value) => mutate(inlinePath(locale, key), value),
       nodeId: node.id,
       field: key
@@ -287,7 +507,8 @@ function BuiltinComponent({
         margin: 0,
         color: props.color || "var(--rcms-color-text, #0f172a)",
         textAlign: props.alignment || "left",
-        fontSize: level === "h1" ? "52px" : level === "h2" ? "38px" : void 0
+        fontSize: level === "h1" ? "52px" : level === "h2" ? "38px" : void 0,
+        ...typography
       });
     }
     case "paragraph":
@@ -295,10 +516,27 @@ function BuiltinComponent({
         color: "#475569",
         fontSize: "17px",
         lineHeight: 1.8,
-        textAlign: props.alignment || "left"
+        textAlign: props.alignment || "left",
+        ...typography
       }, true);
-    case "button":
-      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { textAlign: props.alignment || "center" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: buttonStyle(node), children: inline("label", "Learn More", "span") }) });
+    case "button": {
+      const buttonIcon = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ButtonIcon, { name: props.icon, src: props.iconImage, size: props.iconSize || 18 });
+      const buttonContent = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        props.iconPosition !== "right" ? buttonIcon : null,
+        inline("label", "Learn More", "span", { cursor: mode === "edit" ? "grab" : void 0 }),
+        props.iconPosition === "right" ? buttonIcon : null
+      ] });
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { textAlign: props.alignment || "center" }, children: props.url ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        "a",
+        {
+          href: mode === "edit" ? void 0 : props.url,
+          target: props.newTab ? "_blank" : void 0,
+          rel: props.newTab ? "noopener noreferrer" : void 0,
+          style: buttonStyle(node),
+          children: buttonContent
+        }
+      ) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: buttonStyle(node), children: buttonContent }) });
+    }
     case "image":
       return props.src ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("figure", { style: { margin: 0, textAlign: "center" }, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
@@ -358,6 +596,8 @@ function BuiltinComponent({
             {
               src: image.src,
               alt: image.alt || "",
+              loading: "lazy",
+              decoding: "async",
               style: { width: "100%", aspectRatio: "4 / 3", objectFit: "cover", display: "block" }
             }
           ),
@@ -506,10 +746,21 @@ function NodeFrame({
   onMove,
   onInsert,
   onCommand,
+  onResize,
+  onRelocate,
+  onRelocateNode,
   responsiveMode,
   children
 }) {
+  const [insertPosition, setInsertPosition] = (0, import_react.useState)(null);
+  const [insertType, setInsertType] = (0, import_react.useState)("paragraph");
+  const [insertText, setInsertText] = (0, import_react.useState)("");
+  const [insertUrl, setInsertUrl] = (0, import_react.useState)("");
+  const [insertAlt, setInsertAlt] = (0, import_react.useState)("");
   const [dropPosition, setDropPosition] = (0, import_react.useState)(null);
+  const [resizePreview, setResizePreview] = (0, import_react.useState)(null);
+  const dragCleanup = (0, import_react.useRef)(null);
+  (0, import_react.useEffect)(() => () => dragCleanup.current?.(), []);
   if (node.hidden && mode !== "edit") return null;
   const editable = mode === "edit";
   const responsiveVisible = node.props?.visibility?.[responsiveMode] !== false;
@@ -521,11 +772,20 @@ function NodeFrame({
     "scale-in": "rcms-scale-in",
     parallax: "rcms-slide-up"
   };
+  const compactButton = node.type === "button";
+  const offsetX = Number(node.props?.offsetX) || 0;
+  const offsetY = Number(node.props?.offsetY) || 0;
   const shellStyle = {
     position: "relative",
-    display: node.hidden ? "none" : "block",
-    background: design.background,
-    padding: `${design.paddingY ?? (["spacer", "divider"].includes(node.type) ? 0 : 36)}px 24px`,
+    display: node.hidden ? "none" : compactButton ? "inline-block" : "block",
+    verticalAlign: compactButton ? "top" : void 0,
+    width: resizePreview ? `${resizePreview.width}px` : compactButton ? "fit-content" : void 0,
+    height: resizePreview ? `${resizePreview.height}px` : void 0,
+    maxWidth: compactButton ? "100%" : void 0,
+    marginLeft: compactButton && offsetX ? `${offsetX}px` : void 0,
+    marginTop: compactButton && offsetY ? `${offsetY}px` : void 0,
+    background: compactButton ? "transparent" : design.background,
+    padding: compactButton ? 0 : `${design.paddingY ?? (["spacer", "divider"].includes(node.type) ? 0 : 36)}px 24px`,
     opacity: responsiveVisible ? node.props?.opacity ?? 1 : 0.32,
     borderRadius: design.radius ? `${design.radius}px` : void 0,
     boxShadow: design.shadow && design.shadow !== "none" ? design.shadow : void 0,
@@ -536,7 +796,9 @@ function NodeFrame({
     animationFillMode: animation.name && animation.name !== "none" ? "both" : void 0,
     outline: selected ? "2px solid #2563eb" : hovered ? "2px solid rgba(37,99,235,.65)" : editable ? "1px solid transparent" : void 0,
     outlineOffset: selected || hovered ? "-2px" : void 0,
-    transition: "outline-color 100ms ease, box-shadow 100ms ease"
+    transition: "outline-color 100ms ease, box-shadow 100ms ease",
+    cursor: editable && compactButton ? "grab" : void 0,
+    touchAction: editable && compactButton ? "none" : void 0
   };
   const determineDrop = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -556,9 +818,26 @@ function NodeFrame({
       "aria-label": node.metadata?.accessibility?.ariaLabel,
       role: node.metadata?.accessibility?.role,
       tabIndex: node.metadata?.accessibility?.tabIndex,
-      draggable: editable && !node.locked,
+      draggable: editable && !node.locked && !compactButton,
+      onPointerDown: (event) => {
+        if (!editable || !compactButton || node.locked || event.button !== 0) return;
+        const target = event.target;
+        if (target.closest('button,input,textarea,select,[contenteditable="true"],[data-rcms-resize-handle]')) return;
+        event.preventDefault();
+        event.stopPropagation();
+        onSelect?.(node.id, event.metaKey || event.ctrlKey || event.shiftKey);
+        dragCleanup.current?.();
+        dragCleanup.current = startButtonDrag(event.currentTarget, event, (destination) => {
+          if (destination.nodeId) onRelocateNode?.(destination.nodeId, destination.position);
+          else if (destination.regionId) onRelocate?.(destination.regionId, destination.position);
+        });
+      },
       onDragStart: (event) => {
         event.stopPropagation();
+        if (compactButton) {
+          event.preventDefault();
+          return;
+        }
         event.dataTransfer.effectAllowed = "move";
         event.dataTransfer.setData("application/reactcms-node", node.id);
       },
@@ -608,6 +887,55 @@ function NodeFrame({
           background: dropPosition === "inside" ? "rgba(37,99,235,.08)" : "#2563eb",
           borderRadius: "4px"
         } }),
+        selected && editable && compactButton && !node.locked && onResize && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "span",
+          {
+            "data-rcms-resize-handle": "true",
+            title: "Drag to resize button",
+            "aria-label": "Resize button",
+            onMouseDown: (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              const frame = event.currentTarget.parentElement;
+              if (!frame) return;
+              const rect = frame.getBoundingClientRect();
+              const startX = event.clientX;
+              const startY = event.clientY;
+              const startWidth = rect.width;
+              const startHeight = rect.height;
+              const padding = 0;
+              const handleMove = (moveEvent) => {
+                setResizePreview({
+                  width: Math.max(72, startWidth + moveEvent.clientX - startX),
+                  height: Math.max(36, startHeight + moveEvent.clientY - startY)
+                });
+              };
+              const handleUp = (upEvent) => {
+                const width = Math.round(Math.max(60, startWidth + upEvent.clientX - startX - padding));
+                const height = Math.round(Math.max(28, startHeight + upEvent.clientY - startY - padding));
+                window.removeEventListener("mousemove", handleMove);
+                window.removeEventListener("mouseup", handleUp);
+                setResizePreview(null);
+                onResize(width, height);
+              };
+              window.addEventListener("mousemove", handleMove);
+              window.addEventListener("mouseup", handleUp);
+            },
+            style: {
+              position: "absolute",
+              zIndex: 1100,
+              right: "-5px",
+              bottom: "-5px",
+              width: "13px",
+              height: "13px",
+              border: "2px solid #fff",
+              borderRadius: "3px",
+              background: "#2563eb",
+              boxShadow: "0 2px 8px rgba(15,23,42,.35)",
+              cursor: "nwse-resize"
+            }
+          }
+        ),
         (hovered || selected) && editable && onInsert && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: [
           ["before", { top: "-13px" }],
           ["after", { bottom: "-13px" }]
@@ -619,7 +947,7 @@ function NodeFrame({
             onClick: (event) => {
               event.preventDefault();
               event.stopPropagation();
-              onInsert("section", node.id, position);
+              setInsertPosition(position);
             },
             style: {
               position: "absolute",
@@ -641,6 +969,108 @@ function NodeFrame({
           },
           position
         )) }),
+        insertPosition && editable && onInsert && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "div",
+          {
+            role: "dialog",
+            "aria-modal": "true",
+            "aria-label": "Add content",
+            onClick: (event) => event.stopPropagation(),
+            style: {
+              position: "fixed",
+              zIndex: 5e3,
+              inset: 0,
+              display: "grid",
+              placeItems: "center",
+              padding: "20px",
+              background: "rgba(2,6,23,.72)",
+              backdropFilter: "blur(5px)"
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+              "form",
+              {
+                onSubmit: (event) => {
+                  event.preventDefault();
+                  const url = insertUrl.trim();
+                  const value = insertText.trim();
+                  if (insertType === "paragraph" && !value) return;
+                  if (insertType !== "paragraph" && !url) return;
+                  onInsert(
+                    insertType,
+                    node.id,
+                    insertPosition,
+                    insertType === "paragraph" ? { localized: { text: `<p>${value.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />")}</p>` } } : insertType === "image" ? { props: { src: url, width: "100%", height: "auto", objectFit: "cover" }, localized: { alt: insertAlt.trim() } } : { props: { url, controls: true }, localized: { caption: insertAlt.trim() } }
+                  );
+                  setInsertPosition(null);
+                  setInsertText("");
+                  setInsertUrl("");
+                  setInsertAlt("");
+                },
+                style: {
+                  width: "min(520px, 100%)",
+                  padding: "22px",
+                  border: "1px solid #334155",
+                  borderRadius: "18px",
+                  background: "#0f172a",
+                  color: "#f8fafc",
+                  boxShadow: "0 28px 80px rgba(0,0,0,.5)",
+                  font: "500 14px Inter,system-ui,sans-serif"
+                },
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "18px", fontWeight: 800 }, children: "Add content" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { marginTop: "4px", color: "#94a3b8", fontSize: "12px" }, children: [
+                        "It will be inserted ",
+                        insertPosition,
+                        " this section."
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", "aria-label": "Close", onClick: () => setInsertPosition(null), style: { width: "32px", height: "32px", border: 0, borderRadius: "8px", background: "#1e293b", color: "#cbd5e1", cursor: "pointer", fontSize: "18px" }, children: "\xD7" })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", margin: "20px 0" }, children: ["paragraph", "image", "video"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => setInsertType(type),
+                      style: {
+                        height: "42px",
+                        border: `1px solid ${insertType === type ? "#60a5fa" : "#334155"}`,
+                        borderRadius: "10px",
+                        background: insertType === type ? "#1d4ed8" : "#111827",
+                        color: "#fff",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        textTransform: "capitalize"
+                      },
+                      children: type === "paragraph" ? "Text" : type
+                    },
+                    type
+                  )) }),
+                  insertType === "paragraph" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                    "Text",
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", { autoFocus: true, required: true, rows: 6, value: insertText, onChange: (event) => setInsertText(event.target.value), placeholder: "Write the text to add to this page\u2026", style: { padding: "12px 14px", border: "1px solid #334155", borderRadius: "10px", background: "#020617", color: "#f8fafc", font: "inherit", lineHeight: 1.6, resize: "vertical" } })
+                  ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "grid", gap: "14px" }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      insertType === "image" ? "Image URL" : "Video URL",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { autoFocus: true, required: true, type: "url", value: insertUrl, onChange: (event) => setInsertUrl(event.target.value), placeholder: `https://example.com/${insertType === "image" ? "image.jpg" : "video.mp4"}`, style: { height: "44px", padding: "0 13px", border: "1px solid #334155", borderRadius: "10px", background: "#020617", color: "#f8fafc", font: "inherit" } })
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      insertType === "image" ? "Alt text" : "Caption",
+                      " ",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#64748b", fontWeight: 500 }, children: "(optional)" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: insertAlt, onChange: (event) => setInsertAlt(event.target.value), style: { height: "44px", padding: "0 13px", border: "1px solid #334155", borderRadius: "10px", background: "#020617", color: "#f8fafc", font: "inherit" } })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "9px", marginTop: "22px" }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => setInsertPosition(null), style: { height: "40px", padding: "0 16px", border: "1px solid #334155", borderRadius: "10px", background: "transparent", color: "#cbd5e1", cursor: "pointer", fontWeight: 700 }, children: "Cancel" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "submit", style: { height: "40px", padding: "0 18px", border: 0, borderRadius: "10px", background: "#2563eb", color: "#fff", cursor: "pointer", fontWeight: 800 }, children: "Add to page" })
+                  ] })
+                ]
+              }
+            )
+          }
+        ),
         selected && editable && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "div",
           {
@@ -730,6 +1160,7 @@ function RenderNode({
       node,
       locale,
       mode,
+      responsiveMode,
       selected,
       mutate,
       children: childNodes
@@ -747,8 +1178,32 @@ function RenderNode({
       onMove: renderer.onMove,
       onInsert: renderer.onInsert,
       onCommand: renderer.onCommand,
+      onResize: (width, height) => {
+        onMutation?.({
+          nodeId: node.id,
+          path: ["props"],
+          value: { ...node.props || {}, width: `${width}px`, height: `${height}px` }
+        });
+      },
+      onRelocate: (anchorRegionId, position) => {
+        onMutation?.({
+          nodeId: node.id,
+          path: [],
+          value: {
+            ...node,
+            props: { ...node.props || {}, offsetX: 0, offsetY: 0 },
+            metadata: {
+              ...node.metadata || {},
+              runtimePlacement: { anchorRegionId, position }
+            }
+          }
+        });
+      },
+      onRelocateNode: (targetNodeId, position) => {
+        renderer.onMove?.(node.id, targetNodeId, position);
+      },
       responsiveMode,
-      children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: responsiveStyle(node, responsiveMode), children: content })
+      children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: node.type === "button" ? { ...responsiveStyle(node, responsiveMode), width: "fit-content", maxWidth: "100%" } : responsiveStyle(node, responsiveMode), children: content })
     }
   );
 }
@@ -758,6 +1213,7 @@ function RuntimeRenderer({
   responsiveMode = "desktop",
   mode = "runtime",
   theme = null,
+  transparentBackground = false,
   ...callbacks
 }) {
   const renderer = (0, import_react.useMemo)(() => ({
@@ -775,9 +1231,9 @@ function RuntimeRenderer({
     "--rcms-button-radius": theme?.buttons?.borderRadius || "10px",
     "--rcms-button-weight": theme?.buttons?.fontWeight || "700",
     width: "100%",
-    minHeight: "100%",
+    minHeight: transparentBackground ? void 0 : "100%",
     color: "var(--rcms-color-text)",
-    background: "var(--rcms-color-background)",
+    background: transparentBackground ? "transparent" : "var(--rcms-color-background)",
     fontFamily: theme?.typography?.bodyFont || "Inter, system-ui, sans-serif",
     fontSize: theme?.typography?.baseSize || "16px",
     ...responsiveStyle({ id: tree.id, type: "page", styles: tree.styles }, responsiveMode)

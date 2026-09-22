@@ -46,6 +46,10 @@ interface RendererMutation {
     path: Array<string | number>;
     value: unknown;
 }
+interface InsertContentData {
+    props?: Record<string, any>;
+    localized?: Record<string, any>;
+}
 interface RendererComponentProps {
     node: ComponentNode;
     locale: string;
@@ -67,6 +71,8 @@ interface RuntimeRendererProps {
         branding?: Record<string, string>;
         [key: string]: any;
     } | null;
+    /** Render into an existing website without painting a page background. */
+    transparentBackground?: boolean;
     selectedIds?: string[];
     hoveredId?: string | null;
     registry?: ComponentRegistry;
@@ -74,7 +80,7 @@ interface RuntimeRendererProps {
     onHover?: (nodeId: string | null) => void;
     onMutation?: (mutation: RendererMutation) => void;
     onMove?: (nodeId: string, targetId: string, position: DropPosition) => void;
-    onInsert?: (componentType: string, targetId: string, position: DropPosition) => void;
+    onInsert?: (componentType: string, targetId: string, position: DropPosition, content?: InsertContentData) => void;
     onCommand?: (command: string, nodeId: string) => void;
 }
 interface ComponentRegistry {
@@ -85,7 +91,7 @@ interface ComponentRegistry {
     entries(): Array<[string, RegisteredRendererComponent]>;
 }
 
-declare function RuntimeRenderer({ tree, locale, responsiveMode, mode, theme, ...callbacks }: RuntimeRendererProps): React.JSX.Element;
+declare function RuntimeRenderer({ tree, locale, responsiveMode, mode, theme, transparentBackground, ...callbacks }: RuntimeRendererProps): React.JSX.Element;
 declare class RuntimeRendererEngine {
     renderPage(tree: RuntimeRendererProps['tree'], options?: Omit<RuntimeRendererProps, 'tree'>): React.JSX.Element;
     renderTree(tree: RuntimeRendererProps['tree'], options?: Omit<RuntimeRendererProps, 'tree'>): React.JSX.Element;
@@ -140,4 +146,4 @@ declare class RuntimeComponentRegistry implements ComponentRegistry {
 }
 declare const defaultComponentRegistry: RuntimeComponentRegistry;
 
-export { type ComponentNode, type ComponentRegistry, type DropPosition, type PageComponentTree, RUNTIME_ADDITIONS_REGION, type RegisteredRendererComponent, type RendererComponentProps, type RendererMode, type RendererMutation, type ResponsiveMode, type ResponsiveStyles, RuntimeComponentRegistry, RuntimeRenderer, RuntimeRendererEngine, type RuntimeRendererProps, blockToComponentNode, blocksToPageTree, componentNodeToBlock, createRuntimeAdditionsTree, defaultComponentRegistry, isPageComponentTree, pageTreeToBlocks, regionsToPageTree };
+export { type ComponentNode, type ComponentRegistry, type DropPosition, type InsertContentData, type PageComponentTree, RUNTIME_ADDITIONS_REGION, type RegisteredRendererComponent, type RendererComponentProps, type RendererMode, type RendererMutation, type ResponsiveMode, type ResponsiveStyles, RuntimeComponentRegistry, RuntimeRenderer, RuntimeRendererEngine, type RuntimeRendererProps, blockToComponentNode, blocksToPageTree, componentNodeToBlock, createRuntimeAdditionsTree, defaultComponentRegistry, isPageComponentTree, pageTreeToBlocks, regionsToPageTree };

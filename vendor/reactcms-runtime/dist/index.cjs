@@ -33,6 +33,8 @@ module.exports = __toCommonJS(index_exports);
 // src/RuntimeProvider.tsx
 var import_react3 = require("react");
 var import_reactcms_sdk11 = require("@anshif.rainhopes/reactcms-sdk");
+var import_shared11 = require("@anshif.rainhopes/shared");
+var import_database11 = require("firebase/database");
 
 // src/RuntimeContext.tsx
 var import_react = require("react");
@@ -48,6 +50,7 @@ var import_reactcms_sdk = require("@anshif.rainhopes/reactcms-sdk");
 var import_jsx_runtime = require("react/jsx-runtime");
 var BUILDER_BLOCKS_REGION = "__rcms_builder_blocks__";
 var NATIVE_PAGE_TREE_FIELD = "tree";
+var runtimeComponentClipboard = null;
 function resolvePageId() {
   if (typeof window === "undefined") return "home";
   try {
@@ -144,6 +147,18 @@ function reorderNode(nodes, nodeId, direction) {
     return children === node.children ? node : { ...node, children };
   });
 }
+function moveRuntimeAddition(tree, nodeId, targetId, position) {
+  const node = findNode(tree.children, nodeId);
+  const target = findNode(tree.children, targetId);
+  if (!node || !target || nodeId === targetId || findNode(node.children || [], targetId)) return tree;
+  const owner = tree.children.find((root) => root.id === targetId || findNode(root.children || [], targetId));
+  const addition = {
+    ...node,
+    props: { ...node.props, offsetX: 0, offsetY: 0 },
+    metadata: { ...node.metadata, runtimePlacement: normalizedRuntimePlacement(owner?.metadata?.runtimePlacement) }
+  };
+  return { ...tree, children: insertNode(removeNode(tree.children, nodeId), targetId, position, addition) };
+}
 function refreshNodeIds(node, suffix) {
   return {
     ...node,
@@ -161,7 +176,7 @@ function normalizedRuntimePlacement(value) {
 function placementKey(placement) {
   return placement.anchorRegionId ? `${placement.position}:${placement.anchorRegionId}` : "footer";
 }
-function makeRuntimeNode(type, locale, placement = { position: "footer" }) {
+function makeRuntimeNode(type, locale, placement = { position: "footer" }, content) {
   const safeType = type || "section";
   const id = `${safeType.replace(/[^a-zA-Z0-9_-]/g, "_")}_${Date.now().toString(36)}`;
   const field = ["input", "textarea-field", "select-field", "checkbox"].includes(safeType);
@@ -170,8 +185,12 @@ function makeRuntimeNode(type, locale, placement = { position: "footer" }) {
     type: safeType,
     label: safeType.split("-").map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`).join(" "),
     props: {
+      ...content?.props || {},
       locales: {
-        [locale]: field ? { label: "New field", placeholder: "Enter a value" } : { title: "New section", text: "Double-click this text to edit it." }
+        [locale]: {
+          ...field ? { label: "New field", placeholder: "Enter a value" } : { title: "New section", text: "Double-click this text to edit it." },
+          ...content?.localized || {}
+        }
       },
       design: {}
     },
@@ -194,7 +213,6 @@ function RuntimeAdditionsPortal({
   const [host, setHost] = (0, import_react2.useState)(null);
   const [selectedIds, setSelectedIds] = (0, import_react2.useState)([]);
   const [hoveredId, setHoveredId] = (0, import_react2.useState)(null);
-  const clipboard = (0, import_react2.useRef)(null);
   (0, import_react2.useEffect)(() => {
     if (typeof document === "undefined") return void 0;
     let portalHost = Array.from(document.querySelectorAll("[data-rcms-runtime-additions-host]")).find((candidate) => candidate.dataset.rcmsRuntimeAdditionsHost === hostKey) || null;
@@ -251,13 +269,18 @@ function RuntimeAdditionsPortal({
       value: next
     });
   }, [onTreeChange, pageId, websiteId]);
-  const addNode = (0, import_react2.useCallback)((componentType = "section", targetId = "", position = "after") => {
-    const addition = makeRuntimeNode(componentType, locale, placement);
+  const addNode = (0, import_react2.useCallback)((componentType = "section", targetId = "", position = "after", content) => {
+    const addition = makeRuntimeNode(componentType, locale, placement, content);
     const children = targetId ? insertNode(tree.children, targetId, position, addition) : [...tree.children, addition];
     commit({ ...tree, children });
     setSelectedIds([addition.id]);
   }, [commit, locale, placement, tree]);
   const handleMutation = (0, import_react2.useCallback)((mutation) => {
+    if (!mutation.path.length && mutation.value?.metadata?.runtimePlacement) {
+      const moved = mutation.value;
+      commit({ ...tree, children: [...removeNode(tree.children, mutation.nodeId), moved] });
+      return;
+    }
     commit({
       ...tree,
       children: updateNode(tree.children, mutation.nodeId, mutation.path, mutation.value)
@@ -288,11 +311,11 @@ function RuntimeAdditionsPortal({
     const node = findNode(tree.children, nodeId);
     if (!node) return;
     if (command === "copy") {
-      clipboard.current = structuredClone(node);
+      runtimeComponentClipboard = structuredClone(node);
       return;
     }
-    if (command === "paste" && clipboard.current) {
-      const addition = refreshNodeIds(structuredClone(clipboard.current), `copy_${Date.now().toString(36)}`);
+    if (command === "paste" && runtimeComponentClipboard) {
+      const addition = refreshNodeIds(structuredClone(runtimeComponentClipboard), `copy_${Date.now().toString(36)}`);
       commit({ ...tree, children: insertNode(tree.children, nodeId, "after", addition) });
       setSelectedIds([addition.id]);
       return;
@@ -316,10 +339,8 @@ function RuntimeAdditionsPortal({
     }
   }, [commit, tree]);
   const handleMove = (0, import_react2.useCallback)((nodeId, targetId, position) => {
-    const node = findNode(tree.children, nodeId);
-    if (!node || findNode(node.children || [], targetId)) return;
-    const without = removeNode(tree.children, nodeId);
-    commit({ ...tree, children: insertNode(without, targetId, position, node) });
+    const next = moveRuntimeAddition(tree, nodeId, targetId, position);
+    if (next !== tree) commit(next);
   }, [commit, tree]);
   if (!host) return null;
   return (0, import_react_dom.createPortal)(
@@ -331,6 +352,7 @@ function RuntimeAdditionsPortal({
         responsiveMode: "desktop",
         mode: editMode ? "edit" : "runtime",
         theme,
+        transparentBackground: true,
         selectedIds,
         hoveredId,
         onSelect: handleSelect,
@@ -439,12 +461,32 @@ function BuilderSections({
     };
   }, [apiKey, editMode, locale, pageId, websiteId]);
   (0, import_react2.useEffect)(() => import_reactcms_sdk.MessageBus.subscribe((message) => {
+    if (message.type === "rcms/v1/insert-content") {
+      const payload2 = message.payload;
+      if (!payload2?.anchorRegionId || payload2.pageId && payload2.pageId !== pageId) return;
+      setRuntimeAdditions((current) => {
+        const base = current || (0, import_reactcms_renderer.createRuntimeAdditionsTree)(pageId, locale);
+        const placement = {
+          anchorRegionId: payload2.anchorRegionId,
+          position: payload2.position || "after"
+        };
+        const addition = makeRuntimeNode(payload2.componentType || "paragraph", locale, placement, payload2.content);
+        const next = { ...base, children: [...base.children, addition] };
+        queueMicrotask(() => import_reactcms_sdk.MessageBus.send("rcms/v1/field-update", websiteId, {
+          pageId,
+          regionId: import_reactcms_renderer.RUNTIME_ADDITIONS_REGION,
+          value: next
+        }));
+        return next;
+      });
+      return;
+    }
     if (message.type !== "rcms/v1/field-update") return;
     const payload = message.payload;
     if (payload?.regionId === import_reactcms_renderer.RUNTIME_ADDITIONS_REGION && (!payload.pageId || payload.pageId === pageId) && (0, import_reactcms_renderer.isPageComponentTree)(payload.value)) {
       setRuntimeAdditions(payload.value);
     }
-  }), [pageId]);
+  }), [locale, pageId, websiteId]);
   const additionsTree = runtimeAdditions || (0, import_reactcms_renderer.createRuntimeAdditionsTree)(pageId, locale);
   const additionGroups = (0, import_react2.useMemo)(() => {
     const groups = /* @__PURE__ */ new Map();
@@ -767,6 +809,11 @@ function dispatchRegionValue(websiteId, pageId, regionId, value) {
 function runtimeRegionContentSource(editMode) {
   return editMode ? "draft" : "published";
 }
+function pageSEOFromContent(value) {
+  if (!value || typeof value !== "object") return null;
+  const seo = value.seo;
+  return seo && typeof seo === "object" && !Array.isArray(seo) ? seo : null;
+}
 function registerEditableRegionState(current, pageId, regionId, type, label, defaultValue) {
   const pageRegions = current[pageId] || {};
   const existing = pageRegions[regionId];
@@ -830,6 +877,24 @@ function RegionContentHydrator({
       unsubscribe();
     };
   }, [apiKey, pageId, source, websiteId]);
+  return null;
+}
+function SEOContentHydrator({
+  websiteId,
+  apiKey
+}) {
+  const cms = (0, import_react3.useContext)(import_reactcms_sdk11.CMSContext);
+  const setSEO = (0, import_react3.useContext)(import_reactcms_sdk11.SEOContext)?.setSEO;
+  const pageId = (0, import_react3.useMemo)(resolveCurrentPageId, []);
+  const source = runtimeRegionContentSource(Boolean(cms?.editMode));
+  (0, import_react3.useEffect)(() => {
+    if (!setSEO) return () => {
+    };
+    const db = (0, import_reactcms_sdk11.getFirebaseDatabase)(apiKey);
+    return (0, import_database11.onValue)((0, import_database11.ref)(db, source === "draft" ? import_shared11.paths.contentDraft(websiteId, pageId) : import_shared11.paths.contentPublished(websiteId, pageId)), (snapshot) => {
+      setSEO(snapshot.exists() ? pageSEOFromContent(snapshot.val()) || {} : {});
+    });
+  }, [apiKey, pageId, setSEO, source, websiteId]);
   return null;
 }
 function RuntimeProvider({
@@ -932,7 +997,8 @@ function RuntimeProvider({
   }, [regions, websiteId, apiKey]);
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RuntimeContext.Provider, { value: runtimeContextValue, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_reactcms_sdk11.EditableRegistryContext.Provider, { value: editableRegistryValue, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_reactcms_sdk11.CMSProvider, { websiteId, apiKey, environment: "production", children: [
     /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RegionContentHydrator, { websiteId, apiKey }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(SEOContentHydrator, { websiteId, apiKey }),
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_reactcms_sdk11.CMSSEOProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
       BuilderSections,
       {
         websiteId,
@@ -941,7 +1007,7 @@ function RuntimeProvider({
         layout: defaultLayout?.component,
         preserveApplicationPage
       }
-    )
+    ) })
   ] }) }) });
 }
 
@@ -993,17 +1059,17 @@ function CMSNavigation({ id, label, items }) {
 // src/RouteRegistry.tsx
 var import_react6 = require("react");
 var import_react_router_dom = require("react-router-dom");
-var import_database11 = require("firebase/database");
+var import_database12 = require("firebase/database");
 var import_reactcms_sdk12 = require("@anshif.rainhopes/reactcms-sdk");
-var import_shared11 = require("@anshif.rainhopes/shared");
+var import_shared12 = require("@anshif.rainhopes/shared");
 var import_jsx_runtime3 = require("react/jsx-runtime");
 function RouteRegistry({ websiteId, apiKey }) {
   const [dynamicRoutes, setDynamicRoutes] = (0, import_react6.useState)([]);
   const runtime = (0, import_react6.useContext)(RuntimeContext);
   (0, import_react6.useEffect)(() => {
     const db = (0, import_reactcms_sdk12.getFirebaseDatabase)(apiKey);
-    const routesRef = (0, import_database11.ref)(db, import_shared11.paths.registryRoutes(websiteId));
-    const unsubscribe = (0, import_database11.onValue)(routesRef, (snapshot) => {
+    const routesRef = (0, import_database12.ref)(db, import_shared12.paths.registryRoutes(websiteId));
+    const unsubscribe = (0, import_database12.onValue)(routesRef, (snapshot) => {
       if (snapshot.exists()) {
         const val = snapshot.val();
         const list = Object.values(val).filter(

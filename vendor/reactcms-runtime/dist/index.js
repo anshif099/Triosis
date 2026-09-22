@@ -7,10 +7,17 @@ import { useCallback as useCallback2, useContext as useContext2, useEffect as us
 import {
   CMSContext as CMSContext2,
   CMSProvider,
+  CMSSEOProvider,
   EditableRegistryContext,
   MessageBus as MessageBus2,
-  editableSync
+  SEOContext,
+  editableSync,
+  getFirebaseDatabase as getFirebaseDatabase11
 } from "@anshif.rainhopes/reactcms-sdk";
+import {
+  paths as paths11
+} from "@anshif.rainhopes/shared";
+import { onValue as onValue2, ref as ref11 } from "firebase/database";
 
 // src/RuntimeContext.tsx
 import { createContext } from "react";
@@ -22,7 +29,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from "react";
 import { createPortal } from "react-dom";
@@ -46,6 +52,7 @@ import {
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var BUILDER_BLOCKS_REGION = "__rcms_builder_blocks__";
 var NATIVE_PAGE_TREE_FIELD = "tree";
+var runtimeComponentClipboard = null;
 function resolvePageId() {
   if (typeof window === "undefined") return "home";
   try {
@@ -142,6 +149,18 @@ function reorderNode(nodes, nodeId, direction) {
     return children === node.children ? node : { ...node, children };
   });
 }
+function moveRuntimeAddition(tree, nodeId, targetId, position) {
+  const node = findNode(tree.children, nodeId);
+  const target = findNode(tree.children, targetId);
+  if (!node || !target || nodeId === targetId || findNode(node.children || [], targetId)) return tree;
+  const owner = tree.children.find((root) => root.id === targetId || findNode(root.children || [], targetId));
+  const addition = {
+    ...node,
+    props: { ...node.props, offsetX: 0, offsetY: 0 },
+    metadata: { ...node.metadata, runtimePlacement: normalizedRuntimePlacement(owner?.metadata?.runtimePlacement) }
+  };
+  return { ...tree, children: insertNode(removeNode(tree.children, nodeId), targetId, position, addition) };
+}
 function refreshNodeIds(node, suffix) {
   return {
     ...node,
@@ -159,7 +178,7 @@ function normalizedRuntimePlacement(value) {
 function placementKey(placement) {
   return placement.anchorRegionId ? `${placement.position}:${placement.anchorRegionId}` : "footer";
 }
-function makeRuntimeNode(type, locale, placement = { position: "footer" }) {
+function makeRuntimeNode(type, locale, placement = { position: "footer" }, content) {
   const safeType = type || "section";
   const id = `${safeType.replace(/[^a-zA-Z0-9_-]/g, "_")}_${Date.now().toString(36)}`;
   const field = ["input", "textarea-field", "select-field", "checkbox"].includes(safeType);
@@ -168,8 +187,12 @@ function makeRuntimeNode(type, locale, placement = { position: "footer" }) {
     type: safeType,
     label: safeType.split("-").map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`).join(" "),
     props: {
+      ...content?.props || {},
       locales: {
-        [locale]: field ? { label: "New field", placeholder: "Enter a value" } : { title: "New section", text: "Double-click this text to edit it." }
+        [locale]: {
+          ...field ? { label: "New field", placeholder: "Enter a value" } : { title: "New section", text: "Double-click this text to edit it." },
+          ...content?.localized || {}
+        }
       },
       design: {}
     },
@@ -192,7 +215,6 @@ function RuntimeAdditionsPortal({
   const [host, setHost] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
-  const clipboard = useRef(null);
   useEffect(() => {
     if (typeof document === "undefined") return void 0;
     let portalHost = Array.from(document.querySelectorAll("[data-rcms-runtime-additions-host]")).find((candidate) => candidate.dataset.rcmsRuntimeAdditionsHost === hostKey) || null;
@@ -249,13 +271,18 @@ function RuntimeAdditionsPortal({
       value: next
     });
   }, [onTreeChange, pageId, websiteId]);
-  const addNode = useCallback((componentType = "section", targetId = "", position = "after") => {
-    const addition = makeRuntimeNode(componentType, locale, placement);
+  const addNode = useCallback((componentType = "section", targetId = "", position = "after", content) => {
+    const addition = makeRuntimeNode(componentType, locale, placement, content);
     const children = targetId ? insertNode(tree.children, targetId, position, addition) : [...tree.children, addition];
     commit({ ...tree, children });
     setSelectedIds([addition.id]);
   }, [commit, locale, placement, tree]);
   const handleMutation = useCallback((mutation) => {
+    if (!mutation.path.length && mutation.value?.metadata?.runtimePlacement) {
+      const moved = mutation.value;
+      commit({ ...tree, children: [...removeNode(tree.children, mutation.nodeId), moved] });
+      return;
+    }
     commit({
       ...tree,
       children: updateNode(tree.children, mutation.nodeId, mutation.path, mutation.value)
@@ -286,11 +313,11 @@ function RuntimeAdditionsPortal({
     const node = findNode(tree.children, nodeId);
     if (!node) return;
     if (command === "copy") {
-      clipboard.current = structuredClone(node);
+      runtimeComponentClipboard = structuredClone(node);
       return;
     }
-    if (command === "paste" && clipboard.current) {
-      const addition = refreshNodeIds(structuredClone(clipboard.current), `copy_${Date.now().toString(36)}`);
+    if (command === "paste" && runtimeComponentClipboard) {
+      const addition = refreshNodeIds(structuredClone(runtimeComponentClipboard), `copy_${Date.now().toString(36)}`);
       commit({ ...tree, children: insertNode(tree.children, nodeId, "after", addition) });
       setSelectedIds([addition.id]);
       return;
@@ -314,10 +341,8 @@ function RuntimeAdditionsPortal({
     }
   }, [commit, tree]);
   const handleMove = useCallback((nodeId, targetId, position) => {
-    const node = findNode(tree.children, nodeId);
-    if (!node || findNode(node.children || [], targetId)) return;
-    const without = removeNode(tree.children, nodeId);
-    commit({ ...tree, children: insertNode(without, targetId, position, node) });
+    const next = moveRuntimeAddition(tree, nodeId, targetId, position);
+    if (next !== tree) commit(next);
   }, [commit, tree]);
   if (!host) return null;
   return createPortal(
@@ -329,6 +354,7 @@ function RuntimeAdditionsPortal({
         responsiveMode: "desktop",
         mode: editMode ? "edit" : "runtime",
         theme,
+        transparentBackground: true,
         selectedIds,
         hoveredId,
         onSelect: handleSelect,
@@ -437,12 +463,32 @@ function BuilderSections({
     };
   }, [apiKey, editMode, locale, pageId, websiteId]);
   useEffect(() => MessageBus.subscribe((message) => {
+    if (message.type === "rcms/v1/insert-content") {
+      const payload2 = message.payload;
+      if (!payload2?.anchorRegionId || payload2.pageId && payload2.pageId !== pageId) return;
+      setRuntimeAdditions((current) => {
+        const base = current || createRuntimeAdditionsTree(pageId, locale);
+        const placement = {
+          anchorRegionId: payload2.anchorRegionId,
+          position: payload2.position || "after"
+        };
+        const addition = makeRuntimeNode(payload2.componentType || "paragraph", locale, placement, payload2.content);
+        const next = { ...base, children: [...base.children, addition] };
+        queueMicrotask(() => MessageBus.send("rcms/v1/field-update", websiteId, {
+          pageId,
+          regionId: RUNTIME_ADDITIONS_REGION,
+          value: next
+        }));
+        return next;
+      });
+      return;
+    }
     if (message.type !== "rcms/v1/field-update") return;
     const payload = message.payload;
     if (payload?.regionId === RUNTIME_ADDITIONS_REGION && (!payload.pageId || payload.pageId === pageId) && isPageComponentTree(payload.value)) {
       setRuntimeAdditions(payload.value);
     }
-  }), [pageId]);
+  }), [locale, pageId, websiteId]);
   const additionsTree = runtimeAdditions || createRuntimeAdditionsTree(pageId, locale);
   const additionGroups = useMemo(() => {
     const groups = /* @__PURE__ */ new Map();
@@ -765,6 +811,11 @@ function dispatchRegionValue(websiteId, pageId, regionId, value) {
 function runtimeRegionContentSource(editMode) {
   return editMode ? "draft" : "published";
 }
+function pageSEOFromContent(value) {
+  if (!value || typeof value !== "object") return null;
+  const seo = value.seo;
+  return seo && typeof seo === "object" && !Array.isArray(seo) ? seo : null;
+}
 function registerEditableRegionState(current, pageId, regionId, type, label, defaultValue) {
   const pageRegions = current[pageId] || {};
   const existing = pageRegions[regionId];
@@ -828,6 +879,24 @@ function RegionContentHydrator({
       unsubscribe();
     };
   }, [apiKey, pageId, source, websiteId]);
+  return null;
+}
+function SEOContentHydrator({
+  websiteId,
+  apiKey
+}) {
+  const cms = useContext2(CMSContext2);
+  const setSEO = useContext2(SEOContext)?.setSEO;
+  const pageId = useMemo2(resolveCurrentPageId, []);
+  const source = runtimeRegionContentSource(Boolean(cms?.editMode));
+  useEffect2(() => {
+    if (!setSEO) return () => {
+    };
+    const db = getFirebaseDatabase11(apiKey);
+    return onValue2(ref11(db, source === "draft" ? paths11.contentDraft(websiteId, pageId) : paths11.contentPublished(websiteId, pageId)), (snapshot) => {
+      setSEO(snapshot.exists() ? pageSEOFromContent(snapshot.val()) || {} : {});
+    });
+  }, [apiKey, pageId, setSEO, source, websiteId]);
   return null;
 }
 function RuntimeProvider({
@@ -930,7 +999,8 @@ function RuntimeProvider({
   }, [regions, websiteId, apiKey]);
   return /* @__PURE__ */ jsx2(RuntimeContext.Provider, { value: runtimeContextValue, children: /* @__PURE__ */ jsx2(EditableRegistryContext.Provider, { value: editableRegistryValue, children: /* @__PURE__ */ jsxs2(CMSProvider, { websiteId, apiKey, environment: "production", children: [
     /* @__PURE__ */ jsx2(RegionContentHydrator, { websiteId, apiKey }),
-    /* @__PURE__ */ jsx2(
+    /* @__PURE__ */ jsx2(SEOContentHydrator, { websiteId, apiKey }),
+    /* @__PURE__ */ jsx2(CMSSEOProvider, { children: /* @__PURE__ */ jsx2(
       BuilderSections,
       {
         websiteId,
@@ -939,7 +1009,7 @@ function RuntimeProvider({
         layout: defaultLayout?.component,
         preserveApplicationPage
       }
-    )
+    ) })
   ] }) }) });
 }
 
@@ -991,17 +1061,17 @@ function CMSNavigation({ id, label, items }) {
 // src/RouteRegistry.tsx
 import { useContext as useContext5, useEffect as useEffect5, useState as useState3 } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ref as ref11, onValue as onValue2 } from "firebase/database";
-import { getFirebaseDatabase as getFirebaseDatabase11 } from "@anshif.rainhopes/reactcms-sdk";
-import { paths as paths11 } from "@anshif.rainhopes/shared";
+import { ref as ref12, onValue as onValue3 } from "firebase/database";
+import { getFirebaseDatabase as getFirebaseDatabase12 } from "@anshif.rainhopes/reactcms-sdk";
+import { paths as paths12 } from "@anshif.rainhopes/shared";
 import { jsx as jsx3 } from "react/jsx-runtime";
 function RouteRegistry({ websiteId, apiKey }) {
   const [dynamicRoutes, setDynamicRoutes] = useState3([]);
   const runtime = useContext5(RuntimeContext);
   useEffect5(() => {
-    const db = getFirebaseDatabase11(apiKey);
-    const routesRef = ref11(db, paths11.registryRoutes(websiteId));
-    const unsubscribe = onValue2(routesRef, (snapshot) => {
+    const db = getFirebaseDatabase12(apiKey);
+    const routesRef = ref12(db, paths12.registryRoutes(websiteId));
+    const unsubscribe = onValue3(routesRef, (snapshot) => {
       if (snapshot.exists()) {
         const val = snapshot.val();
         const list = Object.values(val).filter(

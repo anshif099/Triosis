@@ -35,13 +35,14 @@ export function setupRuntimeMessageHandler(
         if (callbacks.onRegionSelected) callbacks.onRegionSelected(msg.payload);
         break;
       case 'rcms/v1/open-inspector': {
-        const payload = (msg.payload || {}) as { regionId?: string };
+        const payload = (msg.payload || {}) as { regionId?: string; type?: string; pageId?: string };
         if (payload.regionId && typeof document !== 'undefined') {
           const el = document.querySelector(`[data-rcms-region="${payload.regionId}"]`) as HTMLElement | null;
           if (el) {
             const computedStyle = getElementComputedStyle(el);
             MessageBus.send('rcms/v1/region-selected', websiteId, {
-              regionId: payload.regionId,
+              ...payload,
+              type: payload.type || el.dataset.rcmsType,
               computedStyle,
             });
           }

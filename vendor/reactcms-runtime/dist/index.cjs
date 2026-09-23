@@ -1,9 +1,9 @@
-"use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -16,8 +16,15 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
 // src/index.ts
 var index_exports = {};
@@ -31,7 +38,7 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 
 // src/RuntimeProvider.tsx
-var import_react3 = require("react");
+var import_react3 = __toESM(require("react"), 1);
 var import_reactcms_sdk11 = require("@anshif.rainhopes/reactcms-sdk");
 
 // src/RuntimeContext.tsx
@@ -39,13 +46,12 @@ var import_react = require("react");
 var RuntimeContext = (0, import_react.createContext)(null);
 
 // src/BuilderSections.tsx
-var import_react2 = require("react");
+var import_react2 = __toESM(require("react"), 1);
 var import_react_dom = require("react-dom");
 var import_database = require("firebase/database");
 var import_reactcms_renderer = require("@anshif.rainhopes/reactcms-renderer");
 var import_shared = require("@anshif.rainhopes/shared");
 var import_reactcms_sdk = require("@anshif.rainhopes/reactcms-sdk");
-var import_jsx_runtime = require("react/jsx-runtime");
 var BUILDER_BLOCKS_REGION = "__rcms_builder_blocks__";
 var NATIVE_PAGE_TREE_FIELD = "tree";
 function resolvePageId() {
@@ -105,13 +111,17 @@ function setAtPath(source, path, value) {
 }
 function updateNode(nodes, nodeId, path, value) {
   return nodes.map((node) => {
+    var _a;
     if (node.id === nodeId) return setAtPath(node, path, value);
-    if (!node.children?.length) return node;
+    if (!((_a = node.children) == null ? void 0 : _a.length)) return node;
     return { ...node, children: updateNode(node.children, nodeId, path, value) };
   });
 }
 function removeNode(nodes, nodeId) {
-  return nodes.filter((node) => node.id !== nodeId).map((node) => node.children?.length ? { ...node, children: removeNode(node.children, nodeId) } : node);
+  return nodes.filter((node) => node.id !== nodeId).map((node) => {
+    var _a;
+    return ((_a = node.children) == null ? void 0 : _a.length) ? { ...node, children: removeNode(node.children, nodeId) } : node;
+  });
 }
 function insertNode(nodes, targetId, position, addition) {
   const targetIndex = nodes.findIndex((node) => node.id === targetId);
@@ -124,7 +134,8 @@ function insertNode(nodes, targetId, position, addition) {
     return next;
   }
   return nodes.map((node) => {
-    if (!node.children?.length) return node;
+    var _a;
+    if (!((_a = node.children) == null ? void 0 : _a.length)) return node;
     const children = insertNode(node.children, targetId, position, addition);
     return children === node.children ? node : { ...node, children };
   });
@@ -139,16 +150,18 @@ function reorderNode(nodes, nodeId, direction) {
     return next;
   }
   return nodes.map((node) => {
-    if (!node.children?.length) return node;
+    var _a;
+    if (!((_a = node.children) == null ? void 0 : _a.length)) return node;
     const children = reorderNode(node.children, nodeId, direction);
     return children === node.children ? node : { ...node, children };
   });
 }
 function refreshNodeIds(node, suffix) {
+  var _a;
   return {
     ...node,
     id: `${node.id}_${suffix}`,
-    children: node.children?.map((child, index) => refreshNodeIds(child, `${suffix}_${index}`))
+    children: (_a = node.children) == null ? void 0 : _a.map((child, index) => refreshNodeIds(child, `${suffix}_${index}`))
   };
 }
 function normalizedRuntimePlacement(value) {
@@ -231,7 +244,7 @@ function RuntimeAdditionsPortal({
       const footer = document.querySelector(
         'footer, [data-rcms-type="footer"], .footer-section'
       );
-      const parent = footer?.parentElement || document.querySelector("#root") || document.body;
+      const parent = (footer == null ? void 0 : footer.parentElement) || document.querySelector("#root") || document.body;
       attachRuntimeHostFallback(portalHost, parent, footer);
       setHost(portalHost);
     };
@@ -240,7 +253,7 @@ function RuntimeAdditionsPortal({
     observer.observe(document.body, { childList: true, subtree: true });
     return () => {
       observer.disconnect();
-      if (created) portalHost?.remove();
+      if (created) portalHost == null ? void 0 : portalHost.remove();
     };
   }, [hostKey, placement.anchorRegionId, placement.position]);
   const commit = (0, import_react2.useCallback)((next) => {
@@ -323,7 +336,7 @@ function RuntimeAdditionsPortal({
   }, [commit, tree]);
   if (!host) return null;
   return (0, import_react_dom.createPortal)(
-    nodes.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    nodes.length ? /* @__PURE__ */ import_react2.default.createElement(
       import_reactcms_renderer.RuntimeRenderer,
       {
         tree: { ...tree, children: nodes },
@@ -340,7 +353,7 @@ function RuntimeAdditionsPortal({
         onInsert: addNode,
         onCommand: handleCommand
       }
-    ) : editMode ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+    ) : editMode ? /* @__PURE__ */ import_react2.default.createElement(
       "div",
       {
         "data-rcms-empty-additions": "true",
@@ -358,21 +371,19 @@ function RuntimeAdditionsPortal({
           background: "rgba(37, 99, 235, .06)",
           color: "#1d4ed8",
           font: "600 12px Inter, system-ui, sans-serif"
-        },
-        children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "CMS insertion area above the footer" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => addNode("section"), children: "+ Section" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => addNode("input"), children: "+ Input field" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => addNode("textarea-field"), children: "+ Message field" })
-        ]
-      }
+        }
+      },
+      /* @__PURE__ */ import_react2.default.createElement("span", null, "CMS insertion area above the footer"),
+      /* @__PURE__ */ import_react2.default.createElement("button", { type: "button", onClick: () => addNode("section") }, "+ Section"),
+      /* @__PURE__ */ import_react2.default.createElement("button", { type: "button", onClick: () => addNode("input") }, "+ Input field"),
+      /* @__PURE__ */ import_react2.default.createElement("button", { type: "button", onClick: () => addNode("textarea-field") }, "+ Message field")
     ) : null,
     host
   );
 }
 function attachRuntimeHostFallback(portalHost, parent, footer) {
   if (portalHost.parentElement === parent) return false;
-  if (footer?.parentElement === parent) {
+  if ((footer == null ? void 0 : footer.parentElement) === parent) {
     parent.insertBefore(portalHost, footer);
   } else {
     parent.appendChild(portalHost);
@@ -388,12 +399,12 @@ function BuilderSections({
   preserveApplicationPage = false
 }) {
   const pageId = (0, import_react2.useMemo)(
-    () => pageIdOverride?.replace(/^\/+|\/+$/g, "") || resolvePageId(),
+    () => (pageIdOverride == null ? void 0 : pageIdOverride.replace(/^\/+|\/+$/g, "")) || resolvePageId(),
     [pageIdOverride]
   );
   const locale = (0, import_react2.useMemo)(resolveLocale, []);
   const cms = (0, import_react2.useContext)(import_reactcms_sdk.CMSContext);
-  const editMode = Boolean(cms?.editMode);
+  const editMode = Boolean(cms == null ? void 0 : cms.editMode);
   const [tree, setTree] = (0, import_react2.useState)(null);
   const [runtimeAdditions, setRuntimeAdditions] = (0, import_react2.useState)(null);
   const [theme, setTheme] = (0, import_react2.useState)(null);
@@ -441,7 +452,7 @@ function BuilderSections({
   (0, import_react2.useEffect)(() => import_reactcms_sdk.MessageBus.subscribe((message) => {
     if (message.type !== "rcms/v1/field-update") return;
     const payload = message.payload;
-    if (payload?.regionId === import_reactcms_renderer.RUNTIME_ADDITIONS_REGION && (!payload.pageId || payload.pageId === pageId) && (0, import_reactcms_renderer.isPageComponentTree)(payload.value)) {
+    if ((payload == null ? void 0 : payload.regionId) === import_reactcms_renderer.RUNTIME_ADDITIONS_REGION && (!payload.pageId || payload.pageId === pageId) && (0, import_reactcms_renderer.isPageComponentTree)(payload.value)) {
       setRuntimeAdditions(payload.value);
     }
   }), [pageId]);
@@ -449,13 +460,14 @@ function BuilderSections({
   const additionGroups = (0, import_react2.useMemo)(() => {
     const groups = /* @__PURE__ */ new Map();
     additionsTree.children.forEach((node) => {
-      const placement = normalizedRuntimePlacement(node.metadata?.runtimePlacement);
+      var _a;
+      const placement = normalizedRuntimePlacement((_a = node.metadata) == null ? void 0 : _a.runtimePlacement);
       const key = placementKey(placement);
       const group = groups.get(key) || { key, placement, nodes: [] };
       group.nodes.push(node);
       groups.set(key, group);
     });
-    if (!groups.size && cms?.editMode) {
+    if (!groups.size && (cms == null ? void 0 : cms.editMode)) {
       groups.set("footer", {
         key: "footer",
         placement: { position: "footer" },
@@ -463,10 +475,11 @@ function BuilderSections({
       });
     }
     return Array.from(groups.values());
-  }, [additionsTree, cms?.editMode]);
-  const additions = additionGroups.length ? additionGroups.map((group) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+  }, [additionsTree, cms == null ? void 0 : cms.editMode]);
+  const additions = additionGroups.length ? additionGroups.map((group) => /* @__PURE__ */ import_react2.default.createElement(
     RuntimeAdditionsPortal,
     {
+      key: group.key,
       websiteId,
       pageId,
       locale,
@@ -475,33 +488,23 @@ function BuilderSections({
       placement: group.placement,
       hostKey: group.key,
       theme,
-      editMode: Boolean(cms?.editMode),
+      editMode: Boolean(cms == null ? void 0 : cms.editMode),
       onTreeChange: setRuntimeAdditions
-    },
-    group.key
+    }
   )) : null;
-  if (preserveApplicationPage) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-    fallback,
-    additions
-  ] });
-  if (!resolved || !tree) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-    fallback,
-    additions
-  ] });
-  const page = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-      import_reactcms_renderer.RuntimeRenderer,
-      {
-        tree,
-        locale,
-        responsiveMode: "desktop",
-        mode: cms?.editMode ? "edit" : "runtime",
-        theme
-      }
-    ),
-    additions
-  ] });
-  return Layout ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layout, { children: page }) : page;
+  if (preserveApplicationPage) return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, fallback, additions);
+  if (!resolved || !tree) return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, fallback, additions);
+  const page = /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement(
+    import_reactcms_renderer.RuntimeRenderer,
+    {
+      tree,
+      locale,
+      responsiveMode: "desktop",
+      mode: (cms == null ? void 0 : cms.editMode) ? "edit" : "runtime",
+      theme
+    }
+  ), additions);
+  return Layout ? /* @__PURE__ */ import_react2.default.createElement(Layout, null, page) : page;
 }
 
 // src/heartbeat/heartbeatService.ts
@@ -509,6 +512,7 @@ var import_database2 = require("firebase/database");
 var import_reactcms_sdk2 = require("@anshif.rainhopes/reactcms-sdk");
 var import_shared2 = require("@anshif.rainhopes/shared");
 var HeartbeatService = class {
+  static intervalId = null;
   static start(websiteId, apiKey) {
     this.stop();
     const ping = async () => {
@@ -533,7 +537,6 @@ var HeartbeatService = class {
     }
   }
 };
-__publicField(HeartbeatService, "intervalId", null);
 
 // src/registration/registerEditableRegions.ts
 var import_database3 = require("firebase/database");
@@ -745,7 +748,6 @@ async function reportVersions(websiteId, apiKey) {
 }
 
 // src/RuntimeProvider.tsx
-var import_jsx_runtime2 = require("react/jsx-runtime");
 function resolveCurrentPageId() {
   if (typeof window === "undefined") return "global";
   const pageOverride = new URLSearchParams(window.location.search).get("page");
@@ -770,7 +772,7 @@ function runtimeRegionContentSource(editMode) {
 function registerEditableRegionState(current, pageId, regionId, type, label, defaultValue) {
   const pageRegions = current[pageId] || {};
   const existing = pageRegions[regionId];
-  if (existing?.type === type && existing.label === label && JSON.stringify(existing.defaultValue) === JSON.stringify(defaultValue)) {
+  if ((existing == null ? void 0 : existing.type) === type && existing.label === label && JSON.stringify(existing.defaultValue) === JSON.stringify(defaultValue)) {
     return current;
   }
   return {
@@ -783,7 +785,7 @@ function registerEditableRegionState(current, pageId, regionId, type, label, def
         label,
         editable: true,
         ...defaultValue !== void 0 ? { defaultValue } : {},
-        registeredAt: existing?.registeredAt || Date.now()
+        registeredAt: (existing == null ? void 0 : existing.registeredAt) || Date.now()
       }
     }
   };
@@ -803,7 +805,7 @@ function RegionContentHydrator({
 }) {
   const cms = (0, import_react3.useContext)(import_reactcms_sdk11.CMSContext);
   const pageId = (0, import_react3.useMemo)(resolveCurrentPageId, []);
-  const source = runtimeRegionContentSource(Boolean(cms?.editMode));
+  const source = runtimeRegionContentSource(Boolean(cms == null ? void 0 : cms.editMode));
   (0, import_react3.useEffect)(() => {
     let active = true;
     const hydrate = source === "draft" ? import_reactcms_sdk11.editableSync.getDraftRegions(apiKey, websiteId, pageId) : import_reactcms_sdk11.editableSync.getPublishedRegions(apiKey, websiteId, pageId);
@@ -930,19 +932,16 @@ function RuntimeProvider({
       void registerEditableRegions(websiteId, apiKey, pageId, pageRegions);
     });
   }, [regions, websiteId, apiKey]);
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RuntimeContext.Provider, { value: runtimeContextValue, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_reactcms_sdk11.EditableRegistryContext.Provider, { value: editableRegistryValue, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_reactcms_sdk11.CMSProvider, { websiteId, apiKey, environment: "production", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(RegionContentHydrator, { websiteId, apiKey }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-      BuilderSections,
-      {
-        websiteId,
-        apiKey,
-        fallback: children,
-        layout: defaultLayout?.component,
-        preserveApplicationPage
-      }
-    )
-  ] }) }) });
+  return /* @__PURE__ */ import_react3.default.createElement(RuntimeContext.Provider, { value: runtimeContextValue }, /* @__PURE__ */ import_react3.default.createElement(import_reactcms_sdk11.EditableRegistryContext.Provider, { value: editableRegistryValue }, /* @__PURE__ */ import_react3.default.createElement(import_reactcms_sdk11.CMSProvider, { websiteId, apiKey, environment: "production" }, /* @__PURE__ */ import_react3.default.createElement(RegionContentHydrator, { websiteId, apiKey }), /* @__PURE__ */ import_react3.default.createElement(
+    BuilderSections,
+    {
+      websiteId,
+      apiKey,
+      fallback: children,
+      layout: defaultLayout == null ? void 0 : defaultLayout.component,
+      preserveApplicationPage
+    }
+  ))));
 }
 
 // src/CMSLayout.tsx
@@ -956,7 +955,7 @@ function CMSLayout({
   slots = DEFAULT_SLOTS
 }) {
   const context = (0, import_react4.useContext)(RuntimeContext);
-  const registerLayout = context?.registerLayout;
+  const registerLayout = context == null ? void 0 : context.registerLayout;
   (0, import_react4.useEffect)(() => {
     if (registerLayout) {
       registerLayout({
@@ -976,7 +975,7 @@ function CMSLayout({
 var import_react5 = require("react");
 function CMSNavigation({ id, label, items }) {
   const context = (0, import_react5.useContext)(RuntimeContext);
-  const registerNavigation2 = context?.registerNavigation;
+  const registerNavigation2 = context == null ? void 0 : context.registerNavigation;
   (0, import_react5.useEffect)(() => {
     if (registerNavigation2) {
       registerNavigation2({
@@ -996,7 +995,6 @@ var import_react_router_dom = require("react-router-dom");
 var import_database11 = require("firebase/database");
 var import_reactcms_sdk12 = require("@anshif.rainhopes/reactcms-sdk");
 var import_shared11 = require("@anshif.rainhopes/shared");
-var import_jsx_runtime3 = require("react/jsx-runtime");
 function RouteRegistry({ websiteId, apiKey }) {
   const [dynamicRoutes, setDynamicRoutes] = (0, import_react6.useState)([]);
   const runtime = (0, import_react6.useContext)(RuntimeContext);
@@ -1019,27 +1017,28 @@ function RouteRegistry({ websiteId, apiKey }) {
     };
   }, [websiteId, apiKey]);
   if (dynamicRoutes.length === 0) return null;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react_router_dom.Routes, { children: dynamicRoutes.map((route) => {
-    const defaultLayout = Object.values(runtime?.layouts || {}).find(
+  return /* @__PURE__ */ React.createElement(import_react_router_dom.Routes, null, dynamicRoutes.map((route) => {
+    var _a, _b;
+    const defaultLayout = Object.values((runtime == null ? void 0 : runtime.layouts) || {}).find(
       (layout2) => layout2.isDefault
     );
-    const layout = runtime?.layouts?.[route.layout || ""] || defaultLayout || runtime?.layouts?.default;
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    const layout = ((_a = runtime == null ? void 0 : runtime.layouts) == null ? void 0 : _a[route.layout || ""]) || defaultLayout || ((_b = runtime == null ? void 0 : runtime.layouts) == null ? void 0 : _b.default);
+    return /* @__PURE__ */ React.createElement(
       import_react_router_dom.Route,
       {
+        key: route.id,
         path: route.path,
-        element: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        element: /* @__PURE__ */ React.createElement(
           BuilderSections,
           {
             websiteId,
             apiKey,
             pageId: route.path,
-            layout: layout?.component
+            layout: layout == null ? void 0 : layout.component
           }
         )
-      },
-      route.id
+      }
     );
-  }) });
+  }));
 }
 //# sourceMappingURL=index.cjs.map

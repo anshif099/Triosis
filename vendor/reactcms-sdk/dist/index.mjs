@@ -1261,6 +1261,8 @@ function EditableImage({
   const dragStartRef = useRef2(null);
   const imgSrc = typeof value === "string" ? value : value?.src || "";
   const imgAlt = typeof value === "string" ? alt || "" : value?.alt || alt || "";
+  const isEmpty = !imgSrc.trim();
+  const isCleared = isEmpty && Boolean(defaultImgObj.src?.trim());
   const imgStyle = { ...style };
   if (typeof value === "object" && value !== null) {
     if (value.width) imgStyle.width = value.width;
@@ -1324,16 +1326,17 @@ function EditableImage({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle, "data-rcms-region": regionId });
+    return /* @__PURE__ */ jsx5("img", { src: imgSrc || void 0, alt: imgAlt, className, style: { ...imgStyle, ...isEmpty ? { display: "none" } : {} }, "data-rcms-region": regionId, "data-rcms-empty": isEmpty });
   }
   return /* @__PURE__ */ jsx5(
     "img",
     {
-      src: imgSrc,
+      src: imgSrc || void 0,
       alt: imgAlt,
       className: `rcms-editable-region rcms-editable-image ${className}`,
       style: {
         ...imgStyle,
+        ...isCleared ? { display: "none" } : {},
         outline: "2px dashed #3b82f6",
         outlineOffset: "2px",
         cursor: isDragging ? "grabbing" : "grab",
@@ -1345,7 +1348,8 @@ function EditableImage({
         e.preventDefault();
       },
       "data-rcms-region": regionId,
-      "data-rcms-type": "image"
+      "data-rcms-type": "image",
+      "data-rcms-empty": isEmpty
     }
   );
 }

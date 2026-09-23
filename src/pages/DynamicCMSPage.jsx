@@ -70,7 +70,7 @@ export function DynamicCMSPage({ pageSlug }) {
             style={{ fontSize: '1.25rem', color: 'var(--text)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto 40px auto' }}
           />
 
-          <div style={{ margin: '0 auto', maxWidth: '720px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--section-border)', boxShadow: '0 20px 50px rgba(15,23,42,0.12)' }}>
+          <div className="dynamic-cms-hero-image-frame" style={{ margin: '0 auto', maxWidth: '720px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--section-border)', boxShadow: '0 20px 50px rgba(15,23,42,0.12)' }}>
             <EditableImage
               regionId={`${slugKey}.hero_image`}
               label="Hero Visual Image"

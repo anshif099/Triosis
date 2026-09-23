@@ -47,6 +47,8 @@ export function EditableImage({
 
   const imgSrc = typeof value === 'string' ? value : value?.src || '';
   const imgAlt = typeof value === 'string' ? (alt || '') : (value?.alt || alt || '');
+  const isEmpty = !imgSrc.trim();
+  const isCleared = isEmpty && Boolean(defaultImgObj.src?.trim());
 
   const imgStyle: React.CSSProperties = { ...style };
   if (typeof value === 'object' && value !== null) {
@@ -121,16 +123,17 @@ export function EditableImage({
   };
 
   if (!editMode) {
-    return <img src={imgSrc} alt={imgAlt} className={className} style={imgStyle} data-rcms-region={regionId} />;
+    return <img src={imgSrc || undefined} alt={imgAlt} className={className} style={{ ...imgStyle, ...(isEmpty ? { display: 'none' } : {}) }} data-rcms-region={regionId} data-rcms-empty={isEmpty} />;
   }
 
   return (
     <img
-      src={imgSrc}
+      src={imgSrc || undefined}
       alt={imgAlt}
       className={`rcms-editable-region rcms-editable-image ${className}`}
       style={{
         ...imgStyle,
+        ...(isCleared ? { display: 'none' } : {}),
         outline: '2px dashed #3b82f6',
         outlineOffset: '2px',
         cursor: isDragging ? 'grabbing' : 'grab',
@@ -143,6 +146,7 @@ export function EditableImage({
       }}
       data-rcms-region={regionId}
       data-rcms-type="image"
+      data-rcms-empty={isEmpty}
     />
   );
 }

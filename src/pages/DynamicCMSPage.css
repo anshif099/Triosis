@@ -20,3 +20,7 @@
 .dynamic-cms-metric:not(:has([data-rcms-empty="false"])) {
   display: none;
 }
+
+.dynamic-cms-hero-image-frame:has(img[data-rcms-empty="true"]) {
+  display: none;
+}

@@ -42,6 +42,8 @@ export function EditableText({
   const isRich = typeof value === 'object' && value !== null;
   const displayValue = isRich ? (value.text !== undefined ? value.text : '') : value;
   const isEmpty = typeof displayValue === 'string' && !displayValue.trim();
+  const initialText = typeof defaultValue === 'string' ? defaultValue : defaultValue?.text;
+  const isCleared = isEmpty && typeof initialText === 'string' && Boolean(initialText.trim());
   
   const textStyle: React.CSSProperties = {};
   if (isRich) {
@@ -374,6 +376,7 @@ export function EditableText({
       style={{
         ...style,
         ...textStyle,
+        ...(isCleared ? { display: 'none' } : {}),
         outline: isSelected ? '2px solid #3b82f6' : '2px dashed #3b82f6',
         outlineOffset: '2px',
         position: 'relative',

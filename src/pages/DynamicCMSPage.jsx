@@ -223,7 +223,7 @@ export function DynamicCMSPage({ pageSlug }) {
           {/* Horizontal Statistics Section */}
           <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '40px 30px', borderRadius: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
             {metrics.map(([value, label], index) => (
-              <div key={index}>
+              <div key={index} className="dynamic-cms-metric">
                 <EditableText regionId={`${slugKey}.metric${index + 1}_value`} label={`Metric ${index + 1} Value`} defaultValue={value} as="div" style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }} />
                 <EditableText regionId={`${slugKey}.metric${index + 1}_label`} label={`Metric ${index + 1} Label`} defaultValue={label} as="div" style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }} />
               </div>

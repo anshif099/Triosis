@@ -16,3 +16,7 @@
 .dynamic-cms-card:has([data-cms-card-title] [data-rcms-empty="true"]):has([data-cms-card-description] [data-rcms-empty="true"]) {
   display: none !important;
 }
+
+.dynamic-cms-metric:not(:has([data-rcms-empty="false"])) {
+  display: none;
+}

@@ -50,7 +50,9 @@ window.__REACTCMS_GIT_CONTENT__ = {
     },
     "ad.hero_image": {
       "alt": "ad",
-      "src": "https://naotw-pd.s3.amazonaws.com/sharehamburger.jpg"
+      "offsetX": 71,
+      "offsetY": -113,
+      "src": ""
     },
     "ad.stat1_text": {
       "color": "#000000",

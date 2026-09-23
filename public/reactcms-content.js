@@ -1,9 +1,6 @@
 window.__REACTCMS_GIT_CONTENT__ = {
   "ad": {
-    "ad.title": {
-      "text": "API KEY",
-      "color": "#000000"
-    },
+    "ad.title": "API KEY",
     "ad.hero": {
       "background": "#ffffff"
     },
@@ -33,7 +30,6 @@ window.__REACTCMS_GIT_CONTENT__ = {
       "fontSize": "32px",
       "fontSizeMobile": "22px",
       "fontSizeTablet": "28px",
-      "lineHeight": 1.2,
       "maxWidth": "100%",
       "overflowWrapDesktop": "normal",
       "text": "Ready to transform your business with Ad?",
@@ -75,7 +71,11 @@ window.__REACTCMS_GIT_CONTENT__ = {
     "ad.stats_carousel_section": {
       "background": "#ffffff"
     },
-    "ad.subtext": "Explore strategic digital solutions, tools, and courses tailored for modern business innovation and growth.",
+    "ad.subtext": {
+      "align": "left",
+      "fontSize": "30px",
+      "text": "Explore strategic digital solutions, tools, and courses tailored for modern business innovation and growth."
+    },
     "ad.why_choose_us_subtext": "Delivering high-ROI campaigns, creative ad strategies, and dedicated account support.",
     "ad.why_choose_us_title": "Why Industry Leaders Trust Triosis Digital",
     "footer.address": "Triosis Digital Tower 2, HiLITE Business Park, Door no : 2211, Second Floor, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014",

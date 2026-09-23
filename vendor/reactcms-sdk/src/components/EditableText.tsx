@@ -41,6 +41,7 @@ export function EditableText({
 
   const isRich = typeof value === 'object' && value !== null;
   const displayValue = isRich ? (value.text !== undefined ? value.text : '') : value;
+  const isEmpty = typeof displayValue === 'string' && !displayValue.trim();
   
   const textStyle: React.CSSProperties = {};
   if (isRich) {
@@ -359,7 +360,7 @@ export function EditableText({
 
   if (!editMode) {
     return (
-      <Component className={className} style={{ ...style, ...textStyle }} data-rcms-region={regionId}>
+      <Component className={className} style={{ ...style, ...textStyle, ...(isEmpty ? { display: 'none' } : {}) }} data-rcms-region={regionId}>
         {displayValue}
       </Component>
     );
@@ -388,7 +389,7 @@ export function EditableText({
       data-rcms-region={regionId}
       data-rcms-type="text"
     >
-      {displayValue}
+      {isEmpty ? 'Empty text - select to edit' : displayValue}
 
       {/* Floating Alignment Quick Toolbar */}
       {isSelected && (

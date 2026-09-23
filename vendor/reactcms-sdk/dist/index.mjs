@@ -581,7 +581,11 @@ function useEditable(regionId, defaultValue, type, label) {
   const [value, setLocalValue] = useState2(
     gitInitial !== void 0 ? gitInitial : storedInitial !== void 0 ? storedInitial : defaultValue
   );
-  const prefersGit = gitInitial !== void 0 && !cms?.editMode;
+  const isPreview = typeof window !== "undefined" && (() => {
+    const query = new URLSearchParams(window.location.search);
+    return query.has("rcms_preview") || query.get("mode") === "preview";
+  })();
+  const prefersGit = gitInitial !== void 0 && !cms?.editMode && !isPreview;
   useEffect4(() => {
     if (pageId === "global") {
       console.warn(`[ReactCMS SDK] Warning: Region "${regionId}" registered under fallback "global" because no page context was resolved.`);
@@ -792,6 +796,7 @@ function EditableText({
   const resizeStartRef = useRef(null);
   const isRich = typeof value === "object" && value !== null;
   const displayValue = isRich ? value.text !== void 0 ? value.text : "" : value;
+  const isEmpty = typeof displayValue === "string" && !displayValue.trim();
   const textStyle = {};
   if (isRich) {
     if (value.fontSize) textStyle.fontSize = value.fontSize;
@@ -1055,7 +1060,7 @@ function EditableText({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle }, "data-rcms-region": regionId, children: displayValue });
+    return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle, ...isEmpty ? { display: "none" } : {} }, "data-rcms-region": regionId, children: displayValue });
   }
   const activeAlign = textStyle.textAlign || "left";
   return /* @__PURE__ */ jsxs(
@@ -1080,7 +1085,7 @@ function EditableText({
       "data-rcms-region": regionId,
       "data-rcms-type": "text",
       children: [
-        displayValue,
+        isEmpty ? "Empty text - select to edit" : displayValue,
         isSelected && /* @__PURE__ */ jsxs(
           "span",
           {

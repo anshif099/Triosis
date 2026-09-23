@@ -399,11 +399,22 @@ function RuntimeAdditionsPortal({
     }
   }, [commit, tree]);
 
-  const handleMove = useCallback((nodeId: string, targetId: string, position: DropPosition) => {
+  const handleMove = useCallback((nodeId: string, targetId: string, position: DropPosition, horizontalPosition?: number) => {
     const node = findNode(tree.children, nodeId);
-    if (!node || findNode(node.children || [], targetId)) return;
+    const target = findNode(tree.children, targetId);
+    if (!node || !target || nodeId === targetId || findNode(node.children || [], targetId)) return;
+    const owner = tree.children.find((root) => root.id === targetId || findNode(root.children || [], targetId));
+    const sameButtonRow = node.type === 'button' && target.type === 'button';
+    const props: Record<string, any> = { ...node.props, offsetX: 0, offsetY: 0 };
+    if (sameButtonRow) delete props.horizontalPosition;
+    else if (horizontalPosition !== undefined) props.horizontalPosition = horizontalPosition;
+    const addition = {
+      ...node,
+      props,
+      metadata: { ...node.metadata, runtimePlacement: normalizedRuntimePlacement(owner?.metadata?.runtimePlacement) },
+    };
     const without = removeNode(tree.children, nodeId);
-    commit({ ...tree, children: insertNode(without, targetId, position, node) });
+    commit({ ...tree, children: insertNode(without, targetId, position, addition) });
   }, [commit, tree]);
 
   if (!host) return null;
@@ -415,6 +426,7 @@ function RuntimeAdditionsPortal({
         responsiveMode="desktop"
         mode={editMode ? 'edit' : 'runtime'}
         theme={theme}
+        transparentBackground
         selectedIds={selectedIds}
         hoveredId={hoveredId}
         onSelect={handleSelect}

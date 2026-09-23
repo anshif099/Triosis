@@ -23,7 +23,7 @@ export function RouteRegistry({ websiteId, apiKey }: RouteRegistryProps) {
       if (snapshot.exists()) {
         const val = snapshot.val() as Record<string, RouteEntry>;
         const list = Object.values(val).filter(
-          (r) => r.source === 'cms-generated' || r.source === 'cms' || r.source === 'generated'
+          (r) => ['cms-generated', 'cms', 'generated'].includes(String(r.source))
         );
         setDynamicRoutes(list);
       } else {

@@ -121,7 +121,7 @@ export function EditableImage({
   };
 
   if (!editMode) {
-    return <img src={imgSrc} alt={imgAlt} className={className} style={imgStyle} />;
+    return <img src={imgSrc} alt={imgAlt} className={className} style={imgStyle} data-rcms-region={regionId} />;
   }
 
   return (
@@ -146,4 +146,3 @@ export function EditableImage({
     />
   );
 }
-

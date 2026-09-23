@@ -50,6 +50,7 @@ export function EditableRichText({
       <Component
         className={className}
         style={style}
+        data-rcms-region={regionId}
         dangerouslySetInnerHTML={{ __html: value }}
       />
     );

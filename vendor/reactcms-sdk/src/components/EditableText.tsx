@@ -359,7 +359,7 @@ export function EditableText({
 
   if (!editMode) {
     return (
-      <Component className={className} style={{ ...style, ...textStyle }}>
+      <Component className={className} style={{ ...style, ...textStyle }} data-rcms-region={regionId}>
         {displayValue}
       </Component>
     );

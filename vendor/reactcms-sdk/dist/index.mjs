@@ -1055,7 +1055,7 @@ function EditableText({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle }, children: displayValue });
+    return /* @__PURE__ */ jsx4(Component, { className, style: { ...style, ...textStyle }, "data-rcms-region": regionId, children: displayValue });
   }
   const activeAlign = textStyle.textAlign || "left";
   return /* @__PURE__ */ jsxs(
@@ -1315,7 +1315,7 @@ function EditableImage({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle });
+    return /* @__PURE__ */ jsx5("img", { src: imgSrc, alt: imgAlt, className, style: imgStyle, "data-rcms-region": regionId });
   }
   return /* @__PURE__ */ jsx5(
     "img",
@@ -1385,7 +1385,7 @@ function EditableButton({
   const tagProps = Tag === "a" ? { href: btnHref } : {};
   const renderedContent = typeof children === "function" ? children(value || defaultBtnObj) : children !== void 0 ? children : btnText;
   if (!editMode) {
-    return /* @__PURE__ */ jsx6(Tag, { ...tagProps, className, style, onClick, children: renderedContent });
+    return /* @__PURE__ */ jsx6(Tag, { ...tagProps, className, style, onClick, "data-rcms-region": regionId, children: renderedContent });
   }
   return /* @__PURE__ */ jsx6(
     Tag,
@@ -1455,7 +1455,7 @@ function EditableSection({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx7(Component, { className, style: sectionStyle, children });
+    return /* @__PURE__ */ jsx7(Component, { className, style: sectionStyle, "data-rcms-region": regionId, children });
   }
   return /* @__PURE__ */ jsx7(
     Component,
@@ -1515,6 +1515,7 @@ function EditableRichText({
       {
         className,
         style,
+        "data-rcms-region": regionId,
         dangerouslySetInnerHTML: { __html: value }
       }
     );
@@ -1572,7 +1573,7 @@ function EditableRepeater({
     }
   };
   if (!editMode) {
-    return /* @__PURE__ */ jsx9("div", { className, style, children: children(items) });
+    return /* @__PURE__ */ jsx9("div", { className, style, "data-rcms-region": regionId, children: children(items) });
   }
   return /* @__PURE__ */ jsx9(
     "div",
@@ -1629,9 +1630,9 @@ function EditableVideo({
   const isEmbed = videoUrl.includes("youtube") || videoUrl.includes("vimeo");
   if (!editMode) {
     if (isEmbed) {
-      return /* @__PURE__ */ jsx10("iframe", { src: videoUrl, title: label, className, style, allowFullScreen: true });
+      return /* @__PURE__ */ jsx10("iframe", { src: videoUrl, title: label, className, style, "data-rcms-region": regionId, allowFullScreen: true });
     }
-    return /* @__PURE__ */ jsx10("video", { src: videoUrl, controls: true, className, style });
+    return /* @__PURE__ */ jsx10("video", { src: videoUrl, controls: true, className, style, "data-rcms-region": regionId });
   }
   return /* @__PURE__ */ jsx10(
     "div",

@@ -360,7 +360,7 @@ export function EditableText({
 
   if (!editMode) {
     return (
-      <Component className={className} style={{ ...style, ...textStyle, ...(isEmpty ? { display: 'none' } : {}) }} data-rcms-region={regionId}>
+      <Component className={className} style={{ ...style, ...textStyle, ...(isEmpty ? { display: 'none' } : {}) }} data-rcms-region={regionId} data-rcms-empty={isEmpty}>
         {displayValue}
       </Component>
     );
@@ -388,6 +388,7 @@ export function EditableText({
       }}
       data-rcms-region={regionId}
       data-rcms-type="text"
+      data-rcms-empty={isEmpty}
     >
       {isEmpty ? 'Empty text - select to edit' : displayValue}
 

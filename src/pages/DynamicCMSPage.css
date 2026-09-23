@@ -7,3 +7,11 @@
 .dynamic-cms-page * {
   box-sizing: border-box;
 }
+
+.dynamic-cms-card-grid {
+  display: grid;
+}
+
+.dynamic-cms-card:has([data-cms-card-title] [data-rcms-empty="true"]):has([data-cms-card-description] [data-rcms-empty="true"]) {
+  display: none !important;
+}

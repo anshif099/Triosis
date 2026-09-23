@@ -1115,7 +1115,7 @@ function EditableText({
     window.addEventListener("mouseup", handleMouseUp);
   };
   if (!editMode) {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Component, { className, style: { ...style, ...textStyle, ...isEmpty ? { display: "none" } : {} }, "data-rcms-region": regionId, children: displayValue });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Component, { className, style: { ...style, ...textStyle, ...isEmpty ? { display: "none" } : {} }, "data-rcms-region": regionId, "data-rcms-empty": isEmpty, children: displayValue });
   }
   const activeAlign = textStyle.textAlign || "left";
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
@@ -1139,6 +1139,7 @@ function EditableText({
       },
       "data-rcms-region": regionId,
       "data-rcms-type": "text",
+      "data-rcms-empty": isEmpty,
       children: [
         isEmpty ? "Empty text - select to edit" : displayValue,
         isSelected && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(

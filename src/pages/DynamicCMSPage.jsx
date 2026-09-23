@@ -17,6 +17,25 @@ function formatTitle(slug) {
     .join(' ');
 }
 
+const premiumCards = [
+  ['🏆','Proven Advertising Results','Tailored strategies that align with your business goals to maximize ROI and digital efficiency.'],
+  ['🎨','Creative Campaigns','Scroll-stopping ad designs, persuasive copywriting, and high-converting visual assets.'],
+  ['📊','Data-Driven Strategy','Continuous optimization powered by real-time campaign analytics and deep audience targeting.'],
+  ['🎯','Google & Meta Ads Experts','Certified Specialists managing Google Search, Meta Instagram/Facebook, and display campaigns.'],
+  ['📈','Transparent Reporting','Clear performance metrics, live dashboard access, and actionable weekly reporting.'],
+  ['👥','Dedicated Account Managers','Personalized support, strategic growth calls, and dedicated campaign specialists.'],
+];
+const metrics = [['500+','Successful Campaigns'],['98%','Client Satisfaction'],['50M+','Ad Impressions'],['250+','Happy Clients']];
+
+const featureCards = [
+  ['⚡ High Performance','Strategic Planning & Execution','Tailored strategies that align with your core business objectives to maximize ROI and digital efficiency.'],
+  ['🎯 Targeted Outreach','Data-Driven Optimization','Leveraging advanced analytics and AI-powered insights to refine your market position continuously.'],
+  ['🚀 Scalable Growth','End-to-End Implementation','From concept to launch, our team ensures seamless execution and continuous support at scale.'],
+];
+const carouselStats = [
+  ['🚀','500+ Successful Ad Campaigns'],['⭐','98% Client Satisfaction Rate'],['💥','50M+ Ad Impressions'],['🏆','250+ Global Brands'],
+];
+
 export function DynamicCMSPage({ pageSlug }) {
   const displayTitle = formatTitle(pageSlug);
   const slugKey = pageSlug ? pageSlug.replace(/[^a-zA-Z0-9_-]/g, '-') : 'page';
@@ -70,47 +89,18 @@ export function DynamicCMSPage({ pageSlug }) {
       >
         <div style={{ display: 'flex', gap: '30px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', padding: '0 20px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(255,87,87,0.12)', border: '1px solid rgba(255,87,87,0.3)', padding: '6px 14px', borderRadius: '30px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px' }}>
-              📊 CLIENT SUCCESS STATISTICS
-            </span>
+            <EditableText regionId={`${slugKey}.stats_badge`} label="Statistics Badge" defaultValue="📊 CLIENT SUCCESS STATISTICS" as="span" style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px' }} />
           </div>
-
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
-              <span>🚀</span>
-              <EditableText
-                regionId={`${slugKey}.stat1_text`}
-                label="Stat 1 Text"
-                defaultValue="500+ Successful Ad Campaigns"
-              />
-            </div>
-            <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
-              <span>⭐</span>
-              <EditableText
-                regionId={`${slugKey}.stat2_text`}
-                label="Stat 2 Text"
-                defaultValue="98% Client Satisfaction Rate"
-              />
-            </div>
-            <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
-              <span>💥</span>
-              <EditableText
-                regionId={`${slugKey}.stat3_text`}
-                label="Stat 3 Text"
-                defaultValue="50M+ Ad Impressions"
-              />
-            </div>
-            <span style={{ color: '#444' }}>•</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
-              <span>🏆</span>
-              <EditableText
-                regionId={`${slugKey}.stat4_text`}
-                label="Stat 4 Text"
-                defaultValue="250+ Global Brands"
-              />
-            </div>
+            {carouselStats.map(([icon, text], index) => (
+              <React.Fragment key={index}>
+                {index > 0 && <span aria-hidden="true" style={{ color: '#444' }}>•</span>}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem', color: 'var(--text-h)', fontWeight: 600 }}>
+                  <EditableText regionId={`${slugKey}.stat${index + 1}_icon`} label={`Stat ${index + 1} Icon`} defaultValue={icon} />
+                  <EditableText regionId={`${slugKey}.stat${index + 1}_text`} label={`Stat ${index + 1} Text`} defaultValue={text} />
+                </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </EditableSection>
@@ -140,60 +130,14 @@ export function DynamicCMSPage({ pageSlug }) {
           </div>
 
           {/* 3 Feature Highlights Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>⚡ High Performance</div>
-              <EditableText
-                regionId={`${slugKey}.feature1_title`}
-                label="Feature 1 Title"
-                defaultValue="Strategic Planning & Execution"
-                as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.feature1_desc`}
-                label="Feature 1 Description"
-                defaultValue="Tailored strategies that align with your core business objectives to maximize ROI and digital efficiency."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>🎯 Targeted Outreach</div>
-              <EditableText
-                regionId={`${slugKey}.feature2_title`}
-                label="Feature 2 Title"
-                defaultValue="Data-Driven Optimization"
-                as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.feature2_desc`}
-                label="Feature 2 Description"
-                defaultValue="Leveraging advanced analytics and AI-powered insights to refine your market position continuously."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }}>🚀 Scalable Growth</div>
-              <EditableText
-                regionId={`${slugKey}.feature3_title`}
-                label="Feature 3 Title"
-                defaultValue="End-to-End Implementation"
-                as="h4"
-                style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.feature3_desc`}
-                label="Feature 3 Description"
-                defaultValue="From concept to launch, our team ensures seamless execution and continuous support at scale."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
+          <div className="dynamic-cms-card-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            {featureCards.map(([icon, title, description], index) => (
+              <EditableSection key={index} as="div" regionId={`${slugKey}.feature${index + 1}_section`} label={`Feature ${index + 1} Card`} className="dynamic-cms-card" style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '32px', borderRadius: '16px', boxShadow: 'var(--shadow)' }}>
+                <EditableText regionId={`${slugKey}.feature${index + 1}_icon`} label={`Feature ${index + 1} Icon and Label`} defaultValue={icon} as="div" style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary)' }} />
+                <div data-cms-card-title><EditableText regionId={`${slugKey}.feature${index + 1}_title`} label={`Feature ${index + 1} Title`} defaultValue={title} as="h4" style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-h)' }} /></div>
+                <div data-cms-card-description><EditableText regionId={`${slugKey}.feature${index + 1}_desc`} label={`Feature ${index + 1} Description`} defaultValue={description} as="p" style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }} /></div>
+              </EditableSection>
+            ))}
           </div>
         </div>
       </EditableSection>
@@ -245,9 +189,7 @@ export function DynamicCMSPage({ pageSlug }) {
       >
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <div style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
-              🌟 WHY CHOOSE US
-            </div>
+            <EditableText regionId={`${slugKey}.why_choose_us_badge`} label="Why Choose Us Badge" defaultValue="🌟 WHY CHOOSE US" as="div" style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }} />
             <EditableText
               regionId={`${slugKey}.why_choose_us_title`}
               label="Why Choose Us Title"
@@ -265,134 +207,24 @@ export function DynamicCMSPage({ pageSlug }) {
           </div>
 
           {/* 6 Premium Feature Cards Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px', marginBottom: '70px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)', transition: 'transform 0.3s ease, border-color 0.3s ease' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🏆</div>
-              <EditableText
-                regionId={`${slugKey}.card1_title`}
-                label="Card 1 Title"
-                defaultValue="Proven Advertising Results"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card1_desc`}
-                label="Card 1 Description"
-                defaultValue="Tailored strategies that align with your business goals to maximize ROI and digital efficiency."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🎨</div>
-              <EditableText
-                regionId={`${slugKey}.card2_title`}
-                label="Card 2 Title"
-                defaultValue="Creative Campaigns"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card2_desc`}
-                label="Card 2 Description"
-                defaultValue="Scroll-stopping ad designs, persuasive copywriting, and high-converting visual assets."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>📊</div>
-              <EditableText
-                regionId={`${slugKey}.card3_title`}
-                label="Card 3 Title"
-                defaultValue="Data-Driven Strategy"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card3_desc`}
-                label="Card 3 Description"
-                defaultValue="Continuous optimization powered by real-time campaign analytics and deep audience targeting."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>🎯</div>
-              <EditableText
-                regionId={`${slugKey}.card4_title`}
-                label="Card 4 Title"
-                defaultValue="Google & Meta Ads Experts"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card4_desc`}
-                label="Card 4 Description"
-                defaultValue="Certified Specialists managing Google Search, Meta Instagram/Facebook, and display campaigns."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>📈</div>
-              <EditableText
-                regionId={`${slugKey}.card5_title`}
-                label="Card 5 Title"
-                defaultValue="Transparent Reporting"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card5_desc`}
-                label="Card 5 Description"
-                defaultValue="Clear performance metrics, live dashboard access, and actionable weekly reporting."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
-
-            <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '20px' }}>👥</div>
-              <EditableText
-                regionId={`${slugKey}.card6_title`}
-                label="Card 6 Title"
-                defaultValue="Dedicated Account Managers"
-                as="h4"
-                style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }}
-              />
-              <EditableText
-                regionId={`${slugKey}.card6_desc`}
-                label="Card 6 Description"
-                defaultValue="Personalized support, strategic growth calls, and dedicated campaign specialists."
-                as="p"
-                style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }}
-              />
-            </div>
+          <div className="dynamic-cms-card-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px', marginBottom: '70px' }}>
+            {premiumCards.map(([icon, title, description], index) => (
+              <EditableSection key={index} as="div" regionId={`${slugKey}.card${index + 1}_section`} label={`Card ${index + 1}`} className="dynamic-cms-card" style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '36px', borderRadius: '20px', boxShadow: 'var(--shadow)' }}>
+                <EditableText regionId={`${slugKey}.card${index + 1}_icon`} label={`Card ${index + 1} Icon`} defaultValue={icon} as="div" style={{ fontSize: '2rem', marginBottom: '20px' }} />
+                <div data-cms-card-title><EditableText regionId={`${slugKey}.card${index + 1}_title`} label={`Card ${index + 1} Title`} defaultValue={title} as="h4" style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-h)', marginBottom: '12px' }} /></div>
+                <div data-cms-card-description><EditableText regionId={`${slugKey}.card${index + 1}_desc`} label={`Card ${index + 1} Description`} defaultValue={description} as="p" style={{ fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.6 }} /></div>
+              </EditableSection>
+            ))}
           </div>
 
           {/* Horizontal Statistics Section */}
           <div style={{ background: '#ffffff', border: '1px solid var(--section-border)', padding: '40px 30px', borderRadius: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
-            <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>500+</div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Successful Campaigns</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>98%</div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Client Satisfaction</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>50M+</div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Ad Impressions</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }}>250+</div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }}>Happy Clients</div>
-            </div>
+            {metrics.map(([value, label], index) => (
+              <div key={index}>
+                <EditableText regionId={`${slugKey}.metric${index + 1}_value`} label={`Metric ${index + 1} Value`} defaultValue={value} as="div" style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '6px' }} />
+                <EditableText regionId={`${slugKey}.metric${index + 1}_label`} label={`Metric ${index + 1} Label`} defaultValue={label} as="div" style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 600 }} />
+              </div>
+            ))}
           </div>
         </div>
       </EditableSection>

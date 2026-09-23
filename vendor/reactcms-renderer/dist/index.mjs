@@ -1223,7 +1223,7 @@ function RuntimeRenderer({
     mode,
     ...callbacks
   }), [callbacks, locale, mode, responsiveMode]);
-  const buttonRow = transparentBackground && tree.children.length > 0 && tree.children.every((node) => node.type === "button");
+  const buttonRow = transparentBackground && tree.children.length > 1 && tree.children.every((node) => node.type === "button");
   const themeStyle = {
     "--rcms-color-primary": theme?.colors?.primary || "#2563eb",
     "--rcms-color-secondary": theme?.colors?.secondary || "#1e293b",
@@ -1250,12 +1250,18 @@ function RuntimeRenderer({
     {
       "data-rcms-page-tree": tree.id,
       "data-rcms-renderer-version": "2",
+      "data-rcms-button-row": buttonRow ? "true" : void 0,
       style: themeStyle,
       children: [
         /* @__PURE__ */ jsx("style", { children: `
         @keyframes rcms-fade-in { from { opacity: 0; } to { opacity: 1; } }
         @keyframes rcms-slide-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes rcms-scale-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+        [data-rcms-button-row="true"] > [data-rcms-type="button"] {
+          left: auto !important;
+          translate: none !important;
+          margin-left: 0 !important;
+        }
       ` }),
         (tree.children || []).map((node) => /* @__PURE__ */ jsx(RenderNode, { node, renderer }, node.id))
       ]

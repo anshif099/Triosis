@@ -283,10 +283,15 @@ function responsiveTypographyStyle(node, mode) {
     "textDecoration",
     "textTransform"
   ];
-  return keys.reduce((result, key) => {
+  const typography = keys.reduce((result, key) => {
     if (styles[key] !== void 0) result[key] = styles[key];
     return result;
   }, {});
+  if (typeof typography.fontFamily === "string" && typography.fontFamily.trim().toLowerCase() === "comic sans") {
+    typography.fontFamily = '"Comic Sans MS", "Comic Sans", cursive';
+  }
+  typography.fontSynthesis = "weight";
+  return typography;
 }
 function inlinePath(locale, key) {
   return ["props", "locales", locale, key];

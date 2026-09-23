@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { defaultComponentRegistry } from './registry';
+import { startButtonDrag } from './buttonDrag';
 import type {
   ComponentNode,
   DropPosition,
@@ -35,6 +36,24 @@ function responsiveStyle(node: ComponentNode, mode: ResponsiveMode) {
     ...(mode === 'tablet' ? node.styles?.tablet || {} : {}),
     ...(mode === 'mobile' ? node.styles?.mobile || {} : {}),
   };
+}
+
+function responsiveTypographyStyle(node: ComponentNode, mode: ResponsiveMode): React.CSSProperties {
+  const styles = responsiveStyle(node, mode);
+  const keys: Array<keyof React.CSSProperties> = [
+    'color', 'fontFamily', 'fontSize', 'fontStyle', 'fontWeight',
+    'letterSpacing', 'lineHeight', 'textAlign', 'textDecoration', 'textTransform',
+  ];
+  const typography = keys.reduce<React.CSSProperties>((result, key) => {
+    if (styles[key] !== undefined) (result as any)[key] = styles[key];
+    return result;
+  }, {});
+  if (typeof typography.fontFamily === 'string' && typography.fontFamily.trim().toLowerCase() === 'comic sans') {
+    typography.fontFamily = '"Comic Sans MS", "Comic Sans", cursive';
+  }
+  // The host page can disable font synthesis, leaving unavailable weights unchanged.
+  typography.fontSynthesis = 'weight';
+  return typography;
 }
 
 function inlinePath(locale: string, key: string): Array<string | number> {
@@ -89,7 +108,7 @@ function InlineText({
     className,
     style: {
       ...style,
-      cursor: editable ? (editing ? 'text' : 'text') : undefined,
+      cursor: editable ? (editing ? 'text' : style?.cursor || 'text') : undefined,
       outline: editing ? '2px solid #2563eb' : undefined,
       outlineOffset: editing ? '3px' : undefined,
       minWidth: editable && selected ? '12px' : undefined,
@@ -139,6 +158,9 @@ function InlineText({
 function buttonStyle(node: ComponentNode): React.CSSProperties {
   const props = node.props || {};
   const color = props.color || 'var(--rcms-color-primary, #2563eb)';
+  const isOutline = props.variant === 'outline';
+  const isGhost = props.variant === 'ghost';
+  const isSecondary = props.variant === 'secondary';
   const shadows: Record<string, string> = {
     none: 'none',
     small: '0 5px 14px rgba(15,23,42,.12)',
@@ -147,20 +169,48 @@ function buttonStyle(node: ComponentNode): React.CSSProperties {
   };
   return {
     display: 'inline-flex',
+    boxSizing: 'border-box',
     alignItems: 'center',
     justifyContent: 'center',
+    width: props.width || undefined,
+    height: props.height || undefined,
     minHeight: props.size === 'lg' ? '50px' : props.size === 'sm' ? '36px' : '42px',
     padding: props.size === 'lg' ? '0 26px' : props.size === 'sm' ? '0 14px' : '0 20px',
     borderRadius: props.radius !== undefined
       ? `${props.radius}px`
       : 'var(--rcms-button-radius, 10px)',
-    background: props.variant === 'outline' ? 'transparent' : color,
-    border: `1px solid ${color}`,
-    color: props.variant === 'outline' ? color : '#fff',
+    gap: '9px',
+    cursor: 'pointer',
+    background: isOutline || isGhost ? 'transparent' : isSecondary ? '#0f172a' : color,
+    border: isGhost ? '1px solid transparent' : `1px solid ${isSecondary ? '#0f172a' : color}`,
+    color: isOutline || isGhost ? color : '#fff',
     boxShadow: shadows[props.shadow || 'medium'] || props.shadow,
     fontWeight: props.weight || 'var(--rcms-button-weight, 700)',
     textDecoration: 'none',
   };
+}
+
+function ButtonIcon({ name, src, size = 18 }: { name?: string; src?: string; size?: number }) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        style={{ width: `${size}px`, height: `${size}px`, objectFit: 'contain', flex: '0 0 auto' }}
+      />
+    );
+  }
+  if (!name || name === 'none') return null;
+  const symbols: Record<string, string> = {
+    'arrow-right': '→', whatsapp: 'WA', phone: '☎', mail: '✉',
+    'external-link': '↗', download: '↓',
+  };
+  return (
+    <span aria-hidden="true" style={{ display: 'inline-grid', placeItems: 'center', minWidth: '1.1em', fontSize: name === 'whatsapp' ? '.68em' : '1.05em', fontWeight: 800 }}>
+      {symbols[name] || '•'}
+    </span>
+  );
 }
 
 function cards(items: any[], bodyKey = 'description') {
@@ -202,6 +252,7 @@ function BuiltinComponent({
   node,
   locale,
   mode,
+  responsiveMode,
   selected,
   children,
   mutate,
@@ -209,12 +260,14 @@ function BuiltinComponent({
   node: ComponentNode;
   locale: string;
   mode: RuntimeRendererProps['mode'];
+  responsiveMode: ResponsiveMode;
   selected: boolean;
   children: React.ReactNode;
   mutate: (path: Array<string | number>, value: unknown) => void;
 }) {
   const props = node.props || {};
   const edit = mode === 'edit';
+  const typography = responsiveTypographyStyle(node, responsiveMode);
   const text = (key: string, fallback = '') => localized(node, locale, key, fallback);
   const inline = (
     key: string,
@@ -229,7 +282,7 @@ function BuiltinComponent({
       html={html}
       editable={edit && !node.locked}
       selected={selected}
-      style={style}
+      style={{ ...style, ...typography }}
       onCommit={(value) => mutate(inlinePath(locale, key), value)}
       nodeId={node.id}
       field={key}
@@ -304,6 +357,7 @@ function BuiltinComponent({
         color: props.color || 'var(--rcms-color-text, #0f172a)',
         textAlign: props.alignment || 'left',
         fontSize: level === 'h1' ? '52px' : level === 'h2' ? '38px' : undefined,
+        ...typography,
       });
     }
     case 'paragraph':
@@ -312,13 +366,32 @@ function BuiltinComponent({
         fontSize: '17px',
         lineHeight: 1.8,
         textAlign: props.alignment || 'left',
+        ...typography,
       }, true);
-    case 'button':
+    case 'button': {
+      const buttonIcon = <ButtonIcon name={props.icon} src={props.iconImage} size={props.iconSize || 18} />;
+      const buttonContent = (
+        <>
+          {props.iconPosition !== 'right' ? buttonIcon : null}
+          {inline('label', 'Learn More', 'span', { cursor: mode === 'edit' ? 'grab' : undefined })}
+          {props.iconPosition === 'right' ? buttonIcon : null}
+        </>
+      );
       return (
         <div style={{ textAlign: props.alignment || 'center' }}>
-          <span style={buttonStyle(node)}>{inline('label', 'Learn More', 'span')}</span>
+          {props.url ? (
+            <a
+              href={mode === 'edit' ? undefined : props.url}
+              target={props.newTab ? '_blank' : undefined}
+              rel={props.newTab ? 'noopener noreferrer' : undefined}
+              style={buttonStyle(node)}
+            >
+              {buttonContent}
+            </a>
+          ) : <span style={buttonStyle(node)}>{buttonContent}</span>}
         </div>
       );
+    }
     case 'image':
       return props.src ? (
         <figure style={{ margin: 0, textAlign: 'center' }}>
@@ -380,6 +453,8 @@ function BuiltinComponent({
                 <img
                   src={image.src}
                   alt={image.alt || ''}
+                  loading="lazy"
+                  decoding="async"
                   style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
                 />
                 {(image.title || image.caption || image.description) ? (
@@ -555,6 +630,9 @@ function NodeFrame({
   onMove,
   onInsert,
   onCommand,
+  onResize,
+  onRelocate,
+  onRelocateNode,
   responsiveMode,
   children,
 }: {
@@ -567,10 +645,21 @@ function NodeFrame({
   onMove?: RuntimeRendererProps['onMove'];
   onInsert?: RuntimeRendererProps['onInsert'];
   onCommand?: RuntimeRendererProps['onCommand'];
+  onResize?: (width: number, height: number) => void;
+  onRelocate?: (anchorRegionId: string, position: 'before' | 'after', horizontalPosition?: number) => void;
+  onRelocateNode?: (targetNodeId: string, position: 'before' | 'after', horizontalPosition?: number) => void;
   responsiveMode: ResponsiveMode;
   children: React.ReactNode;
 }) {
+  const [insertPosition, setInsertPosition] = useState<DropPosition | null>(null);
+  const [insertType, setInsertType] = useState<'paragraph' | 'image' | 'video'>('paragraph');
+  const [insertText, setInsertText] = useState('');
+  const [insertUrl, setInsertUrl] = useState('');
+  const [insertAlt, setInsertAlt] = useState('');
   const [dropPosition, setDropPosition] = useState<DropPosition | null>(null);
+  const [resizePreview, setResizePreview] = useState<{ width: number; height: number } | null>(null);
+  const dragCleanup = useRef<(() => void) | null>(null);
+  useEffect(() => () => dragCleanup.current?.(), []);
   if (node.hidden && mode !== 'edit') return null;
 
   const editable = mode === 'edit';
@@ -583,11 +672,32 @@ function NodeFrame({
     'scale-in': 'rcms-scale-in',
     parallax: 'rcms-slide-up',
   };
+  const compactButton = node.type === 'button';
+  const horizontalPosition = compactButton && typeof node.props?.horizontalPosition === 'number'
+    && Number.isFinite(node.props.horizontalPosition)
+    ? Math.max(0, Math.min(1, node.props.horizontalPosition)) : null;
+  const offsetX = Number(node.props?.offsetX) || 0;
+  const offsetY = Number(node.props?.offsetY) || 0;
   const shellStyle: React.CSSProperties = {
     position: 'relative',
-    display: node.hidden ? 'none' : 'block',
-    background: design.background,
-    padding: `${design.paddingY ?? (['spacer', 'divider'].includes(node.type) ? 0 : 36)}px 24px`,
+    display: node.hidden ? 'none' : compactButton && horizontalPosition === null ? 'inline-block' : 'block',
+    left: horizontalPosition !== null ? `${horizontalPosition * 100}%` : undefined,
+    translate: horizontalPosition !== null ? `${-horizontalPosition * 100}% 0` : undefined,
+    verticalAlign: compactButton ? 'top' : undefined,
+    width: resizePreview
+      ? `${resizePreview.width}px`
+      : compactButton
+        ? 'fit-content'
+        : undefined,
+    height: resizePreview ? `${resizePreview.height}px` : undefined,
+    maxWidth: compactButton ? '100%' : undefined,
+    marginLeft: horizontalPosition !== null ? 0 : compactButton && offsetX ? `${offsetX}px` : undefined,
+    marginRight: horizontalPosition !== null ? 0 : undefined,
+    marginTop: compactButton && offsetY ? `${offsetY}px` : undefined,
+    background: compactButton ? 'transparent' : design.background,
+    padding: compactButton
+      ? 0
+      : `${design.paddingY ?? (['spacer', 'divider'].includes(node.type) ? 0 : 36)}px 24px`,
     opacity: responsiveVisible ? node.props?.opacity ?? 1 : .32,
     borderRadius: design.radius ? `${design.radius}px` : undefined,
     boxShadow: design.shadow && design.shadow !== 'none' ? design.shadow : undefined,
@@ -609,6 +719,8 @@ function NodeFrame({
           : undefined,
     outlineOffset: selected || hovered ? '-2px' : undefined,
     transition: 'outline-color 100ms ease, box-shadow 100ms ease',
+    cursor: editable && compactButton ? 'grab' : undefined,
+    touchAction: editable && compactButton ? 'none' : undefined,
   };
 
   const determineDrop = (event: React.DragEvent): DropPosition => {
@@ -629,9 +741,26 @@ function NodeFrame({
       aria-label={node.metadata?.accessibility?.ariaLabel}
       role={node.metadata?.accessibility?.role}
       tabIndex={node.metadata?.accessibility?.tabIndex}
-      draggable={editable && !node.locked}
+      draggable={editable && !node.locked && !compactButton}
+      onPointerDown={(event) => {
+        if (!editable || !compactButton || node.locked || event.button !== 0) return;
+        const target = event.target as HTMLElement;
+        if (target.closest('button,input,textarea,select,[contenteditable="true"],[data-rcms-resize-handle]')) return;
+        event.preventDefault();
+        event.stopPropagation();
+        onSelect?.(node.id, event.metaKey || event.ctrlKey || event.shiftKey);
+        dragCleanup.current?.();
+        dragCleanup.current = startButtonDrag(event.currentTarget, event, (destination) => {
+          if (destination.nodeId) onRelocateNode?.(destination.nodeId, destination.position, destination.horizontalPosition);
+          else if (destination.regionId) onRelocate?.(destination.regionId, destination.position, destination.horizontalPosition);
+        });
+      }}
       onDragStart={(event) => {
         event.stopPropagation();
+        if (compactButton) {
+          event.preventDefault();
+          return;
+        }
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('application/reactcms-node', node.id);
       }}
@@ -684,6 +813,55 @@ function NodeFrame({
         }} />
       )}
 
+      {selected && editable && compactButton && !node.locked && onResize && (
+        <span
+          data-rcms-resize-handle="true"
+          title="Drag to resize button"
+          aria-label="Resize button"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const frame = event.currentTarget.parentElement;
+            if (!frame) return;
+            const rect = frame.getBoundingClientRect();
+            const startX = event.clientX;
+            const startY = event.clientY;
+            const startWidth = rect.width;
+            const startHeight = rect.height;
+            const padding = 0;
+            const handleMove = (moveEvent: MouseEvent) => {
+              setResizePreview({
+                width: Math.max(72, startWidth + moveEvent.clientX - startX),
+                height: Math.max(36, startHeight + moveEvent.clientY - startY),
+              });
+            };
+            const handleUp = (upEvent: MouseEvent) => {
+              const width = Math.round(Math.max(60, startWidth + upEvent.clientX - startX - padding));
+              const height = Math.round(Math.max(28, startHeight + upEvent.clientY - startY - padding));
+              window.removeEventListener('mousemove', handleMove);
+              window.removeEventListener('mouseup', handleUp);
+              setResizePreview(null);
+              onResize(width, height);
+            };
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleUp);
+          }}
+          style={{
+            position: 'absolute',
+            zIndex: 1100,
+            right: '-5px',
+            bottom: '-5px',
+            width: '13px',
+            height: '13px',
+            border: '2px solid #fff',
+            borderRadius: '3px',
+            background: '#2563eb',
+            boxShadow: '0 2px 8px rgba(15,23,42,.35)',
+            cursor: 'nwse-resize',
+          }}
+        />
+      )}
+
       {(hovered || selected) && editable && onInsert && (
         <>
           {([
@@ -697,7 +875,7 @@ function NodeFrame({
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                onInsert('section', node.id, position);
+                setInsertPosition(position);
               }}
               style={{
                 position: 'absolute',
@@ -720,6 +898,112 @@ function NodeFrame({
             </button>
           ))}
         </>
+      )}
+
+      {insertPosition && editable && onInsert && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Add content"
+          onClick={(event) => event.stopPropagation()}
+          style={{
+            position: 'fixed',
+            zIndex: 5000,
+            inset: 0,
+            display: 'grid',
+            placeItems: 'center',
+            padding: '20px',
+            background: 'rgba(2,6,23,.72)',
+            backdropFilter: 'blur(5px)',
+          }}
+        >
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              const url = insertUrl.trim();
+              const value = insertText.trim();
+              if (insertType === 'paragraph' && !value) return;
+              if (insertType !== 'paragraph' && !url) return;
+              onInsert(
+                insertType,
+                node.id,
+                insertPosition,
+                insertType === 'paragraph'
+                  ? { localized: { text: `<p>${value.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br />')}</p>` } }
+                  : insertType === 'image'
+                    ? { props: { src: url, width: '100%', height: 'auto', objectFit: 'cover' }, localized: { alt: insertAlt.trim() } }
+                    : { props: { url, controls: true }, localized: { caption: insertAlt.trim() } },
+              );
+              setInsertPosition(null);
+              setInsertText('');
+              setInsertUrl('');
+              setInsertAlt('');
+            }}
+            style={{
+              width: 'min(520px, 100%)',
+              padding: '22px',
+              border: '1px solid #334155',
+              borderRadius: '18px',
+              background: '#0f172a',
+              color: '#f8fafc',
+              boxShadow: '0 28px 80px rgba(0,0,0,.5)',
+              font: '500 14px Inter,system-ui,sans-serif',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+              <div>
+                <div style={{ fontSize: '18px', fontWeight: 800 }}>Add content</div>
+                <div style={{ marginTop: '4px', color: '#94a3b8', fontSize: '12px' }}>It will be inserted {insertPosition} this section.</div>
+              </div>
+              <button type="button" aria-label="Close" onClick={() => setInsertPosition(null)} style={{ width: '32px', height: '32px', border: 0, borderRadius: '8px', background: '#1e293b', color: '#cbd5e1', cursor: 'pointer', fontSize: '18px' }}>×</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', margin: '20px 0' }}>
+              {(['paragraph', 'image', 'video'] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setInsertType(type)}
+                  style={{
+                    height: '42px',
+                    border: `1px solid ${insertType === type ? '#60a5fa' : '#334155'}`,
+                    borderRadius: '10px',
+                    background: insertType === type ? '#1d4ed8' : '#111827',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {type === 'paragraph' ? 'Text' : type}
+                </button>
+              ))}
+            </div>
+
+            {insertType === 'paragraph' ? (
+              <label style={{ display: 'grid', gap: '7px', color: '#cbd5e1', fontWeight: 700 }}>
+                Text
+                <textarea autoFocus required rows={6} value={insertText} onChange={(event) => setInsertText(event.target.value)} placeholder="Write the text to add to this page…" style={{ padding: '12px 14px', border: '1px solid #334155', borderRadius: '10px', background: '#020617', color: '#f8fafc', font: 'inherit', lineHeight: 1.6, resize: 'vertical' }} />
+              </label>
+            ) : (
+              <div style={{ display: 'grid', gap: '14px' }}>
+                <label style={{ display: 'grid', gap: '7px', color: '#cbd5e1', fontWeight: 700 }}>
+                  {insertType === 'image' ? 'Image URL' : 'Video URL'}
+                  <input autoFocus required type="url" value={insertUrl} onChange={(event) => setInsertUrl(event.target.value)} placeholder={`https://example.com/${insertType === 'image' ? 'image.jpg' : 'video.mp4'}`} style={{ height: '44px', padding: '0 13px', border: '1px solid #334155', borderRadius: '10px', background: '#020617', color: '#f8fafc', font: 'inherit' }} />
+                </label>
+                <label style={{ display: 'grid', gap: '7px', color: '#cbd5e1', fontWeight: 700 }}>
+                  {insertType === 'image' ? 'Alt text' : 'Caption'} <span style={{ color: '#64748b', fontWeight: 500 }}>(optional)</span>
+                  <input value={insertAlt} onChange={(event) => setInsertAlt(event.target.value)} style={{ height: '44px', padding: '0 13px', border: '1px solid #334155', borderRadius: '10px', background: '#020617', color: '#f8fafc', font: 'inherit' }} />
+                </label>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', marginTop: '22px' }}>
+              <button type="button" onClick={() => setInsertPosition(null)} style={{ height: '40px', padding: '0 16px', border: '1px solid #334155', borderRadius: '10px', background: 'transparent', color: '#cbd5e1', cursor: 'pointer', fontWeight: 700 }}>Cancel</button>
+              <button type="submit" style={{ height: '40px', padding: '0 18px', border: 0, borderRadius: '10px', background: '#2563eb', color: '#fff', cursor: 'pointer', fontWeight: 800 }}>Add to page</button>
+            </div>
+          </form>
+        </div>
       )}
 
       {selected && editable && (
@@ -822,6 +1106,7 @@ function RenderNode({
         node={node}
         locale={locale}
         mode={mode}
+        responsiveMode={responsiveMode}
         selected={selected}
         mutate={mutate}
       >
@@ -840,9 +1125,35 @@ function RenderNode({
       onMove={renderer.onMove}
       onInsert={renderer.onInsert}
       onCommand={renderer.onCommand}
+      onResize={(width, height) => {
+        onMutation?.({
+          nodeId: node.id,
+          path: ['props'],
+          value: { ...(node.props || {}), width: `${width}px`, height: `${height}px` },
+        });
+      }}
+      onRelocate={(anchorRegionId, position, horizontalPosition) => {
+        onMutation?.({
+          nodeId: node.id,
+          path: [],
+          value: {
+            ...node,
+            props: { ...(node.props || {}), offsetX: 0, offsetY: 0, horizontalPosition },
+            metadata: {
+              ...(node.metadata || {}),
+              runtimePlacement: { anchorRegionId, position },
+            },
+          },
+        });
+      }}
+      onRelocateNode={(targetNodeId, position, horizontalPosition) => {
+        renderer.onMove?.(node.id, targetNodeId, position, horizontalPosition);
+      }}
       responsiveMode={responsiveMode}
     >
-      <div style={responsiveStyle(node, responsiveMode)}>
+      <div style={node.type === 'button'
+        ? { ...responsiveStyle(node, responsiveMode), width: 'fit-content', maxWidth: '100%' }
+        : responsiveStyle(node, responsiveMode)}>
         {content}
       </div>
     </NodeFrame>
@@ -855,6 +1166,7 @@ export function RuntimeRenderer({
   responsiveMode = 'desktop',
   mode = 'runtime',
   theme = null,
+  transparentBackground = false,
   ...callbacks
 }: RuntimeRendererProps) {
   const renderer = useMemo(() => ({
@@ -873,9 +1185,9 @@ export function RuntimeRenderer({
     '--rcms-button-radius': theme?.buttons?.borderRadius || '10px',
     '--rcms-button-weight': theme?.buttons?.fontWeight || '700',
     width: '100%',
-    minHeight: '100%',
+    minHeight: transparentBackground ? undefined : '100%',
     color: 'var(--rcms-color-text)',
-    background: 'var(--rcms-color-background)',
+    background: transparentBackground ? 'transparent' : 'var(--rcms-color-background)',
     fontFamily: theme?.typography?.bodyFont || 'Inter, system-ui, sans-serif',
     fontSize: theme?.typography?.baseSize || '16px',
     ...responsiveStyle({ id: tree.id, type: 'page', styles: tree.styles }, responsiveMode),

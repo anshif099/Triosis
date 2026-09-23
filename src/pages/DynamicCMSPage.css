@@ -10,6 +10,7 @@
 
 .dynamic-cms-card-grid {
   display: grid;
+  align-items: start;
 }
 
 .dynamic-cms-card:has([data-cms-card-title] [data-rcms-empty="true"]):has([data-cms-card-description] [data-rcms-empty="true"]) {

@@ -169,7 +169,10 @@ export function DynamicCMSPage({ pageSlug }) {
             as="p"
             style={{ fontSize: '1.1rem', color: 'var(--text)', marginBottom: '32px' }}
           />
-          <button 
+          <EditableSection
+            as="button"
+            regionId={`${slugKey}.cta_button_style`}
+            label="CTA Button"
             style={{ padding: '14px 36px', background: 'var(--primary)', color: '#ffffff', border: 'none', borderRadius: '4px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 10px 25px rgba(255,87,87,0.22)' }}
           >
             <EditableText
@@ -177,7 +180,7 @@ export function DynamicCMSPage({ pageSlug }) {
               label="CTA Button Text"
               defaultValue="Book Free Consultation"
             />
-          </button>
+          </EditableSection>
         </div>
       </EditableSection>
 

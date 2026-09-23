@@ -10,6 +10,8 @@ import BlogPage from './pages/BlogPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import DynamicCMSPage from './pages/DynamicCMSPage.jsx';
 import Cursor from './components/Cursor.jsx';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
 import { CMSLayout, CMSNavigation } from '@anshif.rainhopes/reactcms-runtime';
 import './App.css';
 
@@ -46,6 +48,25 @@ const pageToPath = {
   'contact': '/contact'
 };
 
+const websiteId = import.meta.env.VITE_REACTCMS_WEBSITE_ID || '-Oz5k0Sb8BKbOxfOSxq8';
+const databaseUrl = import.meta.env.VITE_REACTCMS_DATABASE_URL || 'https://react-cms-pro-default-rtdb.firebaseio.com';
+
+function MissingPage() {
+  return (
+    <>
+    <Header />
+    <main className="missing-page" style={{ minHeight: '65vh', display: 'grid', placeItems: 'center', padding: '64px 24px', textAlign: 'center' }}>
+      <div>
+        <h1 style={{ margin: 0, fontSize: 'clamp(48px, 8vw, 96px)', color: 'var(--primary)' }}>404</h1>
+        <p style={{ fontSize: '20px', color: 'var(--text-h)' }}>Page not found</p>
+        <a href="/" style={{ color: 'var(--primary)' }}>Return to home</a>
+      </div>
+    </main>
+    <Footer />
+    </>
+  );
+}
+
 function App() {
   const getInitialPage = () => {
     // 1. Check URL query parameters (?page=ai-integrated-digital-marketing)
@@ -70,6 +91,24 @@ function App() {
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
+  const [publishedDynamicPage, setPublishedDynamicPage] = useState(null);
+
+  useEffect(() => {
+    if (Object.values(pathToPage).includes(currentPage)) return undefined;
+    let cancelled = false;
+    setPublishedDynamicPage(null);
+    const pagePath = String(currentPage).split('/').map(encodeURIComponent).join('/');
+    const url = `${databaseUrl.replace(/\/$/, '')}/content/${encodeURIComponent(websiteId)}/sync/published/pages/${pagePath}.json`;
+    fetch(url, { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((page) => {
+        if (!cancelled) setPublishedDynamicPage(page && page.deleted !== true ? currentPage : 'missing');
+      })
+      .catch(() => {
+        if (!cancelled) setPublishedDynamicPage('missing');
+      });
+    return () => { cancelled = true; };
+  }, [currentPage]);
 
   useEffect(() => {
     const handleNavigate = (e) => {
@@ -137,10 +176,10 @@ function App() {
       {currentPage === 'contact' && <ContactPage />}
 
       {/* Dynamic CMS Generated / Created Pages */}
-      {!isStandardPage && <DynamicCMSPage pageSlug={currentPage} />}
+      {!isStandardPage && publishedDynamicPage === currentPage && <DynamicCMSPage pageSlug={currentPage} />}
+      {!isStandardPage && publishedDynamicPage === 'missing' && <MissingPage />}
     </div>
   );
 }
 
 export default App;
-

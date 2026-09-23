@@ -68,6 +68,15 @@ function MissingPage() {
 }
 
 function App() {
+  // A newly created CMS page has no published page record yet. The connected
+  // editor still needs to render its template so its regions can be edited.
+  const isCmsCanvas = typeof window !== 'undefined'
+    && window.self !== window.top
+    && (() => {
+      const params = new URLSearchParams(window.location.search);
+      return params.has('rcms_edit') || params.has('rcms_preview');
+    })();
+
   const getInitialPage = () => {
     // 1. Check URL query parameters (?page=ai-integrated-digital-marketing)
     if (typeof window !== 'undefined' && window.location.search) {
@@ -176,8 +185,8 @@ function App() {
       {currentPage === 'contact' && <ContactPage />}
 
       {/* Dynamic CMS Generated / Created Pages */}
-      {!isStandardPage && publishedDynamicPage === currentPage && <DynamicCMSPage pageSlug={currentPage} />}
-      {!isStandardPage && publishedDynamicPage === 'missing' && <MissingPage />}
+      {!isStandardPage && (publishedDynamicPage === currentPage || isCmsCanvas) && <DynamicCMSPage pageSlug={currentPage} />}
+      {!isStandardPage && !isCmsCanvas && publishedDynamicPage === 'missing' && <MissingPage />}
     </div>
   );
 }

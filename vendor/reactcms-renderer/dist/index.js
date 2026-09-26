@@ -780,6 +780,7 @@ function NodeFrame({
 }) {
   const [insertPosition, setInsertPosition] = (0, import_react.useState)(null);
   const [insertType, setInsertType] = (0, import_react.useState)("paragraph");
+  const [insertTextType, setInsertTextType] = (0, import_react.useState)("paragraph");
   const [insertText, setInsertText] = (0, import_react.useState)("");
   const [insertUrl, setInsertUrl] = (0, import_react.useState)("");
   const [insertAlt, setInsertAlt] = (0, import_react.useState)("");
@@ -1023,13 +1024,13 @@ function NodeFrame({
                   event.preventDefault();
                   const url = insertUrl.trim();
                   const value = insertText.trim();
-                  if (insertType === "paragraph" && !value) return;
+                  if ((insertType === "paragraph" || insertType === "button") && !value) return;
                   if (insertType !== "paragraph" && !url) return;
                   onInsert(
-                    insertType,
+                    insertType === "paragraph" && insertTextType !== "paragraph" ? "heading" : insertType,
                     node.id,
                     insertPosition,
-                    insertType === "paragraph" ? { localized: { text: `<p>${value.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />")}</p>` } } : insertType === "image" ? { props: { src: url, width: "100%", height: "auto", objectFit: "cover" }, localized: { alt: insertAlt.trim() } } : { props: { url, controls: true }, localized: { caption: insertAlt.trim() } }
+                    insertType === "paragraph" ? insertTextType === "paragraph" ? { localized: { text: `<p>${value.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br />")}</p>` } } : { props: { level: insertTextType, alignment: "left" }, localized: { text: value } } : insertType === "button" ? { props: { url, linkType: /^https?:\/\//i.test(url) ? "external" : "internal", variant: "primary", size: "md" }, localized: { label: value } } : insertType === "image" ? { props: { src: url, width: "100%", height: "auto", objectFit: "cover" }, localized: { alt: insertAlt.trim() } } : { props: { url, controls: true }, localized: { caption: insertAlt.trim() } }
                   );
                   setInsertPosition(null);
                   setInsertText("");
@@ -1037,11 +1038,13 @@ function NodeFrame({
                   setInsertAlt("");
                 },
                 style: {
-                  width: "min(520px, 100%)",
-                  padding: "22px",
+                  width: "min(640px, 100%)",
+                  maxHeight: "calc(100vh - 40px)",
+                  overflowY: "auto",
+                  padding: "30px",
                   border: "1px solid #334155",
                   borderRadius: "18px",
-                  background: "#0f172a",
+                  background: "#0a1933",
                   color: "#f8fafc",
                   boxShadow: "0 28px 80px rgba(0,0,0,.5)",
                   font: "500 14px Inter,system-ui,sans-serif"
@@ -1050,7 +1053,7 @@ function NodeFrame({
                   /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }, children: [
                     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
                       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { fontSize: "18px", fontWeight: 800 }, children: "Add content" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { marginTop: "4px", color: "#94a3b8", fontSize: "12px" }, children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { marginTop: "8px", color: "#94a3b8", fontSize: "14px" }, children: [
                         "It will be inserted ",
                         insertPosition,
                         " this section."
@@ -1058,16 +1061,16 @@ function NodeFrame({
                     ] }),
                     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", "aria-label": "Close", onClick: () => setInsertPosition(null), style: { width: "32px", height: "32px", border: 0, borderRadius: "8px", background: "#1e293b", color: "#cbd5e1", cursor: "pointer", fontSize: "18px" }, children: "\xD7" })
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", margin: "20px 0" }, children: ["paragraph", "image", "video"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", margin: "26px 0" }, children: ["paragraph", "button", "image", "video"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                     "button",
                     {
                       type: "button",
                       onClick: () => setInsertType(type),
                       style: {
-                        height: "42px",
-                        border: `1px solid ${insertType === type ? "#60a5fa" : "#334155"}`,
+                        height: "50px",
+                        border: `1px solid ${insertType === type ? "#ef5349" : "#334155"}`,
                         borderRadius: "10px",
-                        background: insertType === type ? "#1d4ed8" : "#111827",
+                        background: insertType === type ? "#d9362e" : "#030d1d",
                         color: "#fff",
                         cursor: "pointer",
                         fontWeight: 700,
@@ -1077,9 +1080,33 @@ function NodeFrame({
                     },
                     type
                   )) }),
-                  insertType === "paragraph" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
-                    "Text",
-                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", { autoFocus: true, required: true, rows: 6, value: insertText, onChange: (event) => setInsertText(event.target.value), placeholder: "Write the text to add to this page\u2026", style: { padding: "12px 14px", border: "1px solid #334155", borderRadius: "10px", background: "#020617", color: "#f8fafc", font: "inherit", lineHeight: 1.6, resize: "vertical" } })
+                  insertType === "paragraph" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "grid", gap: "20px" }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "10px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      "Text",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", { autoFocus: true, required: true, rows: 7, value: insertText, onChange: (event) => setInsertText(event.target.value), placeholder: "Write the text to add...", style: { minHeight: "210px", padding: "16px", border: "1px solid #ef5349", borderRadius: "14px", background: "#030d1d", color: "#f8fafc", font: "inherit", lineHeight: 1.6, resize: "vertical" } })
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "10px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      "Text type",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: insertTextType, onChange: (event) => setInsertTextType(event.target.value), style: { height: "54px", padding: "0 16px", border: "1px solid #334155", borderRadius: "14px", background: "#030d1d", color: "#f8fafc", font: "inherit" }, children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "paragraph", children: "Paragraph - Normal text" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h1", children: "H1 - Main page heading" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h2", children: "H2 - Section heading" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h3", children: "H3 - Subsection heading" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h4", children: "H4 - Heading level 4" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h5", children: "H5 - Heading level 5" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "h6", children: "H6 - Heading level 6" })
+                      ] }),
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { color: "#64748b", fontSize: "12px", fontWeight: 400 }, children: "The selected heading level automatically uses its matching default size." })
+                    ] })
+                  ] }) : insertType === "button" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "grid", gap: "14px" }, children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      "Button label",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { autoFocus: true, required: true, value: insertText, onChange: (event) => setInsertText(event.target.value), placeholder: "Contact us", style: { height: "48px", padding: "0 14px", border: "1px solid #334155", borderRadius: "10px", background: "#030d1d", color: "#f8fafc", font: "inherit" } })
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
+                      "Destination",
+                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { required: true, value: insertUrl, onChange: (event) => setInsertUrl(event.target.value), placeholder: "/about or https://example.com", style: { height: "48px", padding: "0 14px", border: "1px solid #334155", borderRadius: "10px", background: "#030d1d", color: "#f8fafc", font: "inherit" } })
+                    ] })
                   ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "grid", gap: "14px" }, children: [
                     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { style: { display: "grid", gap: "7px", color: "#cbd5e1", fontWeight: 700 }, children: [
                       insertType === "image" ? "Image URL" : "Video URL",
@@ -1094,7 +1121,7 @@ function NodeFrame({
                   ] }),
                   /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "9px", marginTop: "22px" }, children: [
                     /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", onClick: () => setInsertPosition(null), style: { height: "40px", padding: "0 16px", border: "1px solid #334155", borderRadius: "10px", background: "transparent", color: "#cbd5e1", cursor: "pointer", fontWeight: 700 }, children: "Cancel" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "submit", style: { height: "40px", padding: "0 18px", border: 0, borderRadius: "10px", background: "#2563eb", color: "#fff", cursor: "pointer", fontWeight: 800 }, children: "Add to page" })
+                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "submit", style: { height: "48px", padding: "0 24px", border: 0, borderRadius: "10px", background: "#d9362e", color: "#fff", cursor: "pointer", fontWeight: 800 }, children: "Add to page" })
                   ] })
                 ]
               }

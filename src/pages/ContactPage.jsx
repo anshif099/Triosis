@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { EditableText, EditableSection } from '@anshif.rainhopes/reactcms-sdk';
 import Preloader from '../components/Preloader.jsx';
 import Header from '../components/Header.jsx';
@@ -26,47 +26,6 @@ function ContactPage() {
     setTimeout(() => setSubmitted(false), 4000);
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
-
-  useEffect(() => {
-    let mapInstance = null;
-
-    const initMap = () => {
-      if (!window.L) {
-        setTimeout(initMap, 100);
-        return;
-      }
-
-      // Check if element exists to avoid crashes
-      const mapEl = document.getElementById('contact-leaflet-map');
-      if (!mapEl) return;
-
-      mapInstance = window.L.map('contact-leaflet-map', {
-        scrollWheelZoom: false
-      }).setView([11.254632, 75.824642], 15);
-
-      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
-      }).addTo(mapInstance);
-
-      const customIcon = window.L.icon({
-        iconUrl: '/logo.png',
-        iconSize: [48, 48],
-        iconAnchor: [24, 48]
-      });
-
-      window.L.marker([11.254632, 75.824642], { icon: customIcon }).addTo(mapInstance);
-    };
-
-    initMap();
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.remove();
-      }
-    };
-  }, []);
 
   return (
     <div className="contact-page-container">
@@ -212,10 +171,14 @@ function ContactPage() {
               Triosis Digital, Tower 2, HiLITE Business Park, Door no : 2211, Second Floor, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014
             </span>
           </div>
-          <div
-            id="contact-leaflet-map"
+          <iframe
+            title="Triosis Digital office location on Google Maps"
+            src={`https://www.google.com/maps?q=${encodeURIComponent('Triosis Digital, Tower 2, HiLITE Business Park, Poovangal, Pantheeramkavu, Kozhikode, Kerala 673014')}&output=embed`}
             className="contact-map-iframe"
-          ></div>
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
 

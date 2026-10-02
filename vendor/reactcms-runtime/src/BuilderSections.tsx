@@ -29,10 +29,29 @@ import type {
   DropPosition,
   PageComponentTree,
   RendererMutation,
+  ResponsiveMode,
 } from '@anshif.rainhopes/reactcms-renderer';
 
 export const BUILDER_BLOCKS_REGION = '__rcms_builder_blocks__';
 export const NATIVE_PAGE_TREE_FIELD = 'tree';
+
+function useViewportMode(): ResponsiveMode {
+  const resolveMode = (): ResponsiveMode => {
+    if (typeof window === 'undefined') return 'desktop';
+    if (window.innerWidth < 768) return 'mobile';
+    if (window.innerWidth < 1024) return 'tablet';
+    if (window.innerWidth < 1280) return 'laptop';
+    return 'desktop';
+  };
+  const [mode, setMode] = useState(resolveMode);
+  useEffect(() => {
+    const updateMode = () => setMode(resolveMode());
+    updateMode();
+    window.addEventListener('resize', updateMode);
+    return () => window.removeEventListener('resize', updateMode);
+  }, []);
+  return mode;
+}
 
 function resolvePageId(): string {
   if (typeof window === 'undefined') return 'home';
@@ -259,6 +278,7 @@ function RuntimeAdditionsPortal({
   onTreeChange: (tree: PageComponentTree) => void;
 }) {
   const [host, setHost] = useState<HTMLElement | null>(null);
+  const responsiveMode = useViewportMode();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const clipboard = useRef<ComponentNode | null>(null);
@@ -423,7 +443,7 @@ function RuntimeAdditionsPortal({
       <RuntimeRenderer
         tree={{ ...tree, children: nodes }}
         locale={locale}
-        responsiveMode="desktop"
+        responsiveMode={responsiveMode}
         mode={editMode ? 'edit' : 'runtime'}
         theme={theme}
         transparentBackground
@@ -510,6 +530,7 @@ export function BuilderSections({
   );
   const locale = useMemo(resolveLocale, []);
   const cms = useContext(CMSContext);
+  const responsiveMode = useViewportMode();
   const editMode = Boolean(cms?.editMode);
   const [tree, setTree] = useState<PageComponentTree | null>(null);
   const [runtimeAdditions, setRuntimeAdditions] = useState<PageComponentTree | null>(null);
@@ -623,7 +644,7 @@ export function BuilderSections({
       <RuntimeRenderer
         tree={tree}
         locale={locale}
-        responsiveMode="desktop"
+        responsiveMode={responsiveMode}
         mode={cms?.editMode ? 'edit' : 'runtime'}
         theme={theme}
       />

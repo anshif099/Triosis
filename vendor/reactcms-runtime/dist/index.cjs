@@ -48,6 +48,23 @@ var import_reactcms_sdk = require("@anshif.rainhopes/reactcms-sdk");
 var import_jsx_runtime = require("react/jsx-runtime");
 var BUILDER_BLOCKS_REGION = "__rcms_builder_blocks__";
 var NATIVE_PAGE_TREE_FIELD = "tree";
+function useViewportMode() {
+  const resolveMode = () => {
+    if (typeof window === "undefined") return "desktop";
+    if (window.innerWidth < 768) return "mobile";
+    if (window.innerWidth < 1024) return "tablet";
+    if (window.innerWidth < 1280) return "laptop";
+    return "desktop";
+  };
+  const [mode, setMode] = (0, import_react2.useState)(resolveMode);
+  (0, import_react2.useEffect)(() => {
+    const updateMode = () => setMode(resolveMode());
+    updateMode();
+    window.addEventListener("resize", updateMode);
+    return () => window.removeEventListener("resize", updateMode);
+  }, []);
+  return mode;
+}
 function resolvePageId() {
   if (typeof window === "undefined") return "home";
   try {
@@ -192,6 +209,7 @@ function RuntimeAdditionsPortal({
   onTreeChange
 }) {
   const [host, setHost] = (0, import_react2.useState)(null);
+  const responsiveMode = useViewportMode();
   const [selectedIds, setSelectedIds] = (0, import_react2.useState)([]);
   const [hoveredId, setHoveredId] = (0, import_react2.useState)(null);
   const clipboard = (0, import_react2.useRef)(null);
@@ -339,7 +357,7 @@ function RuntimeAdditionsPortal({
       {
         tree: { ...tree, children: nodes },
         locale,
-        responsiveMode: "desktop",
+        responsiveMode,
         mode: editMode ? "edit" : "runtime",
         theme,
         transparentBackground: true,
@@ -405,6 +423,7 @@ function BuilderSections({
   );
   const locale = (0, import_react2.useMemo)(resolveLocale, []);
   const cms = (0, import_react2.useContext)(import_reactcms_sdk.CMSContext);
+  const responsiveMode = useViewportMode();
   const editMode = Boolean(cms?.editMode);
   const [tree, setTree] = (0, import_react2.useState)(null);
   const [runtimeAdditions, setRuntimeAdditions] = (0, import_react2.useState)(null);
@@ -506,7 +525,7 @@ function BuilderSections({
       {
         tree,
         locale,
-        responsiveMode: "desktop",
+        responsiveMode,
         mode: cms?.editMode ? "edit" : "runtime",
         theme
       }

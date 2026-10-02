@@ -46,6 +46,23 @@ import {
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var BUILDER_BLOCKS_REGION = "__rcms_builder_blocks__";
 var NATIVE_PAGE_TREE_FIELD = "tree";
+function useViewportMode() {
+  const resolveMode = () => {
+    if (typeof window === "undefined") return "desktop";
+    if (window.innerWidth < 768) return "mobile";
+    if (window.innerWidth < 1024) return "tablet";
+    if (window.innerWidth < 1280) return "laptop";
+    return "desktop";
+  };
+  const [mode, setMode] = useState(resolveMode);
+  useEffect(() => {
+    const updateMode = () => setMode(resolveMode());
+    updateMode();
+    window.addEventListener("resize", updateMode);
+    return () => window.removeEventListener("resize", updateMode);
+  }, []);
+  return mode;
+}
 function resolvePageId() {
   if (typeof window === "undefined") return "home";
   try {
@@ -190,6 +207,7 @@ function RuntimeAdditionsPortal({
   onTreeChange
 }) {
   const [host, setHost] = useState(null);
+  const responsiveMode = useViewportMode();
   const [selectedIds, setSelectedIds] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
   const clipboard = useRef(null);
@@ -337,7 +355,7 @@ function RuntimeAdditionsPortal({
       {
         tree: { ...tree, children: nodes },
         locale,
-        responsiveMode: "desktop",
+        responsiveMode,
         mode: editMode ? "edit" : "runtime",
         theme,
         transparentBackground: true,
@@ -403,6 +421,7 @@ function BuilderSections({
   );
   const locale = useMemo(resolveLocale, []);
   const cms = useContext(CMSContext);
+  const responsiveMode = useViewportMode();
   const editMode = Boolean(cms?.editMode);
   const [tree, setTree] = useState(null);
   const [runtimeAdditions, setRuntimeAdditions] = useState(null);
@@ -504,7 +523,7 @@ function BuilderSections({
       {
         tree,
         locale,
-        responsiveMode: "desktop",
+        responsiveMode,
         mode: cms?.editMode ? "edit" : "runtime",
         theme
       }
